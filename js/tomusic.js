@@ -1,6 +1,6 @@
 //Set global array proxy links to solve CORS error
 var proxy = {
-    0: 'https://bird.ioliu.cn/v1?url=',
+    0: 'https://api.codetabs.com/v1/proxy/?quest=',
     1: 'https://cors.luckydesigner.workers.dev/?',
 };
 //Set global pagenum and random
@@ -23,13 +23,13 @@ $(document).ready(function() {
         let ms = window.localStorage.getItem('music').split(",");
         let arr = ["wymusic"];
         let lst = arr.filter(x => ms.includes(x)).map(x => arr.indexOf(x));
-        let sts = ['<option value="https://api-music.imsyy.top/">网易云音乐</option>'];
+        let sts = ['<option value="http://iwenwiki.com:3000/">网易云音乐</option>'];
         for (let i of lst) {
             $('#selectapi').append(sts[i]);
         }
     } catch (e) {
         $('#selectapi').append(`
-            <option value="https://api-music.imsyy.top/">网易云音乐</option>
+            <option value="http://iwenwiki.com:3000/">网易云音乐</option>
         `);
     }
     //Variable zone
@@ -64,7 +64,7 @@ $(document).ready(function() {
         if (positionValue <= 0 && positionValue >= -5) {
             $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
             pnum++;
-            if (link == 'https://api-music.imsyy.top/') {
+            if (link == 'http://iwenwiki.com:3000/') {
                 if (sts.length > 0) {
                     globallink = proxy[0] + link + 'search?keywords=' + sts + `&limit=20&offset=${20*pnum - 20}`;
                 } else {
@@ -186,7 +186,7 @@ function iniMenu(link) {
     $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
     $("#menu").empty();
     //Get 163 music initial list
-    if (link == 'https://api-music.imsyy.top/') {
+    if (link == 'http://iwenwiki.com:3000/') {
         $("#menu").append('<li style="background-color:#fff"><input id="search" type="text" placeholder="Search..." /></li>');
         var initmenu = {
             0: '其他',
@@ -338,7 +338,7 @@ function iniMenu(link) {
     //Click to choose category
     $('#menu').on("click", "span", function(e) {
         var className;
-        if (link == 'https://api-music.imsyy.top/') {
+        if (link == 'http://iwenwiki.com:3000/') {
             if (['1', '2', '3'].includes(e.originalEvent.target.className)) {
                 className = link + 'artist/list?type=' + e.originalEvent.target.className;
             } else if (['0', '7', '8', '16', '96'].includes(e.originalEvent.target.className)) {
@@ -416,12 +416,12 @@ function iniMenu(link) {
 function audioPlay(ids) {
     //Test muisc if is invalid
     $.ajax({
-        url: proxy[0] + 'https://api-music.imsyy.top' + '/check/music?id=' + ids,
+        url: proxy[0] + 'http://iwenwiki.com:3000' + '/check/music?id=' + ids,
         type: "GET",
         dataType: "json",
         success: function(data) {
             $.ajax({
-                url: proxy[0] + 'https://api-music.imsyy.top' + '/song/url?id=' + ids,
+                url: proxy[0] + 'http://iwenwiki.com:3000' + '/song/url?id=' + ids,
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

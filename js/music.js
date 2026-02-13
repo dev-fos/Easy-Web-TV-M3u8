@@ -1,7 +1,7 @@
 var channels = [];
 var plyist = [];
 var proxy = {
-    0: 'https://cors.luckydesigner.workers.dev/?',
+    0: 'https://api.codetabs.com/v1/proxy/?quest=',
     1: 'https://bird.ioliu.cn/v1?url=',
 };
 //Get default localstorage key
@@ -14,7 +14,7 @@ $(document).ready(function () {
     var player = videojs(document.querySelector('#video1'));
     $.ajax({
         type: "GET",
-        url: proxy[0] + `https://api-music.imsyy.top/artist/songs?id=${ids}`,
+        url: proxy[0] + `http://iwenwiki.com:3000/artist/songs?id=${ids}`,
         data: {
             limit: 100
         },
@@ -246,12 +246,12 @@ function audioPlay(ids) {
     var player = videojs(document.querySelector('#video1'));
     //Test muisc if is invalid
     $.ajax({
-        url: proxy[0] + 'https://api-music.imsyy.top' + '/check/music?id=' + ids,
+        url: proxy[0] + 'http://iwenwiki.com:3000' + '/check/music?id=' + ids,
         type: "GET",
         dataType: "json",
         success: function (data) {
             $.ajax({
-                url: proxy[0] + 'https://api-music.imsyy.top' + '/song/url?id=' + ids,
+                url: proxy[0] + 'http://iwenwiki.com:3000' + '/song/url?id=' + ids,
                 type: "GET",
                 dataType: "json",
                 success: function (data) {
