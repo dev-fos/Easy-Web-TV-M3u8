@@ -3,108 +3,615 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Game</title>
+    <title>Games - Easy Web TV</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="author" content="Zhang Boheng">
-    <meta name="keywords" content="iptv, movie, github, online tv, web tv, series tv...">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="keywords" content="iptv, movie, github, online tv, web tv, series tv, games">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="../css/main.css" rel="stylesheet" />
     <script src="../js/jquery-3.6.0.min.js"></script>
-    <script src="../js/togame.js"></script>
+    <style>
+        /* Reset main.css conflicts */
+        .app-container,
+        .app-container * {
+            float: none !important;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-image: url("../images/bg.jpg");
+            background-size: cover;
+            background-attachment: fixed;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        /* Main Container */
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Top Header */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(163,0,27,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .header-btn:hover {
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-color: #a3001b;
+            transform: scale(1.05);
+        }
+        
+        .header-btn i {
+            color: #a3001b;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        
+        .header-btn:hover i {
+            color: #fff;
+        }
+        
+        .header-title {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-title i {
+            color: #a3001b;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Search Box */
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 250px;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid rgba(163,0,27,0.3);
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            border-color: #a3001b;
+            background: rgba(255,255,255,0.15);
+            width: 300px;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .search-box .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            bottom: 0;
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: rgba(0,0,0,0.85);
+            border-right: 2px solid rgba(163,0,27,0.5);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            z-index: 90;
+            overflow-y: auto;
+        }
+        
+        .sidebar.collapsed {
+            width: 0;
+            border-right: none;
+        }
+        
+        /* Toggle Sidebar Button */
+        .toggle-sidebar {
+            position: fixed;
+            left: 250px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 60px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .toggle-sidebar:hover {
+            background: rgba(163,0,27,0.3);
+        }
+        
+        .toggle-sidebar i {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar.collapsed .toggle-sidebar {
+            left: 0;
+        }
+        
+        .sidebar.collapsed .toggle-sidebar i {
+            transform: rotate(180deg);
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(90deg, rgba(163,0,27,0.3) 0%, rgba(163,0,27,0.1) 100%);
+            border-bottom: 1px solid rgba(163,0,27,0.4);
+        }
+        
+        .sidebar-header h3 {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-header h3 i {
+            color: #a3001b;
+        }
+        
+        .category-list {
+            padding: 15px 0;
+        }
+        
+        .category-item {
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid transparent;
+        }
+        
+        .category-item:hover {
+            background: rgba(163,0,27,0.15);
+            color: #fff;
+            border-left-color: rgba(163,0,27,0.5);
+        }
+        
+        .category-item.active {
+            background: linear-gradient(90deg, rgba(163,0,27,0.3) 0%, rgba(163,0,27,0.1) 100%);
+            color: #fff;
+            border-left-color: #a3001b;
+        }
+        
+        .category-item i {
+            color: #a3001b;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            height: 0;
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 20px;
+            overflow-y: auto;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #a3001b 0%, #8a0016 100%);
+            border-radius: 4px;
+        }
+        
+        /* Game Grid */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        .game-card {
+            background: rgba(0,0,0,0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-decoration: none;
+            display: block;
+            position: relative;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(163,0,27,0.5);
+            box-shadow: 0 10px 30px rgba(163,0,27,0.2);
+        }
+        
+        .game-card .game-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .game-card:hover .game-image {
+            transform: scale(1.05);
+        }
+        
+        .game-card .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.9) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .game-card:hover .game-overlay {
+            opacity: 1;
+        }
+        
+        .game-card .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .game-card:hover .play-icon {
+            opacity: 1;
+        }
+        
+        .play-icon i {
+            color: #fff;
+            font-size: 24px;
+            margin-left: 4px;
+        }
+        
+        .game-card .game-info {
+            padding: 15px;
+            position: relative;
+        }
+        
+        .game-card .game-platform {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(163,0,27,0.2);
+            border-radius: 8px;
+            color: #a3001b;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .game-card .game-name {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        
+        .loading-overlay.hidden {
+            display: none;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            color: #fff;
+        }
+        
+        .loading-spinner i {
+            font-size: 48px;
+            color: #a3001b;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-spinner p {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .no-results i {
+            font-size: 64px;
+            color: rgba(163,0,27,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .no-results p {
+            font-size: 16px;
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .toggle-sidebar {
+                left: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
+            }
+            
+            .search-box input {
+                width: 200px;
+            }
+            
+            .search-box input:focus {
+                width: 200px;
+            }
+            
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                border-right: none;
+            }
+            
+            .sidebar.show-mobile {
+                width: 250px;
+                border-right: 2px solid rgba(163,0,27,0.5);
+            }
+            
+            .toggle-sidebar {
+                left: 0;
+            }
+            
+            .sidebar.show-mobile .toggle-sidebar {
+                left: 250px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .header-title {
+                font-size: 16px;
+            }
+            
+            .search-box {
+                display: none;
+            }
+            
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .game-card .game-info {
+                padding: 10px;
+            }
+            
+            .game-card .game-name {
+                font-size: 13px;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .game-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .game-card .game-platform {
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            
+            .game-card .game-name {
+                font-size: 12px;
+            }
+        }
+        
+        /* Hide old elements */
+        #left, #right, #div1, #control, #menuicon, #player, #prev, .toggle, .itemContainer, .hiddens, .loadingimg, .ready-player-1, audio {
+            display: none !important;
+        }
+    </style>
 </head>
-<style>
-    html,
-    body {
-        height: auto !important;
-        background-image: url("../images/bg.jpg");
-        overflow-y: auto;
-    }
-    
-    .toggle,
-    #left {
-        position: fixed !important;
-    }
-    
-    .loadingimg {
-        position: fixed;
-        bottom: 10px;
-        z-index: 998;
-        width: 100vw;
-        text-align: center;
-    }
-    
-    .loadingimg img {
-        width: 8%;
-    }
-    
-    .ready-player-1 {
-        position: fixed;
-        width: 100%;
-        z-index: 1001;
-        bottom: 0;
-    }
-    
-    audio {
-        width: 100%;
-        opacity: .8;
-        display: none;
-    }
-</style>
 
 <body>
-    <div id="left">
-        <h3>Select Category</h3>
-        <ul id="menu">
-        </ul>
+    <div class="app-container">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <div class="header-btn" id="backBtn" title="Back">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <div class="header-btn" id="menuBtn" title="Menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="header-title">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Games</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search games...">
+                    <i class="fas fa-search search-icon" id="searchBtn"></i>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Toggle Button -->
+            <div class="toggle-sidebar" id="toggleSidebar">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="category-list" id="categoryList">
+                <div class="category-item active" data-category="all">
+                    <i class="fas fa-globe"></i>
+                    <span>All Games</span>
+                </div>
+                <div class="category-item" data-category="arcade">
+                    <i class="fas fa-ghost"></i>
+                    <span>Arcade</span>
+                </div>
+                <div class="category-item" data-category="puzzle">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <span>Puzzle</span>
+                </div>
+                <div class="category-item" data-category="classic">
+                    <i class="fas fa-chess"></i>
+                    <span>Classic</span>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <div class="game-grid" id="gameGrid">
+                <!-- Games will be loaded here -->
+            </div>
+        </main>
+        
+        <!-- Loading Overlay -->
+        <div class="loading-overlay hidden" id="loadingOverlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner"></i>
+                <p>Loading games...</p>
+            </div>
+        </div>
     </div>
-    <div class="toggle"></div>
-    <div id="root">
-        <div class="itemContainer">
-        </div>
-        <div class="itemContainer">
-        </div>
-        <div class="itemContainer">
-        </div>
-        <div class="itemContainer">
-        </div>
-        <div class="itemContainer">
-        </div>
-        <div class="hiddens" style="display: none;">
-            <p>0</p>
-        </div>
-    </div>
-    <div id="prev" title="Back to previous page" style="position:fixed !important; top: calc(100% - 60px);"></div>
-    <script>
-        let menuHeight = document.getElementById('menu');
-        let screenHeight = window.innerHeight;
-        menuHeight.style.height = screenHeight - 60 + 'px';
-        $("#menu").css({
-            "overflow-y": "auto",
-            "height": menuHeight
-        });
-        $("li p").mouseover(function() {
-            $(this).children("a").css({
-                "color": "#000"
-            })
-        })
-        $("li p").mouseleave(function() {
-            $(this).children("a").css({
-                "color": "#fff"
-            })
-        });
-        $('#prev').show();
-        $('#prev').on({
-            mouseenter: function () {
-                $(this).css({ "opacity": 1 })
-            },
-            click: function () {
-                window.location.href = "/Easy-Web-TV-M3u8/";
-            },
-            mouseleave: function () {
-                $(this).css({ "opacity": 0.5 })
-            }
-        })
-    </script>
+    
+    <script src="../js/togame.js"></script>
 </body>
 
 </html>

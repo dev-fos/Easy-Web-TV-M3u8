@@ -1,445 +1,679 @@
-//Set global array proxy links to solve CORS error
 var proxy = {
     0: 'https://api.codetabs.com/v1/proxy/?quest=',
     1: 'https://cors.luckydesigner.workers.dev/?',
+    2: 'https://corsproxy.io/?',
+    3: 'https://api.allorigins.win/raw?url=',
 };
-//Set global pagenum and random
-var pnum = 1;
-var plyist = [];
 var rand = Math.floor(Math.random() * Object.keys(proxy).length);
-$(document).ready(function() {
-    //Toggle menu and adjust size
-    $(".toggle").css({ 'left': $('#left').width() - 50 });
-    $('.toggle').click(function() {
-        $('#left').toggle();
-        if ($('#left').is(':visible')) {
-            $('.toggle').css({ 'left': $('#left').width() - 50 });
+
+var artists = [];
+var pageNum = 1;
+var currentFilter = { type: 'all', value: '-1' };
+var searchQuery = '';
+var isLoading = false;
+var hasMore = true;
+var isSearchMode = false;
+
+// Player state
+var currentPlaylist = [];
+var currentSongIndex = -1;
+var audioPlayer = null;
+var isPlaying = false;
+
+$(document).ready(function () {
+    // Initialize audio player
+    audioPlayer = document.getElementById('audioPlayer');
+    
+    // Back button
+    $('#backBtn').on('click', function () {
+        window.history.back();
+    });
+    
+    // Menu button - toggle sidebar
+    $('#menuBtn').on('click', function () {
+        $('#sidebar').toggleClass('collapsed');
+        $('#sidebar').toggleClass('show-mobile');
+        $('#mainContent').toggleClass('expanded');
+    });
+    
+    // Toggle sidebar button
+    $('#toggleSidebar').on('click', function () {
+        if (window.innerWidth <= 768) {
+            $('#sidebar').toggleClass('show-mobile');
         } else {
-            $('.toggle').css({ 'left': '5px' });
+            $('#sidebar').toggleClass('collapsed');
+            $('#mainContent').toggleClass('expanded');
         }
     });
-    //Get select source
-    try {
-        let ms = window.localStorage.getItem('music').split(",");
-        let arr = ["wymusic"];
-        let lst = arr.filter(x => ms.includes(x)).map(x => arr.indexOf(x));
-        let sts = ['<option value="http://iwenwiki.com:3000/">网易云音乐</option>'];
-        for (let i of lst) {
-            $('#selectapi').append(sts[i]);
+    
+    // Category selection
+    $('#categoryList').on('click', '.category-item', function () {
+        if (isLoading) return;
+        
+        $('.category-item').removeClass('active');
+        $(this).addClass('active');
+        
+        currentFilter = {
+            type: $(this).data('type'),
+            value: $(this).data('value')
+        };
+        
+        // Reset pagination
+        pageNum = 1;
+        hasMore = true;
+        artists = [];
+        
+        // Load artists with new filter
+        loadArtists();
+    });
+    
+    // Search functionality
+    $('#searchInput').on('keypress', function (e) {
+        if (e.which === 13) {
+            performSearch();
         }
-    } catch (e) {
-        $('#selectapi').append(`
-            <option value="http://iwenwiki.com:3000/">网易云音乐</option>
-        `);
-    }
-    //Variable zone
-    var initlink = $('#selectapi').val();
-    //Initial homepage menu and episod lists
-    iniMenu(initlink);
-    //Select Different Source Website
-    $('#selectapi').on('change', function() {
-        var key = $(this).val();
-        $('.itemContainer').empty();
-        iniMenu(key);
-        pnum = 1;
     });
-    // //Reinitial page num
-    $("#menu").click(function() {
-        pnum = 1;
+    
+    $('#searchBtn').on('click', function () {
+        performSearch();
     });
-    //Scroll down to load more
-    $(window).scroll(function(e) {
-        $('#left').hide();
-        $('.toggle').css({ 'left': '5px' });
-        var ks = $('.hiddens');
-        var kt = $('#search');
-        var str = ks[0].children[0].innerHTML;
-        var sts = kt[0].value;
-        var scrollTop = $(this).scrollTop(),
-            scrollHeight = $(document).height(),
-            windowHeight = $(this).height();
-        var positionValue = (scrollTop + windowHeight) - scrollHeight;
-        var link = $('#selectapi').val();
-        var globallink;
-        if (positionValue <= 0 && positionValue >= -5) {
-            $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-            pnum++;
-            if (link == 'http://iwenwiki.com:3000/') {
-                if (sts.length > 0) {
-                    globallink = proxy[0] + link + 'search?keywords=' + sts + `&limit=20&offset=${20*pnum - 20}`;
-                } else {
-                    str = str == "0" ? link + `artist/list?type=-1&area=-1&limit=20&offset=${20*pnum - 20}` : str + `&limit=20&offset=${20*pnum - 20}`;
-                    globallink = str;
-                }
-                $.ajax({
-                    url: proxy[0] + globallink,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('.loadingimg').remove();
-                        if (globallink.indexOf('keywords') > -1) {
-                            let artisery = data.result.songs;
-                            if ($(window).width() > 1024) {
-                                for (let i = 0; i < artisery.length; i++) {
-                                    if (i % 5 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 5 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 5 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 5 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 5 == 4) {
-                                        $(`.itemContainer:eq(4)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    }
-                                    plyist.push(artisery[i].id);
-                                };
-                            } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < artisery.length; i++) {
-                                    if (i % 4 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 4 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 4 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 4 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    }
-                                    plyist.push(artisery[i].id);
-                                };
-                            } else if ($(window).width() <= 640) {
-                                $(`.itemContainer:eq(2)`).hide();
-                                $(`.itemContainer:eq(3)`).hide();
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < artisery.length; i++) {
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                    }
-                                    plyist.push(artisery[i].id);
-                                }
-                            }
-                        } else {
-                            let artisery = data.artists;
-                            if ($(window).width() > 1024) {
-                                for (let i = 0; i < artisery.length; i++) {
-                                    if (i % 5 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 5 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 5 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 5 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 5 == 4) {
-                                        $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    }
-                                };
-                            } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < artisery.length; i++) {
-                                    if (i % 4 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 4 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 4 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 4 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    }
-                                };
-
-                            } else if ($(window).width() <= 640) {
-                                $(`.itemContainer:eq(2)`).hide();
-                                $(`.itemContainer:eq(3)`).hide();
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < artisery.length; i++) {
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                                    }
-
-                                }
-                            }
-                        }
-                    },
-                    error: function() {
-                        alert('Can\'t load more...');
-                    }
-                });
+    
+    // Infinite scroll - listen on main content area scroll
+    $('#mainContent').on('scroll', function () {
+        var scrollTop = $(this).scrollTop();
+        var scrollHeight = $(this)[0].scrollHeight;
+        var clientHeight = $(this).height();
+        
+        // Trigger when user scrolls near bottom (100px before end)
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
+            if (!isLoading && hasMore && !isSearchMode) {
+                loadMoreArtists();
             }
         }
     });
-    //Add random playlist music 
-    document.getElementById('Audio1').addEventListener("ended", function() {
-        let playlist = [...new Set(plyist)];
-        var index = Math.floor(Math.random() * playlist.length);
-        audioPlay(playlist[index]);
-    });
+    
+    // Player controls
+    initPlayerControls();
+    
+    // Initial load
+    loadArtists();
 });
 
-//Initial homepage menu
-function iniMenu(link) {
-    $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-    $("#menu").empty();
-    //Get 163 music initial list
-    if (link == 'http://iwenwiki.com:3000/') {
-        $("#menu").append('<li style="background-color:#fff"><input id="search" type="text" placeholder="Search..." /></li>');
-        var initmenu = {
-            0: '其他',
-            1: '男歌手',
-            2: '女歌手',
-            3: '乐队',
-            7: '华语',
-            8: '日本',
-            16: '韩国',
-            96: '欧美',
-        };
-        var code = Object.keys(initmenu);
-        var area = Object.values(initmenu);
-        for (let i = 0; i < code.length; i++) {
-            $("#menu").append(`<li><p><span class="${code[i]}">${area[i]}</span></p></li>`);
+function initPlayerControls() {
+    // Play/Pause button
+    $('#playPauseBtn').on('click', function () {
+        if (isPlaying) {
+            audioPlayer.pause();
+            isPlaying = false;
+            $('#playIcon').removeClass('fa-pause').addClass('fa-play');
+        } else {
+            audioPlayer.play();
+            isPlaying = true;
+            $('#playIcon').removeClass('fa-play').addClass('fa-pause');
         }
-        $("#menu li:gt(1)").on('click', function(){
-            $(this).addClass("bd").siblings().removeClass("bd");
-        });
-        $.ajax({
-            url: proxy[0] + link + 'artist/list',
-            data: {
-                type: '-1',
-                area: '-1',
-                limit: '20'
-            },
-            dataType: 'json',
-            async: false,
-            success: function(data) {
-                $('.loadingimg').remove();
-                $('.itemContainer').empty();
-                let artisery = data.artists;
-                if ($(window).width() > 1024) {
-                    for (let i = 0; i < artisery.length; i++) {
-                        if (i % 5 == 0) {
-                            $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 1) {
-                            $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 2) {
-                            $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 3) {
-                            $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 4) {
-                            $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        }
-                    };
-                } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                    $(`.itemContainer:eq(4)`).hide();
-                    for (let i = 0; i < artisery.length; i++) {
-                        if (i % 4 == 0) {
-                            $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 4 == 1) {
-                            $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 4 == 2) {
-                            $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 4 == 3) {
-                            $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        }
-                    };
-
-                } else if ($(window).width() <= 640) {
-                    $(`.itemContainer:eq(2)`).hide();
-                    $(`.itemContainer:eq(3)`).hide();
-                    $(`.itemContainer:eq(4)`).hide();
-                    for (let i = 0; i < artisery.length; i++) {
-                        if (i % 2 == 0) {
-                            $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 2 == 1) {
-                            $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        }
-
-                    }
-                }
-            },
-            error: function() {
-                alert('Can\'t load more...');
-            },
-            complete: function(data) {
-                var searchlink = '';
-                $("#search").on('keyup', function(e) {
-                    if (e.which == 13) {
-                        $('.itemContainer').empty();
-                        var valThis = $(this).val().toLowerCase();
-                        searchlink = `${link + 'search?keywords=' + valThis}`;
-                        $.ajax({
-                            url: proxy[0] + searchlink,
-                            data: {
-                                limit: 20,
-                            },
-                            type: "GET",
-                            dataType: "json",
-                            success: function(data) {
-                                let artisery = data.result.songs;
-                                if ($(window).width() > 1024) {
-                                    for (let i = 0; i < artisery.length; i++) {
-                                        if (i % 5 == 0) {
-                                            $(`.itemContainer:eq(0)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 5 == 1) {
-                                            $(`.itemContainer:eq(1)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 5 == 2) {
-                                            $(`.itemContainer:eq(2)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 5 == 3) {
-                                            $(`.itemContainer:eq(3)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 5 == 4) {
-                                            $(`.itemContainer:eq(4)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        }
-                                        plyist.push(artisery[i].id);
-                                    };
-                                } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                                    $(`.itemContainer:eq(4)`).hide();
-                                    for (let i = 0; i < artisery.length; i++) {
-                                        if (i % 4 == 0) {
-                                            $(`.itemContainer:eq(0)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 4 == 1) {
-                                            $(`.itemContainer:eq(1)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 4 == 2) {
-                                            $(`.itemContainer:eq(2)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 4 == 3) {
-                                            $(`.itemContainer:eq(3)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        }
-                                        plyist.push(artisery[i].id);
-                                    };
-
-                                } else if ($(window).width() <= 640) {
-                                    $(`.itemContainer:eq(2)`).hide();
-                                    $(`.itemContainer:eq(3)`).hide();
-                                    $(`.itemContainer:eq(4)`).hide();
-                                    for (let i = 0; i < artisery.length; i++) {
-                                        if (i % 2 == 0) {
-                                            $(`.itemContainer:eq(0)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        } else if (i % 2 == 1) {
-                                            $(`.itemContainer:eq(1)`).append(`<div class="item" onclick="audioPlay('${artisery[i].id}')"><img class="itemImg" src="../images/noimage.jpeg" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[Music]${artisery[i].name}</span></div></div>`)
-                                        }
-                                        plyist.push(artisery[i].id);
-                                    }
-                                }
-                            },
-                            error: function(xhr, status) {
-                                setTimeout(() => {
-                                    alert('Sorry, the music is blocked by NetEase');
-                                }, 3000);
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
-    //Click to choose category
-    $('#menu').on("click", "span", function(e) {
-        var className;
-        if (link == 'http://iwenwiki.com:3000/') {
-            if (['1', '2', '3'].includes(e.originalEvent.target.className)) {
-                className = link + 'artist/list?type=' + e.originalEvent.target.className;
-            } else if (['0', '7', '8', '16', '96'].includes(e.originalEvent.target.className)) {
-                className = link + 'artist/list?area=' + e.originalEvent.target.className;
-            }
-        }
-        $('.hiddens').empty();
-        $('.hiddens').append(`<p>${className}</p>`);
-        $('#search').val('');
-        $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-        $.ajax({
-            url: proxy[0] + className,
-            data: {
-                limit: 20
-            },
-            dataType: 'json',
-            async: false,
-            success: function(data) {
-                $('.loadingimg').remove();
-                $('.itemContainer').empty();
-                let artisery = data.artists;
-                if ($(window).width() > 1024) {
-                    for (let i = 0; i < artisery.length; i++) {
-                        if (i % 5 == 0) {
-                            $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 1) {
-                            $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 2) {
-                            $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 3) {
-                            $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 5 == 4) {
-                            $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        }
-                    };
-                } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                    $(`.itemContainer:eq(4)`).hide();
-                    for (let i = 0; i < artisery.length; i++) {
-                        if (i % 4 == 0) {
-                            $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 4 == 1) {
-                            $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 4 == 2) {
-                            $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 4 == 3) {
-                            $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        }
-                    };
-
-                } else if ($(window).width() <= 640) {
-                    $(`.itemContainer:eq(2)`).hide();
-                    $(`.itemContainer:eq(3)`).hide();
-                    $(`.itemContainer:eq(4)`).hide();
-                    for (let i = 0; i < artisery.length; i++) {
-                        if (i % 2 == 0) {
-                            $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        } else if (i % 2 == 1) {
-                            $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/musicplay.html?web=${artisery[i].id}"><div class="item"><img class="itemImg" src="${artisery[i].picUrl}" alt="${artisery[i].name}" /><div class="userInfo"><img class="avatar" src="../images/music.svg" alt="" /><span class="username">[${artisery[i].alias}]${artisery[i].name}</span></div></div></a>`)
-                        }
-
-                    }
-                }
-            },
-            error: function() {
-                alert('Can\'t load more...');
-            },
-            complete: function(data) {
-                console.log(data);
-            }
-        });
     });
-};
+    
+    // Previous button
+    $('#prevBtn').on('click', function () {
+        if (currentSongIndex > 0) {
+            playSong(currentSongIndex - 1);
+        }
+    });
+    
+    // Next button
+    $('#nextBtn').on('click', function () {
+        if (currentSongIndex < currentPlaylist.length - 1) {
+            playSong(currentSongIndex + 1);
+        }
+    });
+    
+    // Close player button
+    $('#closePlayerBtn').on('click', function () {
+        audioPlayer.pause();
+        isPlaying = false;
+        $('#bottomPlayer').removeClass('show');
+        $('#mainContent').removeClass('with-player');
+        $('#playIcon').removeClass('fa-pause').addClass('fa-play');
+    });
+    
+    // Progress bar click
+    $('#progressBar').on('click', function (e) {
+        var width = $(this).width();
+        var clickX = e.offsetX;
+        var percentage = clickX / width;
+        audioPlayer.currentTime = audioPlayer.duration * percentage;
+    });
+    
+    // Volume slider click
+    $('#volumeSlider').on('click', function (e) {
+        var width = $(this).width();
+        var clickX = e.offsetX;
+        var percentage = clickX / width;
+        audioPlayer.volume = percentage;
+        $('#volumeBar').css('width', percentage * 100 + '%');
+        updateVolumeIcon(percentage);
+    });
+    
+    // Volume icon click (mute/unmute)
+    $('#volumeIcon').on('click', function () {
+        if (audioPlayer.volume > 0) {
+            audioPlayer.volume = 0;
+            $('#volumeBar').css('width', '0%');
+            updateVolumeIcon(0);
+        } else {
+            audioPlayer.volume = 0.7;
+            $('#volumeBar').css('width', '70%');
+            updateVolumeIcon(0.7);
+        }
+    });
+    
+    // Audio player events
+    audioPlayer.addEventListener('timeupdate', function () {
+        var currentTime = audioPlayer.currentTime;
+        var duration = audioPlayer.duration;
+        
+        if (duration) {
+            var percentage = (currentTime / duration) * 100;
+            $('#progressFill').css('width', percentage + '%');
+            $('#currentTime').text(formatTime(currentTime));
+            $('#totalTime').text(formatTime(duration));
+        }
+    });
+    
+    audioPlayer.addEventListener('ended', function () {
+        if (currentSongIndex < currentPlaylist.length - 1) {
+            playSong(currentSongIndex + 1);
+        } else {
+            isPlaying = false;
+            $('#playIcon').removeClass('fa-pause').addClass('fa-play');
+        }
+    });
+    
+    audioPlayer.addEventListener('play', function () {
+        isPlaying = true;
+        $('#playIcon').removeClass('fa-play').addClass('fa-pause');
+    });
+    
+    audioPlayer.addEventListener('pause', function () {
+        isPlaying = false;
+        $('#playIcon').removeClass('fa-pause').addClass('fa-play');
+    });
+}
 
-//Play audio source
-function audioPlay(ids) {
-    //Test muisc if is invalid
+function updateVolumeIcon(volume) {
+    var icon = $('#volumeIcon');
+    icon.removeClass('fa-volume-up fa-volume-down fa-volume-mute');
+    
+    if (volume === 0) {
+        icon.addClass('fa-volume-mute');
+    } else if (volume < 0.5) {
+        icon.addClass('fa-volume-down');
+    } else {
+        icon.addClass('fa-volume-up');
+    }
+}
+
+function formatTime(seconds) {
+    var mins = Math.floor(seconds / 60);
+    var secs = Math.floor(seconds % 60);
+    return mins + ':' + (secs < 10 ? '0' : '') + secs;
+}
+
+function playSong(index) {
+    if (index < 0 || index >= currentPlaylist.length) return;
+    
+    currentSongIndex = index;
+    var song = currentPlaylist[index];
+    
+    // Update player UI
+    $('#playerSongName').text(song.name || 'Unknown');
+    $('#playerArtistName').text(song.artistName || 'Unknown');
+    $('#playerCover').attr('src', song.cover || '../images/noimage.jpeg').onerror = function () {
+        this.src = '../images/noimage.jpeg';
+    };
+    
+    // Show player
+    $('#bottomPlayer').addClass('show');
+    $('#mainContent').addClass('with-player');
+    
+    // Get song URL and play
+    getSongUrl(song.id, function (url) {
+        if (url) {
+            audioPlayer.src = url;
+            audioPlayer.play();
+        } else {
+            showError('Unable to get song URL');
+        }
+    });
+}
+
+function getSongUrl(songId, callback) {
+    var apiUrl = 'http://iwenwiki.com:3000/song/url?id=' + songId;
+    
     $.ajax({
-        url: proxy[0] + 'http://iwenwiki.com:3000' + '/check/music?id=' + ids,
+        url: proxy[rand] + encodeURIComponent(apiUrl),
         type: "GET",
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
+            console.log('Song URL response:', data);
+            var url = null;
+            if (data.data && data.data[0] && data.data[0].url) {
+                url = data.data[0].url;
+            }
+            callback(url);
+        },
+        error: function () {
+            // Try alternate proxy
+            var altRand = (rand + 1) % Object.keys(proxy).length;
             $.ajax({
-                url: proxy[0] + 'http://iwenwiki.com:3000' + '/song/url?id=' + ids,
+                url: proxy[altRand] + encodeURIComponent(apiUrl),
                 type: "GET",
                 dataType: "json",
-                success: function(data) {
-                    $('audio').show();
-                    var fileName = data.data[0].url;
-                    $("#Audio1").attr("src", fileName).trigger("play");
+                success: function (data) {
+                    var url = null;
+                    if (data.data && data.data[0] && data.data[0].url) {
+                        url = data.data[0].url;
+                    }
+                    callback(url);
                 },
-                error: function(xhr, status) {
-                    setTimeout(() => {
-                        alert('Sorry, the music is not support to play...');
-                    }, 3000);
+                error: function () {
+                    callback(null);
                 }
             });
-        },
-        error: function(xhr, status) {
-            setTimeout(() => {
-                alert('Sorry, the music is not support to play...');
-            }, 3000);
         }
     });
+}
+
+function loadArtists() {
+    if (isLoading) return;
+    isLoading = true;
+    
+    showLoading();
+    
+    var apiUrl = buildApiUrl();
+    console.log('Loading artists, API URL:', apiUrl);
+    
+    $.ajax({
+        url: proxy[rand] + encodeURIComponent(apiUrl),
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            console.log('Load artists response:', data);
+            hideLoading();
+            isLoading = false;
+            
+            if (data.artists && data.artists.length > 0) {
+                artists = data.artists;
+                renderArtists(artists);
+            } else {
+                showNoResults();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log('Load artists failed with proxy 0, trying proxy 1...', error);
+            // Try alternate proxy
+            var altRand = (rand + 1) % Object.keys(proxy).length;
+            $.ajax({
+                url: proxy[altRand] + encodeURIComponent(apiUrl),
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    console.log('Load artists response (proxy 1):', data);
+                    hideLoading();
+                    isLoading = false;
+                    
+                    if (data.artists && data.artists.length > 0) {
+                        artists = data.artists;
+                        renderArtists(artists);
+                    } else {
+                        showNoResults();
+                    }
+                },
+                error: function () {
+                    hideLoading();
+                    isLoading = false;
+                    showError('Failed to load artists');
+                }
+            });
+        }
+    });
+}
+
+function loadMoreArtists() {
+    if (isLoading || !hasMore) return;
+    isLoading = true;
+    
+    $('#loadMore').show();
+    pageNum++;
+    
+    var apiUrl = buildApiUrl();
+    console.log('Loading more artists, page:', pageNum, 'API URL:', apiUrl);
+    
+    $.ajax({
+        url: proxy[rand] + encodeURIComponent(apiUrl),
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            console.log('Load more response:', data);
+            $('#loadMore').hide();
+            isLoading = false;
+            
+            if (data.artists && data.artists.length > 0) {
+                // Filter out duplicates
+                var existingIds = artists.map(function(a) { return a.id; });
+                var newArtists = data.artists.filter(function(a) {
+                    return existingIds.indexOf(a.id) === -1;
+                });
+                
+                if (newArtists.length > 0) {
+                    artists = artists.concat(newArtists);
+                    appendArtists(newArtists);
+                }
+                
+                // If we got less than expected, might be end of data
+                if (data.artists.length < 50) {
+                    hasMore = false;
+                }
+            } else {
+                hasMore = false;
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log('Load more failed with proxy 0, trying proxy 1...', error);
+            // Try alternate proxy
+            var altRand = (rand + 1) % Object.keys(proxy).length;
+            $.ajax({
+                url: proxy[altRand] + encodeURIComponent(apiUrl),
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    console.log('Load more response (proxy 1):', data);
+                    $('#loadMore').hide();
+                    isLoading = false;
+                    
+                    if (data.artists && data.artists.length > 0) {
+                        var existingIds = artists.map(function(a) { return a.id; });
+                        var newArtists = data.artists.filter(function(a) {
+                            return existingIds.indexOf(a.id) === -1;
+                        });
+                        
+                        if (newArtists.length > 0) {
+                            artists = artists.concat(newArtists);
+                            appendArtists(newArtists);
+                        }
+                        
+                        if (data.artists.length < 50) {
+                            hasMore = false;
+                        }
+                    } else {
+                        hasMore = false;
+                    }
+                },
+                error: function () {
+                    $('#loadMore').hide();
+                    isLoading = false;
+                    pageNum--;
+                }
+            });
+        }
+    });
+}
+
+function buildApiUrl() {
+    var baseUrl = 'http://iwenwiki.com:3000/artist/list';
+    var params = [];
+    
+    if (currentFilter.type === 'area') {
+        params.push('area=' + currentFilter.value);
+        params.push('type=-1');
+    } else if (currentFilter.type === 'type') {
+        params.push('type=' + currentFilter.value);
+        params.push('area=-1');
+    } else {
+        params.push('type=-1');
+        params.push('area=-1');
+    }
+    
+    params.push('limit=50');
+    params.push('offset=' + (50 * (pageNum - 1)));
+    
+    return baseUrl + '?' + params.join('&');
+}
+
+function renderArtists(artistList) {
+    var html = '';
+    
+    artistList.forEach(function (artist) {
+        var alias = artist.alias && artist.alias.length > 0 ? artist.alias[0] : '';
+        html += `
+            <a href="../catalogues/musicplay.html?web=${artist.id}" class="artist-card">
+                <img class="artist-image" src="${artist.picUrl || '../images/noimage.jpeg'}" alt="${artist.name}" onerror="this.src='../images/noimage.jpeg'">
+                <div class="artist-info">
+                    <div class="artist-name">${artist.name}</div>
+                    ${alias ? `<div class="artist-alias">${alias}</div>` : ''}
+                </div>
+            </a>
+        `;
+    });
+    
+    $('#artistGrid').html(html);
+}
+
+function appendArtists(artistList) {
+    var html = '';
+    
+    artistList.forEach(function (artist) {
+        var alias = artist.alias && artist.alias.length > 0 ? artist.alias[0] : '';
+        html += `
+            <a href="../catalogues/musicplay.html?web=${artist.id}" class="artist-card">
+                <img class="artist-image" src="${artist.picUrl || '../images/noimage.jpeg'}" alt="${artist.name}" onerror="this.src='../images/noimage.jpeg'">
+                <div class="artist-info">
+                    <div class="artist-name">${artist.name}</div>
+                    ${alias ? `<div class="artist-alias">${alias}</div>` : ''}
+                </div>
+            </a>
+        `;
+    });
+    
+    $('#artistGrid').append(html);
+}
+
+function performSearch() {
+    var query = $('#searchInput').val().trim();
+    
+    if (!query) {
+        // If search is empty, reload with current filter
+        isSearchMode = false;
+        pageNum = 1;
+        hasMore = true;
+        artists = [];
+        loadArtists();
+        return;
+    }
+    
+    searchQuery = query;
+    isSearchMode = true;
+    searchSongs(query);
+}
+
+function searchSongs(query) {
+    showLoading();
+    isLoading = true;
+    
+    // Disable load more in search mode
+    hasMore = false;
+    
+    // Try both proxies for better reliability
+    var apiUrl = 'http://iwenwiki.com:3000/search?keywords=' + encodeURIComponent(query) + '&limit=50';
+    
+    console.log('Search API URL:', apiUrl);
+    
+    $.ajax({
+        url: proxy[rand] + encodeURIComponent(apiUrl),
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            console.log('Search response:', data);
+            hideLoading();
+            isLoading = false;
+            
+            // Check multiple possible response structures
+            var songs = null;
+            if (data.result && data.result.songs) {
+                songs = data.result.songs;
+            } else if (data.data && data.data.songs) {
+                songs = data.data.songs;
+            } else if (data.songs) {
+                songs = data.songs;
+            }
+            
+            if (songs && songs.length > 0) {
+                // Store songs as playlist
+                currentPlaylist = songs.map(function (song) {
+                    // Get artist names from artists array
+                    var artistNames = '';
+                    if (song.artists && song.artists.length > 0) {
+                        artistNames = song.artists.map(function(a) { return a.name; }).join(', ');
+                    } else if (song.ar && song.ar.length > 0) {
+                        artistNames = song.ar.map(function(a) { return a.name; }).join(', ');
+                    }
+                    
+                    return {
+                        id: song.id,
+                        name: song.name,
+                        artistName: artistNames,
+                        cover: song.al && song.al.picUrl ? song.al.picUrl : '../images/noimage.jpeg'
+                    };
+                });
+                renderSearchResults(songs);
+                
+                // Show message that search results are limited
+                if (songs.length === 50) {
+                    $('#artistGrid').append('<div class="search-info" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: rgba(255,255,255,0.5); font-size: 12px;"><i class="fas fa-info-circle"></i> 显示前50条搜索结果，如需更多请使用更精确的关键词</div>');
+                }
+            } else {
+                showNoResults();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log('Search failed with proxy 0, trying proxy 1...', error);
+            // Try alternate proxy
+            var altRand = (rand + 1) % Object.keys(proxy).length;
+            $.ajax({
+                url: proxy[altRand] + encodeURIComponent(apiUrl),
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    console.log('Search response (proxy 1):', data);
+                    hideLoading();
+                    isLoading = false;
+                    
+                    var songs = null;
+                    if (data.result && data.result.songs) {
+                        songs = data.result.songs;
+                    } else if (data.data && data.data.songs) {
+                        songs = data.data.songs;
+                    } else if (data.songs) {
+                        songs = data.songs;
+                    }
+                    
+                    if (songs && songs.length > 0) {
+                        currentPlaylist = songs.map(function (song) {
+                            // Get artist names from artists array
+                            var artistNames = '';
+                            if (song.artists && song.artists.length > 0) {
+                                artistNames = song.artists.map(function(a) { return a.name; }).join(', ');
+                            } else if (song.ar && song.ar.length > 0) {
+                                artistNames = song.ar.map(function(a) { return a.name; }).join(', ');
+                            }
+                            
+                            return {
+                                id: song.id,
+                                name: song.name,
+                                artistName: artistNames,
+                                cover: song.al && song.al.picUrl ? song.al.picUrl : '../images/noimage.jpeg'
+                            };
+                        });
+                        renderSearchResults(songs);
+                        
+                        // Show message that search results are limited
+                        if (songs.length === 50) {
+                            $('#artistGrid').append('<div class="search-info" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: rgba(255,255,255,0.5); font-size: 12px;"><i class="fas fa-info-circle"></i> 显示前50条搜索结果，如需更多请使用更精确的关键词</div>');
+                        }
+                    } else {
+                        showNoResults();
+                    }
+                },
+                error: function (xhr2, status2, error2) {
+                    console.log('Search failed completely:', error2);
+                    hideLoading();
+                    isLoading = false;
+                    showError('Search failed: ' + error2);
+                }
+            });
+        }
+    });
+}
+
+function renderSearchResults(songs) {
+    var html = '';
+    
+    songs.forEach(function (song, index) {
+        var songName = song.name || '';
+        // Get artist names from artists array
+        var artistNames = '';
+        if (song.artists && song.artists.length > 0) {
+            artistNames = song.artists.map(function(a) { return a.name; }).join(', ');
+        } else if (song.ar && song.ar.length > 0) {
+            artistNames = song.ar.map(function(a) { return a.name; }).join(', ');
+        }
+        var albumPic = song.al && song.al.picUrl ? song.al.picUrl : '../images/noimage.jpeg';
+        
+        html += `
+            <div class="artist-card song-card" data-index="${index}">
+                <img class="artist-image" src="${albumPic}" alt="${songName}" onerror="this.src='../images/noimage.jpeg'">
+                <div class="play-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="artist-info">
+                    <div class="artist-name">${songName}</div>
+                    ${artistNames ? `<div class="artist-alias">${artistNames}</div>` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    $('#artistGrid').html(html);
+    
+    // Add click handler for song cards
+    $('.song-card').on('click', function () {
+        var index = parseInt($(this).data('index'));
+        playSong(index);
+    });
+}
+
+function showLoading() {
+    $('#loadingOverlay').removeClass('hidden');
+}
+
+function hideLoading() {
+    $('#loadingOverlay').addClass('hidden');
+}
+
+function showNoResults() {
+    $('#artistGrid').html(`
+        <div class="no-results" style="grid-column: 1 / -1;">
+            <i class="fas fa-music"></i>
+            <p>No artists found</p>
+        </div>
+    `);
+}
+
+function showError(message) {
+    $('#artistGrid').html(`
+        <div class="no-results" style="grid-column: 1 / -1;">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>${message}</p>
+        </div>
+    `);
 }

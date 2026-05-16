@@ -3,17 +3,17 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Radio Stations - Easy Web TV</title>
+    <title>TV Channels - Easy Web TV</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="author" content="Zhang Boheng">
-    <meta name="keywords" content="iptv, movie, github, online tv, web tv, series tv, radio, music">
+    <meta name="keywords" content="iptv, movie, github, online tv, web tv, series tv...">
     <link href="../css/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../js/jquery-3.6.0.min.js"></script>
     <style>
         /* 重置 main.css 的全局样式冲突 */
-        .radio-container,
-        .radio-container * {
+        .tv-container,
+        .tv-container * {
             float: none !important;
         }
         
@@ -36,7 +36,7 @@
         }
         
         /* Main Container */
-        .radio-container {
+        .tv-container {
             width: 100%;
             height: 100vh;
             display: flex;
@@ -45,7 +45,7 @@
         }
         
         /* Header Section */
-        .radio-header {
+        .tv-header {
             background: linear-gradient(90deg, rgba(163,0,27,0.15) 0%, rgba(163,0,27,0.08) 100%);
             padding: 15px 30px;
             display: flex;
@@ -57,7 +57,7 @@
             flex-wrap: wrap;
         }
         
-        .radio-header h1 {
+        .tv-header h1 {
             color: #fff;
             font-size: 24px;
             font-weight: 600;
@@ -68,12 +68,12 @@
             flex-shrink: 0;
         }
         
-        .radio-header h1 i {
+        .tv-header h1 i {
             color: #a3001b;
             font-size: 28px;
         }
         
-        .radio-header .subtitle {
+        .tv-header .subtitle {
             color: rgba(255,255,255,0.6);
             font-size: 12px;
             margin-left: 5px;
@@ -288,11 +288,16 @@
             text-decoration: none;
             font-size: 13px;
             font-weight: 500;
+            display: block;
             transition: color 0.3s ease;
             line-height: 1.3;
             text-align: center;
             max-width: 100%;
-            word-break: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         
         .item-card:hover a {
@@ -311,24 +316,13 @@
             transform: scale(1.2);
         }
         
-        .item-card .station-count {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            background: rgba(163,0,27,0.2);
-            padding: 3px 8px;
-            border-radius: 10px;
-            margin-top: 5px;
-        }
-        
         /* Category specific colors */
         .item-card[data-category="news"] .card-icon { color: #e74c3c; }
         .item-card[data-category="sports"] .card-icon { color: #27ae60; }
         .item-card[data-category="music"] .card-icon { color: #9b59b6; }
-        .item-card[data-category="pop"] .card-icon { color: #f39c12; }
-        .item-card[data-category="rock"] .card-icon { color: #e74c3c; }
-        .item-card[data-category="jazz"] .card-icon { color: #3498db; }
-        .item-card[data-category="classical"] .card-icon { color: #1abc9c; }
-        .item-card[data-category="talk"] .card-icon { color: #9b59b6; }
+        .item-card[data-category="movies"] .card-icon { color: #f39c12; }
+        .item-card[data-category="kids"] .card-icon { color: #3498db; }
+        .item-card[data-category="documentary"] .card-icon { color: #1abc9c; }
         
         /* Back Button - in header */
         .back-btn {
@@ -385,13 +379,13 @@
         }
         
         @media screen and (max-width: 768px) {
-            .radio-header {
+            .tv-header {
                 padding: 12px 15px;
                 flex-direction: column;
                 gap: 10px;
             }
             
-            .radio-header h1 {
+            .tv-header h1 {
                 font-size: 18px;
             }
             
@@ -434,8 +428,11 @@
                 font-size: 11px;
             }
             
-            .item-card .station-count {
-                font-size: 10px;
+            #prev {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                right: 15px;
             }
         }
         
@@ -499,19 +496,215 @@
             flex-shrink: 0;
         }
     </style>
+    <script>
+        $(document).ready(function() {
+            // Tab 切换功能
+            $('.tab-btn').on('click', function() {
+                var targetTab = $(this).data('tab');
+                
+                // 切换 tab 按钮状态
+                $('.tab-btn').removeClass('active');
+                $(this).addClass('active');
+                
+                // 切换内容区域
+                $('.tab-content').removeClass('active');
+                $('#' + targetTab).addClass('active');
+            });
+            
+            // 搜索功能
+            $('#searchInput').on('input', function() {
+                var searchTerm = $(this).val().toLowerCase();
+                var activeTab = $('.tab-content.active').attr('id');
+                
+                $('#' + activeTab + ' .item-card').each(function() {
+                    var text = $(this).find('a').text().toLowerCase();
+                    if (text.indexOf(searchTerm) > -1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+            
+            // 返回按钮
+            $('#backBtn').on('click', function() {
+                window.history.back();
+            });
+            
+            // 卡片点击跳转 - 使用事件委托
+            $(document).on('click', '.item-card', function(e) {
+                // 如果点击的是a标签本身，让它自然跳转
+                if ($(e.target).is('a')) {
+                    return;
+                }
+                var link = $(this).find('a').attr('href');
+                if (link) {
+                    window.location.href = link;
+                }
+            });
+            // 动态加载 Countries 列表
+            function loadCountries() {
+                $.ajax({
+                    type: "GET",
+                    url: "https://iptv-org.github.io/api/countries.json",
+                    success: function(data) {
+                        $("#countries-grid").empty();
+                        // 按名称排序
+                        data.sort(function(a, b) {
+                            return a.name.localeCompare(b.name);
+                        });
+                        for (let i = 0; i < data.length; i++) {
+                            let country = data[i];
+                            let code = country.code.toLowerCase();
+                            let name = country.name;
+                            let flag = country.flag;
+                            let link = `../catalogues/tvplay.html?type=countries&key=${code}&title=${encodeURIComponent(name)}`;
+                            $("#countries-grid").append(`
+                                <div class="item-card">
+                                    <span class="flag-icon">${flag}</span>
+                                    <a href="${link}">${name}</a>
+                                </div>
+                            `);
+                        }
+                        // 重新绑定搜索功能
+                        bindSearch();
+                    },
+                    fail: function() {
+                        $("#countries-grid").html('<div class="no-results"><i class="fas fa-exclamation-triangle"></i><p>Failed to load countries list</p></div>');
+                    }
+                });
+            }
+            
+            // 绑定搜索功能
+            function bindSearch() {
+                $('#searchInput').on('input', function() {
+                    var searchTerm = $(this).val().toLowerCase();
+                    var activeTab = $('.tab-content.active').attr('id');
+                    
+                    $('#' + activeTab + ' .item-card').each(function() {
+                        var text = $(this).find('a').text().toLowerCase();
+                        if (text.indexOf(searchTerm) > -1) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                });
+            }
+            
+            // 动态加载 Languages 列表
+            function loadLanguages() {
+                $.ajax({
+                    type: "GET",
+                    url: "https://iptv-org.github.io/api/languages.json",
+                    success: function(data) {
+                        $("#languages-grid").empty();
+                        // 按名称排序
+                        data.sort(function(a, b) {
+                            return a.name.localeCompare(b.name);
+                        });
+                        for (let i = 0; i < data.length; i++) {
+                            let lang = data[i];
+                            let code = lang.code;
+                            let name = lang.name;
+                            let link = `../catalogues/tvplay.html?type=languages&key=${code}&title=${encodeURIComponent(name)}`;
+                            $("#languages-grid").append(`
+                                <div class="item-card">
+                                    <i class="fas fa-comments card-icon"></i>
+                                    <a href="${link}">${name}</a>
+                                </div>
+                            `);
+                        }
+                    },
+                    fail: function() {
+                        $("#languages-grid").html('<div class="no-results"><i class="fas fa-exclamation-triangle"></i><p>Failed to load languages list</p></div>');
+                    }
+                });
+            }
+            
+            // 动态加载 Categories 列表
+            function loadCategories() {
+                $.ajax({
+                    type: "GET",
+                    url: "https://iptv-org.github.io/api/categories.json",
+                    success: function(data) {
+                        $("#category-grid").empty();
+                        // 按名称排序
+                        data.sort(function(a, b) {
+                            return a.name.localeCompare(b.name);
+                        });
+                        // 分类图标映射
+                        var iconMap = {
+                            'animation': 'fa-film',
+                            'auto': 'fa-car',
+                            'business': 'fa-briefcase',
+                            'classic': 'fa-clock',
+                            'comedy': 'fa-laugh',
+                            'cooking': 'fa-utensils',
+                            'culture': 'fa-palette',
+                            'documentary': 'fa-book',
+                            'education': 'fa-graduation-cap',
+                            'entertainment': 'fa-theater-masks',
+                            'family': 'fa-users',
+                            'general': 'fa-tv',
+                            'interactive': 'fa-gamepad',
+                            'kids': 'fa-child',
+                            'legislative': 'fa-landmark',
+                            'lifestyle': 'fa-heart',
+                            'movies': 'fa-film',
+                            'music': 'fa-music',
+                            'news': 'fa-newspaper',
+                            'outdoor': 'fa-tree',
+                            'relax': 'fa-spa',
+                            'religious': 'fa-church',
+                            'science': 'fa-flask',
+                            'series': 'fa-play-circle',
+                            'shopping': 'fa-shopping-cart',
+                            'sports': 'fa-futbol',
+                            'tech': 'fa-microchip',
+                            'travel': 'fa-plane',
+                            'weather': 'fa-cloud-sun',
+                            'undefined': 'fa-ellipsis-h'
+                        };
+                        for (let i = 0; i < data.length; i++) {
+                            let cat = data[i];
+                            let id = cat.id;
+                            let name = cat.name;
+                            let icon = iconMap[id] || 'fa-folder';
+                            let link = `../catalogues/tvplay.html?type=categories&key=${id}&title=${encodeURIComponent(name)}`;
+                            $("#category-grid").append(`
+                                <div class="item-card" data-category="${id}">
+                                    <i class="fas ${icon} card-icon"></i>
+                                    <a href="${link}">${name}</a>
+                                </div>
+                            `);
+                        }
+                    },
+                    fail: function() {
+                        $("#category-grid").html('<div class="no-results"><i class="fas fa-exclamation-triangle"></i><p>Failed to load categories list</p></div>');
+                    }
+                });
+            }
+            
+            // 页面加载时获取数据
+            loadCountries();
+            loadLanguages();
+            loadCategories();
+        });
+    </script>
 </head>
 
 <body>
-    <div class="radio-container">
+    <div class="tv-container">
         <!-- Header with Tabs -->
-        <header class="radio-header">
+        <header class="tv-header">
             <h1>
                 <div class="back-btn" id="backBtn">
                     <i class="fas fa-arrow-left"></i>
                 </div>
-                <i class="fas fa-broadcast-tower"></i>
-                Radio Stations
-                <span class="subtitle">28000+ stations</span>
+                <i class="fas fa-tv"></i>
+                TV Channels
+                <span class="subtitle">6000+ channels</span>
             </h1>
             <!-- Tab Navigation in Header -->
             <nav class="tab-nav">
@@ -524,13 +717,13 @@
                     Languages
                 </div>
                 <div class="tab-btn" data-tab="category">
-                    <i class="fas fa-tags"></i>
+                    <i class="fas fa-th-large"></i>
                     Category
                 </div>
             </nav>
             <div class="search-container">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search stations...">
+                <input type="text" id="searchInput" placeholder="Search channels...">
             </div>
         </header>
         
@@ -556,10 +749,3 @@
                     <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <script src="../js/toradio.js"></script>
-</body>
-
-</html>

@@ -1,235 +1,424 @@
-//Set global array proxy links to solve CORS error
+// Set global array proxy links to solve CORS error
 var proxy = {
     0: 'https://cors.luckydesigner.workers.dev/?',
+    1: 'https://corsproxy.io/?',
+    2: 'https://api.allorigins.win/raw?url=',
 };
-var channels = [];
-//Get default localstorage key
-var localkey = ['manga', 'bannedcountries', 'novel', 'movie', 'music', 'languages', 'porn', 'adult'];
+var rand = Math.floor(Math.random() * Object.keys(proxy).length);
+
+// Store episodes data
+var episodes = [];
+var links = [];
+var videoName = '';
+var videoDes = '';
+var player = null;
+
+// Favorite prefix for localStorage - ensures only this app's favorites are shown
+const FAV_PREFIX = 'fav_comprehensive_';
+
 $(document).ready(function() {
-    $("#video1").width($("#div1").width()).height($("#div1").height());
-    $(".toggle").css({ 'left': $('#left').width() - 50 });
-    var player = videojs(document.querySelector('#video1'));
-    //Get Current href
+    // Initialize player
+    player = videojs(document.querySelector('#video1'));
+    
+    // Get Current href parameters
     var initlink = decodeURIComponent(window.location.href).split('=')[1].split('&')[0];
     var id = decodeURIComponent(window.location.href).split('=')[2];
-    //Get Source
+    
+    // Load video data
+    loadVideoData(initlink, id);
+    
+    // Initialize UI interactions
+    initUIInteractions();
+    
+    // Load favorites
+    loadFavorites();
+});
+
+// Load video data from API
+function loadVideoData(linkUrl, videoId) {
+    var baseUrl = linkUrl.endsWith('/') ? linkUrl : linkUrl + '/';
+    var apiUrl = proxy[rand] + encodeURIComponent(baseUrl + '?ac=videolist&ids=' + videoId);
+    
     $.ajax({
         type: "GET",
-        url: proxy[0] + `${initlink.replace('json','xml')}?ac=videolist&ids=${id}`,
-        success: function(message, text, response) {
-            $("#menu").empty();
-            $('#epcontent').empty();
-            var xml = $.parseXML(message),
-                $xml = $(xml),
-                $list = $xml.find('dd'),
-                $des = $xml.find('des'),
-                $name = $xml.find('name');
-            $('#epcontent').append(`<h3>Content</h3><p>${$des[0].innerHTML.split("[")[2].split(']')[0]}</p>`);
-            $('#left h3').html($name[0].innerHTML.split("[")[2].split(']')[0]);
-            $("#channelcontent").empty();
-            if (initlink == "http://www.88zy.live/inc/api.php") {
-                var episode = [];
-                var links = $list[1].innerHTML.split('[')[2].split(']')[0].split('\#').map(x => x.split('$')).map(x => x[0]);
-                for (let i = 0; i < links.length; i++) {
-                    episode.push(`第${Number(i+1)}集`);
-                }
-            } else if(initlink == "https://www.huyaapi.com/api.php/provide/vod/at/json"){
-                var episode = $list[1].innerHTML.split('[')[2].split(']')[0].split('\#').map(x => x.split('$')).map(x => x[0]);
-                var links = $list[1].innerHTML.split('[')[2].split(']')[0].split('\#').map(x => x.split('$')).map(x => x[1]);
-            }else {
-                var episode = $list[0].innerHTML.split('[')[2].split(']')[0].split('\#').map(x => x.split('$')).map(x => x[0]);
-                var links = $list[0].innerHTML.split('[')[2].split(']')[0].split('\#').map(x => x.split('$')).map(x => x[1]);
+        url: apiUrl,
+        dataType: 'json',
+        success: function(data) {
+            $("#episodeList").empty();
+            
+            // Parse JSON response
+            var videos = data.list || [];
+            if (videos.length === 0) {
+                showError("No video data found!");
+                return;
             }
-            for (let i = 0; i < links.length; i++) {
-                channels.push(links[i]);
-                //Set Videojs Autoplay
-                player.src({
-                    src: links[0],
-                    type: 'application/x-mpegURL'
-                });
-
-                player.play();
-                if ($(window).width() > 640) {
-                    if (window.localStorage.getItem(links[i]) == $name[0].innerHTML.split("[")[2].split(']')[0] + episode[i]) {
-                        $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/favorite.png');"/><span title=${links[i]}>${$name[0].innerHTML.split("[")[2].split(']')[0] + episode[i]}</span></p></li>`);
-                    } else {
-                        $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/unfavorite.png');"/><span title=${links[i]}>${$name[0].innerHTML.split("[")[2].split(']')[0] + episode[i]}</span></p></li>`);
+            
+            var video = videos[0];
+            videoName = video.vod_name || 'Unknown';
+            videoDes = video.vod_content || 'No description available';
+            var vodPlayUrl = video.vod_play_url || '';
+            
+            // Update UI with video info
+            $('#videoTitle').text(videoName);
+            $('#detailContent').html('<p>' + videoDes + '</p>');
+            
+            // Parse play links
+            var sources = vodPlayUrl.split('$$$').filter(x => x.trim());
+            var playItems = [];
+            
+            for (var j = 0; j < sources.length; j++) {
+                var items = sources[j].split('#').filter(x => x.trim());
+                playItems = playItems.concat(items);
+            }
+            
+            episodes = [];
+            links = [];
+            
+            for (let i = 0; i < playItems.length; i++) {
+                var parts = playItems[i].split('$');
+                if (parts.length >= 2) {
+                    // Only keep m3u8 format links
+                    if (parts[1].trim().toLowerCase().endsWith('.m3u8')) {
+                        episodes.push(parts[0]);
+                        links.push(parts[1]);
                     }
-                } else {
-                    if (window.localStorage.getItem(links[i]) == $name[0].innerHTML.split("[")[2].split(']')[0] + episode[i]) {
-                        $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/favorite20.png');"/><span title=${links[i]}>${$name[0].innerHTML.split("[")[2].split(']')[0] + episode[i]}</span></p></li>`);
-                    } else {
-                        $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/unfavorite20.png');"/><span title=${links[i]}>${$name[0].innerHTML.split("[")[2].split(']')[0] + episode[i]}</span></p></li>`);
+                } else if (parts.length === 1 && parts[0].includes('http')) {
+                    // Only keep m3u8 format links
+                    if (parts[0].trim().toLowerCase().endsWith('.m3u8')) {
+                        episodes.push('第' + Number(i+1) + '集');
+                        links.push(parts[0]);
                     }
                 }
             }
-            //Append favorite list
-            for (let i of Object.keys(localStorage).filter(x => !localkey.includes(x))) {
-                if ($(window).width() > 640) {
-                    $("#channelcontent").append(`<li><p><input type="button" style="background-image: url('../images/favorite.png');"/><span title=${i}>${localStorage[i]}</span></p></li>`);
-                } else {
-                    $("#channelcontent").append(`<li><p><input type="button" style="background-image: url('../images/favorite20.png');"/><span title=${i}>${localStorage[i]}</span></p></li>`);
-                }
+            
+            // Update episode count
+            $('#episodeCount').text(episodes.length);
+            
+            if (episodes.length === 0) {
+                $('#episodeList').html(`
+                    <div class="no-episodes">
+                        <i class="fas fa-video-slash"></i>
+                        <span>No episodes available</span>
+                    </div>
+                `);
+                return;
             }
-            $("#menu li:eq(0)").addClass("bd");
-            $("#menu li").on('click', function(){
-                $(this).addClass("bd").siblings().removeClass("bd");
-            });
-            //Click channels to play
-            $("li p span").click(function() {
-                player.src({
-                    src: $(this).attr("title"),
-                    type: 'application/x-mpegURL'
-                });
-
-                player.play();
-            });
-            //Change icon size
-            $('#menu li p input').click(function() {
-                //Get browser support localstorage if or not
-                if (!window.localStorage) {
-                    console.log("Browser not support localstorage");
-                    return false;
-                } else {
-                    window.localStorage.setItem($(this).next().attr('title'), $(this).next().text());
-                }
-                if ($(window).width() > 640) {
-                    $(this).css({ 'background-image': 'url(../images/favorite.png)' });
-                } else {
-                    $(this).css({ 'background-image': 'url(../images/favorite20.png)' });
-                }
-                if ($(this).next().attr('title').length > 0) {
-                    window.location.reload();
-                }
-            });
-            //Collect favorite channles
-            $('#channelcontent li p input').click(function() {
-                //Get browser support localstorage if or not
-                if (!window.localStorage) {
-                    console.log("Browser not support localstorage");
-                    return false;
-                } else {
-                    localStorage.removeItem($(this).next().attr('title'));
-                }
-                if ($(window).width() > 640) {
-                    $(this).css({ 'background-image': 'url(../images/unfavorite.png)' });
-                } else {
-                    $(this).css({ 'background-image': 'url(../images/unfavorite20.png)' });
-                }
-                window.location.reload();
-            });
+            
+            // Render episode list
+            renderEpisodeList();
+            
+            // Play first episode
+            if (links.length > 0) {
+                playEpisode(0);
+            }
         },
-        fail: function(xhr, textStatus, errorThrown) {
-            alert("Please check your Internet or the iptv source has gone out!")
+        error: function() {
+            showError("Failed to load video data. Please check your internet connection.");
         }
     });
-    //Set Toggle Menu
-    $('.toggle').click(function() {
-        $('#left').toggle();
-        if ($('#left').is(':visible')) {
-            $('.toggle').css({ 'left': $('#left').width() - 50 });
+}
+
+// Render episode list
+function renderEpisodeList() {
+    $('#episodeList').empty();
+    
+    for (let i = 0; i < episodes.length; i++) {
+        var displayName = videoName + ' - ' + episodes[i];
+        var favKey = FAV_PREFIX + links[i];
+        var isFavorited = window.localStorage.getItem(favKey) === displayName;
+        
+        var episodeHtml = `
+            <div class="episode-item" data-index="${i}">
+                <div class="episode-icon">
+                    <i class="fas fa-play"></i>
+                </div>
+                <span class="episode-name">${episodes[i]}</span>
+                <i class="fas fa-heart favorite-btn ${isFavorited ? 'active' : ''}" data-link="${links[i]}" data-name="${displayName}"></i>
+            </div>
+        `;
+        $('#episodeList').append(episodeHtml);
+    }
+    
+    // Click handler for episodes
+    $('.episode-item').on('click', function(e) {
+        if (!$(e.target).hasClass('favorite-btn')) {
+            var index = $(this).data('index');
+            playEpisode(index);
+        }
+    });
+    
+    // Favorite button click handler
+    $('.favorite-btn').on('click', function(e) {
+        e.stopPropagation();
+        var link = $(this).data('link');
+        var name = $(this).data('name');
+        toggleFavorite(link, name, $(this));
+    });
+}
+
+// Play episode by index
+function playEpisode(index) {
+    if (index < 0 || index >= links.length) return;
+    
+    var url = links[index];
+    var name = episodes[index];
+    
+    player.src({
+        src: url,
+        type: 'application/x-mpegURL'
+    });
+    player.play();
+    
+    // Update current episode display
+    $('#currentEpisode').text(videoName + ' - ' + name);
+    
+    // Update active state
+    $('.episode-item').removeClass('active');
+    $('.episode-item[data-index="' + index + '"]').addClass('active');
+}
+
+// Toggle favorite
+function toggleFavorite(link, name, btn) {
+    if (!window.localStorage) {
+        console.log("Browser does not support localStorage");
+        return;
+    }
+    
+    var favKey = FAV_PREFIX + link;
+    var isFavorited = window.localStorage.getItem(favKey) === name;
+    
+    if (isFavorited) {
+        window.localStorage.removeItem(favKey);
+        btn.removeClass('active');
+    } else {
+        window.localStorage.setItem(favKey, name);
+        btn.addClass('active');
+    }
+    
+    // Refresh favorites panel
+    loadFavorites();
+}
+
+// Load favorites
+function loadFavorites() {
+    var favorites = [];
+    
+    for (let key of Object.keys(localStorage)) {
+        if (key.startsWith(FAV_PREFIX)) {
+            favorites.push({
+                link: key.replace(FAV_PREFIX, ''),
+                name: localStorage.getItem(key)
+            });
+        }
+    }
+    
+    $('#favCount').text(favorites.length);
+    
+    if (favorites.length === 0) {
+        $('#favoriteContent').html(`
+            <div class="no-episodes" style="padding: 20px;">
+                <i class="fas fa-heart-broken" style="font-size: 24px;"></i>
+                <span style="font-size: 12px;">No favorites yet</span>
+            </div>
+        `);
+        return;
+    }
+    
+    $('#favoriteContent').empty();
+    
+    for (let fav of favorites) {
+        var favHtml = `
+            <div class="favorite-item" data-link="${fav.link}">
+                <i class="fas fa-play-circle"></i>
+                <span>${fav.name}</span>
+                <i class="fas fa-times remove-fav" title="Remove"></i>
+            </div>
+        `;
+        $('#favoriteContent').append(favHtml);
+    }
+    
+    // Click handler for favorite items
+    $('.favorite-item').on('click', function(e) {
+        if (!$(e.target).hasClass('remove-fav')) {
+            var link = $(this).data('link');
+            playCustomLink(link, $(this).find('span').text());
+        }
+    });
+    
+    // Remove favorite handler
+    $('.remove-fav').on('click', function(e) {
+        e.stopPropagation();
+        var item = $(this).closest('.favorite-item');
+        var link = item.data('link');
+        localStorage.removeItem(FAV_PREFIX + link);
+        loadFavorites();
+        renderEpisodeList();
+    });
+}
+
+// Play custom link
+function playCustomLink(url, name) {
+    player.src({
+        src: url,
+        type: 'application/x-mpegURL'
+    });
+    player.play();
+    $('#currentEpisode').text(name || 'Custom URL');
+}
+
+// Show error message
+function showError(message) {
+    $('#episodeList').html(`
+        <div class="no-episodes">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>${message}</span>
+        </div>
+    `);
+}
+
+// Initialize UI interactions
+function initUIInteractions() {
+    // Toggle sidebar - toggle episode list and toolbar visibility
+    function toggleSidebar() {
+        var sidebar = $('#sidebar');
+        var toolbar = $('#top-toolbar');
+        
+        // Toggle sidebar
+        if (window.innerWidth <= 768) {
+            sidebar.toggleClass('show-mobile');
         } else {
-            $('.toggle').css({ 'left': '5px' });
+            sidebar.toggleClass('collapsed');
+        }
+        
+        // Show toolbar when sidebar is expanded, hide when collapsed
+        var isExpanded = (window.innerWidth <= 768) ? sidebar.hasClass('show-mobile') : !sidebar.hasClass('collapsed');
+        
+        if (isExpanded) {
+            toolbar.removeClass('hidden');
+        } else {
+            toolbar.addClass('hidden');
+        }
+    }
+    
+    // Toggle Sidebar button
+    $('#toggleSidebar').on('click', function() {
+        toggleSidebar();
+    });
+    
+    // Menu Button - hides toolbar for immersive mode
+    $('#menuBtn').on('click', function() {
+        var sidebar = $('#sidebar');
+        var toolbar = $('#top-toolbar');
+        
+        // Hide toolbar for immersive mode
+        toolbar.addClass('hidden');
+        
+        // Collapse sidebar
+        if (window.innerWidth <= 768) {
+            sidebar.removeClass('show-mobile');
+        } else {
+            sidebar.addClass('collapsed');
         }
     });
-    //Set M3U8 links to play
-    $("#player").on({
-        mouseenter: function() {
-            $(this).css({ "opacity": 1 })
-        },
-        click: function() {
-            $(this).css({ "background-image": "url(../images/player.jpg)", "border": "1px solid #fff" })
-            if (window.width > 640) {
-                $("#inputlink").show(500)
+    
+    // Back Button
+    $('#backBtn').on('click', function() {
+        window.history.back();
+    });
+    
+    // Link Input Toggle
+    $('#linkBtn').on('click', function() {
+        $('#linkInputWrapper').toggleClass('show');
+    });
+    
+    // Play Custom Link
+    $('#playLinkBtn').on('click', function() {
+        var link = $('#linkInput').val().trim();
+        if (link) {
+            playCustomLink(link, 'Custom URL');
+            $('#linkInput').val('');
+        }
+    });
+    
+    // Enter key for link input
+    $('#linkInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            var link = $(this).val().trim();
+            if (link) {
+                playCustomLink(link, 'Custom URL');
+                $(this).val('');
+            }
+        }
+    });
+    
+    // Favorite Panel Toggle
+    $('#favoriteBtn').on('click', function() {
+        $('#favoritePanel').toggleClass('show');
+        $('#detailPanel').removeClass('show');
+    });
+    
+    // Detail Panel Toggle
+    $('#detailBtn').on('click', function() {
+        $('#detailPanel').toggleClass('show');
+        $('#favoritePanel').removeClass('show');
+    });
+    
+    // GitHub Button
+    $('#githubBtn').on('click', function() {
+        window.open('https://github.com/zhangboheng/Easy-Web-TV-M3u8', '_blank');
+    });
+    
+    // Shuffle Play
+    $('#shuffleBtn').on('click', function() {
+        if (links.length > 0) {
+            var randomIndex = Math.floor(Math.random() * links.length);
+            playEpisode(randomIndex);
+        }
+    });
+    
+    // Episode Search
+    $('#episodeSearch').on('input', function() {
+        var searchTerm = $(this).val().toLowerCase();
+        $('.episode-item').each(function() {
+            var name = $(this).find('.episode-name').text().toLowerCase();
+            if (name.indexOf(searchTerm) > -1) {
+                $(this).show();
             } else {
-                $("#inputlink").toggle(500)
+                $(this).hide();
             }
-            let link = $("#inputlink").val()
-            if (link.length > 0) {
-                player.src({
-                    src: link,
-                    type: 'application/x-mpegURL'
-                });
+        });
+    });
+    
+    // Close panels when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('#favoritePanel, #favoriteBtn').length) {
+            $('#favoritePanel').removeClass('show');
+        }
+        if (!$(e.target).closest('#detailPanel, #detailBtn').length) {
+            $('#detailPanel').removeClass('show');
+        }
+        if (!$(e.target).closest('#linkInputWrapper, #linkBtn').length) {
+            $('#linkInputWrapper').removeClass('show');
+        }
+    });
+    
+    // Keyboard shortcuts
+    $(document).on('keydown', function(e) {
+        // Escape to close panels
+        if (e.key === 'Escape') {
+            $('#favoritePanel').removeClass('show');
+            $('#detailPanel').removeClass('show');
+            $('#linkInputWrapper').removeClass('show');
+        }
+        
+        // Space to toggle play/pause (when not focused on input)
+        if (e.key === ' ' && !$(e.target).is('input, textarea')) {
+            e.preventDefault();
+            if (player.paused()) {
                 player.play();
+            } else {
+                player.pause();
             }
-            $('#inputlink').val("")
-        },
-        mouseleave: function() {
-            $(this).css({ "opacity": 0.5 })
         }
     });
-    //Set Tools Menu
-    $("#menuicon").on({
-        mouseenter: function() {
-            $(this).css({ "opacity": 1 })
-        },
-        click: function() {
-            $('#control div:gt(0)').slideToggle(500);
-            $('#channelist').hide();
-            $('#inputlink').hide();
-            $('#epcontent').hide();
-        },
-        mouseleave: function() {
-            $(this).css({ "opacity": 0.5 })
-        }
-    });
-    //Set return home page
-    $("#prev").on({
-        mouseenter: function() {
-            $(this).css({ "opacity": 1 })
-        },
-        click: function() {
-            window.location.href = "/Easy-Web-TV-M3u8/routes/comprehensive.html";
-        },
-        mouseleave: function() {
-            $(this).css({ "opacity": 0.5 })
-        }
-    });
-    //Set Github link
-    $("#github").on({
-        mouseenter: function() {
-            $(this).css({ "opacity": 1 })
-        },
-        click: function() {
-            window.open("https://github.com/zhangboheng/Easy-Web-TV-M3u8");
-        },
-        mouseleave: function() {
-            $(this).css({ "opacity": 0.5 })
-        }
-    });
-    //Set documents list
-    $("#favorite").on({
-        mouseenter: function() {
-            $(this).css({ "opacity": 1 })
-        },
-        click: function() {
-            $('#channelist').toggle(500);
-        },
-        mouseleave: function() {
-            $(this).css({ "opacity": 0.5 })
-        }
-    });
-    //Set epcontent list
-    $("#epdetail").on({
-        mouseenter: function() {
-            $(this).css({ "opacity": 1 })
-        },
-        click: function() {
-            $('#epcontent').toggle(500);
-        },
-        mouseleave: function() {
-            $(this).css({ "opacity": 0.5 })
-        }
-    });
-    //Set link input
-    $('#inputlink').on({
-        mouseenter: function() {
-            $(this).css({ "opacity": 1 });
-        },
-        mouseleave: function() {
-            $(this).css({ "opacity": 0.5 });
-            $(this).hide(3000);
-            $("#player").css({ "background-image": "url(../images/link.jpg)" });
-        }
-    });
-})
+}

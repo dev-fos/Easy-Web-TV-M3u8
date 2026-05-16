@@ -1,622 +1,316 @@
-//Set global array proxy links to solve CORS error
+// Novel List Page JS - Modern UI Version
+// Proxy for CORS
 var proxy = {
     0: 'https://cors.luckydesigner.workers.dev/?',
-    1: 'https://bird.ioliu.cn/v1?url='
+    1: 'https://corsproxy.io/?',
+    2: 'https://api.allorigins.win/raw?url=',
 };
-//Set global pagenum and random
+
+// Get random proxy for each request
+function getRandomProxy() {
+    var rand = Math.floor(Math.random() * Object.keys(proxy).length);
+    return proxy[rand];
+}
+
+// Global variables
 var pnum = 1;
-var rand = Math.floor(Math.random() * Object.keys(proxy).length);
-$(document).ready(function() {
-    //Toggle menu and adjust size
-    $(".toggle").css({ 'left': $('#left').width() - 50 });
-    $('.toggle').click(function() {
-        $('#left').toggle();
-        if ($('#left').is(':visible')) {
-            $('.toggle').css({ 'left': $('#left').width() - 50 });
-        } else {
-            $('.toggle').css({ 'left': '5px' });
-        }
-    });
-    //Get select source
-    try {
-        let ms = window.localStorage.getItem('novel').split(",");
-        let arr = ["novelonlinefull", "95sb"];
-        let lst = arr.filter(x => ms.includes(x)).map(x => arr.indexOf(x));
-        let sts = ['<option value="https://novelonlinefull.com/">novelonlinefull</option>',
-            '<option value="http://www.95shubao.net/">95书包</option>'
-        ];
-        for (let i of lst) {
-            $('#selectapi').append(sts[i]);
-        }
-    } catch (e) {
-        $('#selectapi').append(`
-            <option value="https://novelonlinefull.com/">novelonlinefull</option>
-            <option value="http://www.95shubao.net/">95书包</option>
-        `);
-    }
-    //Variable zone
-    var initlink = $('#selectapi').val();
-    //Initial homepage menu and episod lists
-    iniMenu(initlink);
-    //Select Different Source Website
-    $('#selectapi').on('change', function() {
-        var key = $(this).val();
-        $('.itemContainer').empty();
-        iniMenu(key);
-        pnum = 1;
-    });
-    // //Reinitial page num
-    $("#menu").click(function() {
-        pnum = 1;
-    });
-    //Scroll down to load more
-    $(window).scroll(function(e) {
-        $('#left').hide();
-        $('.toggle').css({ 'left': '5px' });
-        var ks = $('.hiddens');
-        var kt = $('#search');
-        var str = ks[0].children[0].innerHTML;
-        var sts = kt[0].value;
-        var scrollTop = $(this).scrollTop(),
-            scrollHeight = $(document).height(),
-            windowHeight = $(this).height();
-        var positionValue = (scrollTop + windowHeight) - scrollHeight;
-        var link = $('#selectapi').val();
-        var globallink;
-        if (positionValue <= 0 && positionValue >= -5) {
-            $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-            pnum++;
-            if (link == 'http://www.95shubao.net/') {
-                if (sts.length > 0) {
-                    $('.loadingimg').remove();
-                } else {
-                    str = str == "0" ? `mulu/1-${pnum}.html` : str.split('-')[0] + '-' + pnum + '.html';
-                    globallink = proxy[rand] + link + str;
-                }
-                $.ajax({
-                    url: globallink,
-                    type: "GET",
-                    dataType: "html",
-                    success: function(data) {
-                        var html = $.parseHTML(data);
-                        var title = $(html).find('.title h2 a').map((x, y) => y.lastChild.data);
-                        var code = $(html).find('.title h2 a').map((x, y) => y.href.replace(link, ''));
-                        var pic = $(html).find('.pic a img').map((x, y) => y.attributes.src.value);
-                        var author = $(html).find('.title span a').map((x, y) => y.lastChild.data);
-                        var lastpage = $(html).find('.last').text();
-                        if (pnum <= Number(lastpage)) {
-                            $('.loadingimg').remove();
-                            if ($(window).width() > 1024) {
-                                for (let i = 0; i < pic.length; i++) {
-                                    if (i % 5 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 4) {
-                                        $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    }
-                                };
-                            } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                                $(`.itemContainer:eq(3)`).hide();
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < pic.length; i++) {
-                                    if (i % 3 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 3 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 3 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    }
-                                };
-                            } else if ($(window).width() <= 640) {
-                                $(`.itemContainer:eq(2)`).hide();
-                                $(`.itemContainer:eq(3)`).hide();
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < pic.length; i++) {
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        } else {
-                            $('.loadingimg').remove();
-                            alert(`There is nothing to load`);
-                        }
-                    },
-                    error: function() {
-                        alert('Can\'t load more...');
-                    }
-                });
-            } else if (link == 'https://novelonlinefull.com/') {
-                if (sts.length > 0) {
-                    globallink = proxy[rand] + link + 'search_novels/' + `${sts}?page=${pnum}`;
-                } else {
-                    str = str == "0" ? link + `novel_list?type=latest&category=1&state=all&page=${pnum}` : str.split('&amp;').slice(0, 3).join('&') + `&page=${pnum}`;
-                    globallink = proxy[rand] + str;
-                }
-                $.ajax({
-                    url: globallink,
-                    type: "GET",
-                    dataType: "html",
-                    success: function(data) {
-                        var html = $.parseHTML(data);
-                        var title = $(html).find('.update_item_right h3').map((x, y) => y.textContent.trim());
-                        var code = $(html).find('.update_item_right h3 a').map((x, y) => y.href);
-                        var pic = $(html).find('.update_item.list_category img').map((x, y) => y.attributes[0].value);
-                        var author = $(html).find('.update_item_right span').filter((x, y) => x % 3 == 0).map((x, y) => y.textContent);
-                        var lastpage = $(html).find('.group-page a').filter((x, y) => x == $(html).find('.group-page a').length - 1).text().replace(/[^\d]/g, '');
-                        if (pnum <= Number(lastpage)) {
-                            $('.loadingimg').remove();
-                            if ($(window).width() > 1024) {
-                                for (let i = 0; i < pic.length; i++) {
-                                    if (i % 5 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 5 == 4) {
-                                        $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    }
-                                };
-                            } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < pic.length; i++) {
-                                    if (i % 4 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 4 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 4 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 4 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    }
-                                };
-                            } else if ($(window).width() <= 640) {
-                                $(`.itemContainer:eq(2)`).hide();
-                                $(`.itemContainer:eq(3)`).hide();
-                                $(`.itemContainer:eq(4)`).hide();
-                                for (let i = 0; i < pic.length; i++) {
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        } else {
-                            $('.loadingimg').remove();
-                            alert(`There is nothing to load`);
-                        }
-                    },
-                    error: function() {
-                        alert('Can\'t load more...');
-                    }
-                });
-            }
-        }
-    });
-});
+var currentCategory = '';
+var currentSource = '';
+var isLoading = false;
 
-//Initial homepage menu
-function iniMenu(link) {
-    $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-    $("#menu").empty();
-    if (link == 'http://www.95shubao.net/') {
-        $.ajax({
-            url: proxy[rand] + `${link}`,
-            data: {},
-            type: "GET",
-            dataType: "html",
-            success: function(data) {
-                var html = $.parseHTML(data);
-                var title = $(html).find('.nav ul li a').map((x, y) => y.lastChild.data);
-                var target = $(html).find('.nav ul li a').map((x, y) => y.attributes[0].value);
-                $("#menu").append('<li style="background-color:#fff"><input id="search" type="text" placeholder="Search..." /></li>');
-                for (let i = 1; i < title.length; i++) {
-                    $("#menu").append(`<li><p><span class="${target[i]}">${title[i]}</span></p></li>`);
-                }
-            },
-            error: function(xhr, status) {
-                alert("Sorry, there was a problem!");
-            },
-            complete: function(xhr, status) {
-                $("#menu li:eq(1)").addClass("bd");
-                $("#menu li:gt(1)").on('click', function(){
-                    $(this).addClass("bd").siblings().removeClass("bd");
-                });
-                $.ajax({
-                    url: proxy[rand] + `${link + $('#menu li p span:eq(0)').attr('class').slice(1)}`,
-                    data: {},
-                    type: "GET",
-                    dataType: "html",
-                    success: function(data) {
-                        var html = $.parseHTML(data);
-                        var title = $(html).find('.title h2 a').map((x, y) => y.lastChild.data);
-                        var code = $(html).find('.title h2 a').map((x, y) => y.href.replace(link, ''));
-                        var pic = $(html).find('.pic a img').map((x, y) => y.attributes.src.value);
-                        var author = $(html).find('.title span a').map((x, y) => y.lastChild.data);
-                        $('.loadingimg').remove();
-                        if ($(window).width() > 1024) {
-                            for (let i = 0; i < pic.length; i++) {
-                                if (i % 5 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 3) {
-                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 4) {
-                                    $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                }
-                            };
-                        } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                            $(`.itemContainer:eq(3)`).hide();
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < pic.length; i++) {
-                                if (i % 3 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 3 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 3 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                }
-                            };
-                        } else if ($(window).width() <= 640) {
-                            $(`.itemContainer:eq(2)`).hide();
-                            $(`.itemContainer:eq(3)`).hide();
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < pic.length; i++) {
-                                if (i % 2 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 2 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                }
-                            }
-                        }
-                    },
-                    error: function(xhr, status) {
-                        alert("Sorry, there was a problem!");
-                    },
-                    complete: function(xhr, status) {
-                        var searchlink = '';
-                        $("#search").on('keyup', function(e) {
-                            if (e.which == 13) {
-                                $('.itemContainer').empty();
-                                var valThis = $(this).val().toLowerCase();
-                                searchlink = proxy[rand] + `${link + 'modules/article/search.php?searchkey=' + valThis}`;
-                                $.ajax({
-                                    url: searchlink,
-                                    data: {},
-                                    type: "GET",
-                                    dataType: "html",
-                                    success: function(data) {
-                                        var html = $.parseHTML(data);
-                                        var title = $(html).find('td:first-child').find('a').map((x, y) => y.lastChild.data);
-                                        var code = $(html).find('td:first-child').find('a').map((x, y) => y.href.replace(link, ''));
-                                        var author = $(html).find('.odd').filter(x => x % 3 == 1).map((x, y) => y.lastChild.data);
-                                        if ($(window).width() > 1024) {
-                                            for (let i = 0; i < title.length; i++) {
-                                                if (i % 5 == 0) {
-                                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 1) {
-                                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 2) {
-                                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 3) {
-                                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 4) {
-                                                    $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                }
-                                            };
-                                        } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                                            $(`.itemContainer:eq(3)`).hide();
-                                            $(`.itemContainer:eq(4)`).hide();
-                                            for (let i = 0; i < title.length; i++) {
-                                                if (i % 3 == 0) {
-                                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 3 == 1) {
-                                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 3 == 2) {
-                                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                }
-                                            };
-                                        } else if ($(window).width() <= 640) {
-                                            $(`.itemContainer:eq(2)`).hide();
-                                            $(`.itemContainer:eq(3)`).hide();
-                                            $(`.itemContainer:eq(4)`).hide();
-                                            for (let i = 0; i < title.length; i++) {
-                                                if (i % 2 == 0) {
-                                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 2 == 1) {
-                                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="../images/noimage.jpeg" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                }
-                                            }
-                                        }
-                                    },
-                                    error: function(xhr, status) {
-                                        alert("Sorry, there was a problem!");
-                                    },
-                                    complete: function(xhr, status) {
-
-                                    }
-                                });
-                            }
-                        })
-                    }
-                });
-            }
+// Toast notification
+function showToast(message, type = 'info') {
+    var iconMap = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        info: 'fa-info-circle',
+        warning: 'fa-exclamation-triangle'
+    };
+    
+    // Remove existing toasts
+    $('.toast-notification').remove();
+    
+    var toast = $(`
+        <div class="toast-notification ${type}" style="
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.9);
+            border: 2px solid ${type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#a3001b'};
+            border-radius: 10px;
+            color: #fff;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        ">
+            <i class="fas ${iconMap[type]}" style="color: ${type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#a3001b'}"></i>
+            <span>${message}</span>
+        </div>
+    `);
+    
+    $('body').append(toast);
+    
+    setTimeout(function() {
+        toast.fadeOut(300, function() {
+            $(this).remove();
         });
-    } else if (link == 'https://novelonlinefull.com/') {
-        $.ajax({
-            url: proxy[0] + `${link}`,
-            data: {},
-            type: "GET",
-            dataType: "html",
-            success: function(data) {
-                var html = $.parseHTML(data);
-                var title = $(html).find('table tbody td a').slice(6).map((x, y) => y.lastChild.data);
-                var target = $(html).find('table tbody td a').slice(6).map((x, y) => y.attributes[0].value.replace(/[\\"]/g, ''));
-                $("#menu").append('<li style="background-color:#fff"><input id="search" type="text" placeholder="Search..." /></li>');
-                for (let i = 1; i < title.length; i++) {
-                    $("#menu").append(`<li><p><span class="${target[i]}">${title[i]}</span></p></li>`);
-                }
-            },
-            error: function(xhr, status) {
-                alert("Sorry, there was a problem!");
-            },
-            complete: function(xhr, status) {
-                $("#menu li:eq(1)").addClass("bd");
-                $("#menu li:gt(1)").on('click', function(){
-                    $(this).addClass("bd").siblings().removeClass("bd");
-                });
-                $.ajax({
-                    url: proxy[rand] + $('#menu li p span:eq(0)').attr('class'),
-                    data: {},
-                    type: "GET",
-                    dataType: "html",
-                    success: function(data) {
-                        var html = $.parseHTML(data);
-                        var title = $(html).find('.update_item_right h3').map((x, y) => y.textContent.trim());
-                        var code = $(html).find('.update_item_right h3 a').map((x, y) => y.href);
-                        var pic = $(html).find('.update_item.list_category img').map((x, y) => y.attributes[0].value);
-                        var author = $(html).find('.update_item_right span').filter((x, y) => x % 3 == 0).map((x, y) => y.textContent);
-                        $('.loadingimg').remove();
-                        if ($(window).width() > 1024) {
-                            for (let i = 0; i < pic.length; i++) {
-                                if (i % 5 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 3) {
-                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 5 == 4) {
-                                    $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                }
-                            };
-                        } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < pic.length; i++) {
-                                if (i % 4 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 4 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 4 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 4 == 3) {
-                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                }
-                            };
-                        } else if ($(window).width() <= 640) {
-                            $(`.itemContainer:eq(2)`).hide();
-                            $(`.itemContainer:eq(3)`).hide();
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < pic.length; i++) {
-                                if (i % 2 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                } else if (i % 2 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                }
-                            }
-                        }
-                    },
-                    error: function(xhr, status) {
-                        alert("Sorry, there was a problem!");
-                    },
-                    complete: function(xhr, status) {
-                        var searchlink = '';
-                        $("#search").on('keyup', function(e) {
-                            if (e.which == 13) {
-                                $('.itemContainer').empty();
-                                var valThis = $(this).val().toLowerCase();
-                                searchlink = proxy[rand] + `${link + 'search_novels/' + valThis}`;
-                                $.ajax({
-                                    url: searchlink,
-                                    data: {},
-                                    type: "GET",
-                                    dataType: "html",
-                                    success: function(data) {
-                                        var html = $.parseHTML(data);
-                                        var title = $(html).find('.update_item_right h3').map((x, y) => y.textContent.trim());
-                                        var code = $(html).find('.update_item_right h3 a').map((x, y) => y.href);
-                                        var pic = $(html).find('.update_item.list_category img').map((x, y) => y.attributes[0].value);
-                                        var author = $(html).find('.update_item_right span').filter((x, y) => x % 3 == 0).map((x, y) => y.textContent);
-                                        $('.loadingimg').remove();
-                                        if ($(window).width() > 1024) {
-                                            for (let i = 0; i < pic.length; i++) {
-                                                if (i % 5 == 0) {
-                                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 1) {
-                                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 2) {
-                                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 3) {
-                                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 5 == 4) {
-                                                    $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                }
-                                            };
-                                        } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                                            $(`.itemContainer:eq(4)`).hide();
-                                            for (let i = 0; i < pic.length; i++) {
-                                                if (i % 4 == 0) {
-                                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 4 == 1) {
-                                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 4 == 2) {
-                                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 4 == 3) {
-                                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                }
-                                            };
-                                        } else if ($(window).width() <= 640) {
-                                            $(`.itemContainer:eq(2)`).hide();
-                                            $(`.itemContainer:eq(3)`).hide();
-                                            $(`.itemContainer:eq(4)`).hide();
-                                            for (let i = 0; i < pic.length; i++) {
-                                                if (i % 2 == 0) {
-                                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                } else if (i % 2 == 1) {
-                                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                                                }
-                                            }
-                                        }
-                                    },
-                                    error: function(xhr, status) {
-                                        alert("Sorry, there was a problem!");
-                                    },
-                                    complete: function(xhr, status) {
+    }, 3000);
+}
 
-                                    }
-                                });
-                            }
+// Show/Hide loading
+function showLoading(show = true) {
+    if (show) {
+        $('#loadMoreIndicator').show();
+    } else {
+        $('#loadMoreIndicator').hide();
+    }
+}
+
+// Toggle sidebar
+function toggleSidebar() {
+    var sidebar = $('#sidebar');
+    
+    if (window.innerWidth <= 768) {
+        sidebar.toggleClass('show-mobile');
+    } else {
+        sidebar.toggleClass('collapsed');
+    }
+}
+
+// Render novel cards
+function renderNovels(novels, append = false) {
+    var grid = $('#contentGrid');
+    
+    if (!append) {
+        grid.empty();
+        grid.addClass('has-results');
+    }
+    
+    novels.forEach(function(novel) {
+        var card = $(`
+            <a href="../catalogues/novelplay.html?web=${novel.url}" class="card-item">
+                <img class="card-image" src="${novel.image}" alt="${novel.title}" onerror="this.src='../images/noimage.jpeg'">
+                <div class="card-overlay"></div>
+                <div class="card-play-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="card-info">
+                    <div class="card-type">Novel</div>
+                    <h3 class="card-title">${novel.title}</h3>
+                    <p class="card-author">${novel.author ? '[' + novel.author + ']' : ''}</p>
+                </div>
+            </a>
+        `);
+        grid.append(card);
+    });
+}
+
+// Render categories
+function renderCategories(categories) {
+    var list = $('#categoryList');
+    list.empty();
+    
+    categories.forEach(function(cat, index) {
+        var item = $(`
+            <div class="category-item ${index === 0 ? 'active' : ''}" data-url="${cat.url}" data-name="${cat.name}">
+                <i class="fas fa-bookmark"></i>
+                <span>${cat.name}</span>
+            </div>
+        `);
+        list.append(item);
+    });
+    
+    // Bind click events
+    $('.category-item').on('click', function() {
+        $('.category-item').removeClass('active');
+        $(this).addClass('active');
+        
+        var url = $(this).data('url');
+        currentCategory = url;
+        pnum = 1;
+        loadNovels(url, false);
+        
+        // Hide sidebar on mobile
+        if (window.innerWidth <= 768) {
+            $('#sidebar').removeClass('show-mobile');
+        }
+    });
+}
+
+// Load novels from source
+function loadNovels(url, append = true) {
+    if (isLoading) return;
+    isLoading = true;
+    showLoading(true);
+    
+    var fullUrl = getRandomProxy() + url;
+    
+    $.ajax({
+        url: fullUrl,
+        type: 'GET',
+        dataType: 'html',
+        success: function(data) {
+            var html = $.parseHTML(data);
+            var novels = [];
+            
+            if (currentSource.indexOf('royalroad.com') > -1) {
+                // Royal Road
+                $(html).find('.fiction-list-item').each(function() {
+                    var title = $(this).find('.fiction-title a').text().trim();
+                    var novelUrl = 'https://www.royalroad.com' + $(this).find('.fiction-title a').attr('href');
+                    var image = $(this).find('img').attr('src');
+                    var author = $(this).find('.author a').text().trim();
+                    
+                    if (title && novelUrl) {
+                        novels.push({
+                            title: title,
+                            url: novelUrl,
+                            image: image || '../images/noimage.jpeg',
+                            author: author
                         });
                     }
                 });
             }
-        });
-    }
-    //Click to choose category
-    $('#menu').on("click", "span", function(e) {
-        var className;
-        if (link == 'http://www.95shubao.net/') {
-            className = link + e.originalEvent.target.className.slice(1);
-        } else if (link == 'https://novelonlinefull.com/') {
-            className = e.originalEvent.target.className;
+            
+            renderNovels(novels, append);
+            isLoading = false;
+            showLoading(false);
+        },
+        error: function() {
+            showToast('Failed to load novels', 'error');
+            isLoading = false;
+            showLoading(false);
         }
-        $('.hiddens').empty();
-        $('.hiddens').append(`<p>${className}</p>`);
-        $('#search').val('');
-        $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-        $.ajax({
-            url: proxy[rand] + className,
-            type: "GET",
-            dataType: "html",
-            success: function(data) {
-                var html = $.parseHTML(data);
-                if (link == 'http://www.xfjxs.com/') {
-                    var title = $(html).find('.title h2 a').map((x, y) => y.lastChild.data);
-                    var code = $(html).find('.title h2 a').map((x, y) => y.href.replace(link, ''));
-                    var pic = $(html).find('.pic a img').map((x, y) => y.attributes.src.value);
-                    var author = $(html).find('.title span a').map((x, y) => y.lastChild.data);
-                } else if (link == 'https://novelonlinefull.com/') {
-                    var title = $(html).find('.update_item_right h3').map((x, y) => y.textContent.trim());
-                    var code = $(html).find('.update_item_right h3 a').map((x, y) => y.href);
-                    var pic = $(html).find('.update_item.list_category img').map((x, y) => y.attributes[0].value);
-                    var author = $(html).find('.update_item_right span').filter((x, y) => x % 3 == 0).map((x, y) => y.textContent);
-                }
-                $('.loadingimg').remove();
-                $('.itemContainer').empty();
-                if ($(window).width() > 1024) {
-                    for (let i = 0; i < pic.length; i++) {
-                        if (link == 'http://www.xfjxs.com/') {
-                            if (i % 5 == 0) {
-                                $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 1) {
-                                $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 2) {
-                                $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 3) {
-                                $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 4) {
-                                $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            }
-                        } else if (link == 'https://novelonlinefull.com/') {
-                            if (i % 5 == 0) {
-                                $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 1) {
-                                $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 2) {
-                                $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 3) {
-                                $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 5 == 4) {
-                                $(`.itemContainer:eq(4)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            }
-                        }
-                    };
-                } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                    if (link == 'http://www.xfjxs.com/') {
-                        $(`.itemContainer:eq(3)`).hide();
-                        $(`.itemContainer:eq(4)`).hide();
-                        for (let i = 0; i < pic.length; i++) {
-                            if (i % 3 == 0) {
-                                $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 3 == 1) {
-                                $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 3 == 2) {
-                                $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            }
-                        };
-                    } else if (link == 'https://novelonlinefull.com/') {
-                        $(`.itemContainer:eq(4)`).hide();
-                        for (let i = 0; i < pic.length; i++) {
-                            if (i % 4 == 0) {
-                                $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 4 == 1) {
-                                $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 4 == 2) {
-                                $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 4 == 3) {
-                                $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            }
-                        };
-                    }
-                } else if ($(window).width() <= 640) {
-                    $(`.itemContainer:eq(2)`).hide();
-                    $(`.itemContainer:eq(3)`).hide();
-                    $(`.itemContainer:eq(4)`).hide();
-                    for (let i = 0; i < pic.length; i++) {
-                        if (link == 'http://www.xfjxs.com/') {
-                            if (i % 2 == 0) {
-                                $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 2 == 1) {
-                                $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${link + code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            }
-                        } else if (link == 'https://novelonlinefull.com/') {
-                            if (i % 2 == 0) {
-                                $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            } else if (i % 2 == 1) {
-                                $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/novelplay.html?web=${code[i]}"><div class="item"><img class="itemImg" src="${proxy[0] + pic[i]}" alt="${title[i]}" /><div class="userInfo"><img class="avatar" src="../images/clickread.svg" alt="" /><span class="username">[${author[i]}]${title[i]}</span></div></div></a>`)
-                            }
-                        }
-                    }
-                }
-            },
-            error: function() {
-
-            }
-        });
     });
-};
+}
+
+// Load categories from source
+function loadCategories(sourceUrl) {
+    $('#categoryList').html('<div class="loading-state"><i class="fas fa-spinner"></i><span>Loading...</span></div>');
+    
+    $.ajax({
+        url: getRandomProxy() + sourceUrl,
+        type: 'GET',
+        dataType: 'html',
+        success: function(data) {
+            var html = $.parseHTML(data);
+            var categories = [];
+            
+            if (sourceUrl.indexOf('royalroad.com') > -1) {
+                // Royal Road - predefined categories
+                categories = [
+                    { name: 'All', url: 'https://www.royalroad.com/fictions/best-rated' },
+                    { name: 'Best Rated', url: 'https://www.royalroad.com/fictions/best-rated' },
+                    { name: 'Trending', url: 'https://www.royalroad.com/fictions/trending' },
+                    { name: 'Ongoing', url: 'https://www.royalroad.com/fictions/ongoing' },
+                    { name: 'Completed', url: 'https://www.royalroad.com/fictions/completed' },
+                    { name: 'Popular This Week', url: 'https://www.royalroad.com/fictions/weekly-popular' },
+                    { name: 'Latest Updates', url: 'https://www.royalroad.com/fictions/latest-updates' },
+                    { name: 'New Releases', url: 'https://www.royalroad.com/fictions/new' },
+                    { name: 'Rising Stars', url: 'https://www.royalroad.com/fictions/rising-stars' }
+                ];
+            }
+            
+            renderCategories(categories);
+            
+            // Load first category
+            if (categories.length > 0) {
+                currentCategory = categories[0].url;
+                pnum = 1;
+                loadNovels(categories[0].url, false);
+            }
+        },
+        error: function() {
+            showToast('Failed to load categories', 'error');
+        }
+    });
+}
+
+// Search novels
+function searchNovels(keyword) {
+    if (!keyword) return;
+    
+    var searchUrl = '';
+    
+    if (currentSource.indexOf('royalroad.com') > -1) {
+        searchUrl = 'https://www.royalroad.com/fictions/search?title=' + encodeURIComponent(keyword);
+    }
+    
+    if (searchUrl) {
+        pnum = 1;
+        loadNovels(searchUrl, false);
+    } else {
+        showToast('Search not available for this source', 'warning');
+    }
+}
+
+// Initialize
+$(document).ready(function() {
+    console.log('=== Novel List Page Loaded ===');
+    
+    // Load source options - only Royal Road (other sources are defunct)
+    $('#sourceSelect').append('<option value="https://www.royalroad.com/">Royal Road</option>');
+    
+    // Set initial source
+    currentSource = $('#sourceSelect').val();
+    
+    // Load initial data
+    loadCategories(currentSource);
+    
+    // Source change handler
+    $('#sourceSelect').on('change', function() {
+        currentSource = $(this).val();
+        pnum = 1;
+        loadCategories(currentSource);
+    });
+    
+    // Back button
+    $('#backBtn').on('click', function() {
+        window.history.back();
+    });
+    
+    // Menu toggle
+    $('#menuBtn').on('click', function() {
+        toggleSidebar();
+    });
+    
+    $('#toggleSidebar').on('click', function() {
+        toggleSidebar();
+    });
+    
+    // Search handlers
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            var keyword = $(this).val().trim();
+            if (keyword) {
+                searchNovels(keyword);
+            }
+        }
+    });
+    
+    $('#sidebarSearch').on('keypress', function(e) {
+        if (e.which === 13) {
+            var keyword = $(this).val().trim();
+            if (keyword) {
+                searchNovels(keyword);
+            }
+        }
+    });
+    
+    // Scroll to load more
+    $('#contentArea').on('scroll', function() {
+        var scrollTop = $(this).scrollTop();
+        var scrollHeight = $(this)[0].scrollHeight;
+        var height = $(this).height();
+        
+        if (scrollTop + height >= scrollHeight - 100) {
+            if (!isLoading && currentCategory) {
+                pnum++;
+                // Load more logic would go here based on source
+            }
+        }
+    });
+});

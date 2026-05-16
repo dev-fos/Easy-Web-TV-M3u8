@@ -1,461 +1,633 @@
-//Set global array proxy links to solve CORS error
+// Novel Reader JS - Modern UI Version
+// Proxy for CORS
 var proxy = {
     0: 'https://cors.luckydesigner.workers.dev/?',
+    1: 'https://corsproxy.io/?',
+    2: 'https://api.allorigins.win/raw?url=',
 };
-var channels = [];
-//Get default localstorage key
-var localkey = ['manga', 'bannedcountries', 'novel', 'movie', 'music', 'languages', 'porn', 'adult'];
-$(document).ready(function () {
-    $("#video1").width($("#div1").width()).height($("#div1").height());
-    $(".toggle").css({ 'left': $('#left').width() - 50 });
-    //Get Current href
-    var initlink = decodeURIComponent(window.location.href).split('web=')[1];
-    var originurl;
-    if (initlink.indexOf('http://www.xfjxs.com/') > -1) {
-        originurl = 'http://www.xfjxs.com';
-    } else if (initlink.indexOf('https://novelonlinefull.com/') > -1) {
-        originurl = 'https://novelonlinefull.com';
+
+// Get random proxy for each request
+function getRandomProxy() {
+    var rand = Math.floor(Math.random() * Object.keys(proxy).length);
+    return proxy[rand];
+}
+
+// Favorite prefix for localStorage
+const FAV_PREFIX = 'fav_novel_';
+
+// Global variables
+var chapters = [];
+var currentChapterIndex = -1;
+var currentNovelTitle = '';
+var novelInfo = '';
+var originUrl = '';
+var prevChapterUrl = '';
+var nextChapterUrl = '';
+
+// Toast notification system
+function showToast(message, type = 'info') {
+    var iconMap = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        info: 'fa-info-circle',
+        warning: 'fa-exclamation-triangle'
     };
-    //Get data
-    $.ajax({
-        url: proxy[0] + initlink,
-        dataType: 'html',
-        type: "GET",
-        success: function (data) {
-            var html = $.parseHTML(data);
-            if (initlink.indexOf('http://www.xfjxs.com/') > -1) {
-                var title = $(html).find('h1 a').text();
-                var info = $(html).find('.r_cons').text();
-                try {
-                    var cates = $(html).find('#diralinks')[0].href;
-                } catch {
-                    location.reload();
-                }
-                $('#hiddens').append(`<p>${cates}</p>`);
-            } else if (initlink.indexOf('https://novelonlinefull.com/') > -1) {
-                var title = $(html).find('.truyen_info_right h1').text();
-                var info = $(html).find('#noidungm').text();
-            };
-            $('#epcontent').empty();
-            $('#left h3').html(title);
-            $('#epcontent').append(`<h3>Content</h3><p>${info}</p>`);
-        },
-        error: function () {
-            alert("Error");
-        },
-        complete: function (xhr, status) {
-            if (initlink.indexOf('http://www.xfjxs.com/') > -1) {
-                $.ajax({
-                    url: proxy[0] + $('#hiddens').text(),
-                    dataType: 'html',
-                    type: "GET",
-                    success: function (data) {
-                        var html = $.parseHTML(data);
-                        var episode = $(html).find('dd').find('a').map((x, y) => y.innerHTML);
-                        var detail = $(html).find('dd').find('a').map((x, y) => y.attributes[0].value);
-                        if (episode.length == 0) {
-                            window.location.reload();
-                        }
-                        $('#menu').empty();
-                        $("#channelcontent").empty();
-                        for (let i = 0; i < episode.length; i++) {
-                            if ($(window).width() > 640) {
-                                if (window.localStorage.getItem(originurl + detail[i]) == episode[i].replace(/\s/g, '')) {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/favorite.png');"/><span title=${originurl + detail[i]}>${episode[i].replace(/\s/g, '')}</span></p></li>`);
-                                } else {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/unfavorite.png');"/><span title=${originurl + detail[i]}>${episode[i].replace(/\s/g, '')}</span></p></li>`);
-                                }
-                            } else {
-                                if (window.localStorage.getItem(originurl + detail[i]) == episode[i].replace(/\s/g, '')) {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/favorite20.png');"/><span title=${originurl + detail[i]}>${episode[i].replace(/\s/g, '')}</span></p></li>`);
-                                } else {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/unfavorite20.png');"/><span title=${originurl + detail[i]}>${episode[i].replace(/\s/g, '')}</span></p></li>`);
-                                }
-                            }
-                            if (i == 0) {
-                                var headurl = originurl + detail[0].split('/').slice(0, 3).join('/');
-                                $.ajax({
-                                    url: proxy[0] + originurl + detail[0],
-                                    dataType: 'html',
-                                    type: "GET",
-                                    success: function (data) {
-                                        $('#reader').empty();
-                                        var html = $.parseHTML(data);
-                                        var title = $(html).find('h1').text();
-                                        var para = $(html).find('.yuedu_zhengwen');
-                                        var btn = $(html).find('.button2 a');
-                                        var arr = [];
-                                        for (let i of btn) {
-                                            arr.push(i.attributes[0].value);
-                                        }
-                                        arr = arr.filter((x, y) => y == 1 || y == 3).map(x => headurl + '/' + x);
-                                        try {
-                                            $('#reader').append(`<h2>${title}</h2>${para[0].innerHTML.replace(/最新网址：www.xfjxs.com/g, '').replace(/&nbsp;&nbsp;&nbsp;&nbsp;/g, '')}<br /><br /><div class="centerbtn"><button onclick="turnpage('${arr[0]}')">Prev</button><button onclick="turnpage('${arr[1]}')">Next</button></div>`);
-                                        } catch {
-                                            location.reload();
-                                        }
-                                        $('#center_tip').remove();
-                                        $('#center_tip').remove();
-                                    },
-                                    error: function () {
-                                        alert("Error");
-                                    },
-                                    complete: function (xhr, status) {
-
-                                    }
-                                });
-                            }
-                        }
-                        //Append favorite list
-                        for (let i of Object.keys(localStorage)) {
-                            if ($(window).width() > 640) {
-                                $("#channelcontent").append(`<li><p><input type="button" style="background-image: url('../images/favorite.png');"/><span title=${i}>${localStorage[i]}</span></p></li>`);
-                            } else {
-                                $("#channelcontent").append(`<li><p><input type="button" style="background-image: url('../images/favorite20.png');"/><span title=${i}>${localStorage[i]}</span></p></li>`);
-                            }
-                        }
-                        //Change icon size
-                        $('#menu li p input').click(function () {
-                            //Get browser support localstorage if or not
-                            if (!window.localStorage) {
-                                console.log("Browser not support localstorage");
-                                return false;
-                            } else {
-                                window.localStorage.setItem($(this).next().attr('title'), $(this).next().text());
-                            }
-                            if ($(window).width() > 640) {
-                                $(this).css({ 'background-image': 'url(../images/favorite.png)' });
-                            } else {
-                                $(this).css({ 'background-image': 'url(../images/favorite20.png)' });
-                            }
-                            if ($(this).next().attr('title').length > 0) {
-                                window.location.reload();
-                            }
-                        });
-                        //Collect favorite channles
-                        $('#channelcontent li p input').click(function () {
-                            //Get browser support localstorage if or not
-                            if (!window.localStorage) {
-                                console.log("Browser not support localstorage");
-                                return false;
-                            } else {
-                                localStorage.removeItem($(this).next().attr('title'));
-                            }
-                            if ($(window).width() > 640) {
-                                $(this).css({ 'background-image': 'url(../images/unfavorite.png)' });
-                            } else {
-                                $(this).css({ 'background-image': 'url(../images/unfavorite20.png)' });
-                            }
-                            window.location.reload();
-                        });
-                    },
-                    error: function () {
-                        alert("Error");
-                    },
-                    complete: function (xhr, status) {
-                        //Click episode to read
-                        $("li p span").click(function () {
-                            var headurl = $(this).attr('title').split('.html')[0].replace(/\/\d+$/g, '');
-                            $.ajax({
-                                url: proxy[0] + $(this).attr('title'),
-                                dataType: 'html',
-                                type: "GET",
-                                success: function (data) {
-                                    $('#reader').empty();
-                                    var html = $.parseHTML(data);
-                                    var title = $(html).find('h1').text();
-                                    var para = $(html).find('.yuedu_zhengwen');
-                                    var btn = $(html).find('.button2 a');
-                                    var arr = [];
-                                    for (let i of btn) {
-                                        arr.push(i.attributes[0].value);
-                                    }
-                                    arr = arr.filter((x, y) => y == 1 || y == 3).map(x => headurl + '/' + x);
-                                    $('#reader').append(`<h2>${title}</h2>${para[0].innerHTML.replace(/最新网址：www.xfjxs.com/g, '').replace(/&nbsp;&nbsp;&nbsp;&nbsp;/g, '')}<br /><br /><div class="centerbtn"><button onclick="turnpage('${arr[0]}')">Prev</button><button onclick="turnpage('${arr[1]}')">Next</button></div>`);
-                                    $('#center_tip').remove();
-                                    $('#readzone').scrollTop(0);
-                                    $('#left').hide();
-                                    $('.toggle').css({ 'left': '5px' });
-                                },
-                                error: function () {
-                                    alert("Error");
-                                },
-                                complete: function (xhr, status) {
-
-                                }
-                            });
-                        });
-                        $("#menu li:eq(0)").addClass("bd");
-                        $("#menu li").on('click', function () {
-                            $(this).addClass("bd").siblings().removeClass("bd");
-                        });
-                    }
-                });
-            } else if (initlink.indexOf('https://novelonlinefull.com/') > -1) {
-                $.ajax({
-                    url: proxy[0] + initlink,
-                    dataType: 'html',
-                    type: "GET",
-                    success: function (data) {
-                        var html = $.parseHTML(data);
-                        var episodes = Object.values($(html).find('.row').slice(1).map((x, y) => y.children[0].innerText)).reverse().slice(2);
-                        var epihref = Object.values($(html).find('.row a').map((x, y) => y.href)).reverse().slice(2);
-                        $('#menu').empty();
-                        $("#channelcontent").empty();
-                        for (let i = 0; i < episodes.length; i++) {
-                            if ($(window).width() > 640) {
-                                if (window.localStorage.getItem(epihref[i]) == episodes[i]) {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/favorite.png');"/><span title=${epihref[i]}>${episodes[i]}</span></p></li>`);
-                                } else {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/unfavorite.png');"/><span title=${epihref[i]}>${episodes[i]}</span></p></li>`);
-                                }
-                            } else {
-                                if (window.localStorage.getItem(epihref[i]) == episodes[i]) {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/favorite20.png');"/><span title=${epihref[i]}>${episodes[i]}</span></p></li>`);
-                                } else {
-                                    $("#menu").append(`<li><p><input type="button" style="background-image: url('../images/unfavorite20.png');"/><span title=${epihref[i]}>${episodes[i]}</span></p></li>`);
-                                }
-                            }
-                            if (i == 0) {
-                                $.ajax({
-                                    url: proxy[0] + epihref[0],
-                                    dataType: 'html',
-                                    type: "GET",
-                                    success: function (data) {
-                                        $('#reader').empty();
-                                        var html = $.parseHTML(data);
-                                        var para = $(html).find('#vung_doc');
-                                        var btn = Object.values($(html).find('a.btn_theodoi.btn_doc').map((x, y) => y.href));
-                                        var arr = [];
-                                        for (let i of btn) {
-                                            arr.push(i);
-                                        }
-                                        $('#reader').append(`${para[0].outerHTML}<br /><br /><div class="centerbtn"><button onclick="turnpage('${arr[0]}')">Prev</button><button onclick="turnpage('${arr[1]}')">Next</button></div>`);
-                                    },
-                                    error: function () {
-                                        alert("Error");
-                                    },
-                                    complete: function (xhr, status) {
-
-                                    }
-                                });
-                            }
-                        }
-                        //Append favorite list
-                        for (let i of Object.keys(localStorage).filter(x => !localkey.includes(x))) {
-                            if ($(window).width() > 640) {
-                                $("#channelcontent").append(`<li><p><input type="button" style="background-image: url('../images/favorite.png');"/><span title=${i}>${localStorage[i]}</span></p></li>`);
-                            } else {
-                                $("#channelcontent").append(`<li><p><input type="button" style="background-image: url('../images/favorite20.png');"/><span title=${i}>${localStorage[i]}</span></p></li>`);
-                            }
-                        }
-                        //Change icon size
-                        $('#menu li p input').click(function () {
-                            //Get browser support localstorage if or not
-                            if (!window.localStorage) {
-                                console.log("Browser not support localstorage");
-                                return false;
-                            } else {
-                                window.localStorage.setItem($(this).next().attr('title'), $(this).next().text());
-                            }
-                            if ($(window).width() > 640) {
-                                $(this).css({ 'background-image': 'url(../images/favorite.png)' });
-                            } else {
-                                $(this).css({ 'background-image': 'url(../images/favorite20.png)' });
-                            }
-                            if ($(this).next().attr('title').length > 0) {
-                                window.location.reload();
-                            }
-                        });
-                        //Collect favorite channles
-                        $('#channelcontent li p input').click(function () {
-                            //Get browser support localstorage if or not
-                            if (!window.localStorage) {
-                                console.log("Browser not support localstorage");
-                                return false;
-                            } else {
-                                localStorage.removeItem($(this).next().attr('title'));
-                            }
-                            if ($(window).width() > 640) {
-                                $(this).css({ 'background-image': 'url(../images/unfavorite.png)' });
-                            } else {
-                                $(this).css({ 'background-image': 'url(../images/unfavorite20.png)' });
-                            }
-                            window.location.reload();
-                        });
-                    },
-                    error: function () {
-                        alert("Error");
-                    },
-                    complete: function (xhr, status) {
-                        //Click episode to read
-                        $("li p span").click(function () {
-                            $.ajax({
-                                url: proxy[0] + $(this).attr('title'),
-                                dataType: 'html',
-                                type: "GET",
-                                success: function (data) {
-                                    $('#reader').empty();
-                                    var html = $.parseHTML(data);
-                                    var para = $(html).find('#vung_doc');
-                                    var btn = Object.values($(html).find('a.btn_theodoi.btn_doc').map((x, y) => y.href));
-                                    var arr = [];
-                                    for (let i of btn) {
-                                        arr.push(i);
-                                    }
-                                    $('#reader').append(`${para[0].outerHTML}<br /><br /><div class="centerbtn"><button onclick="turnpage('${arr[0]}')">Prev</button><button onclick="turnpage('${arr[1]}')">Next</button></div>`);
-                                    $('#readzone').scrollTop(0);
-                                    $('#left').hide();
-                                    $('.toggle').css({ 'left': '5px' });
-                                },
-                                error: function () {
-                                    alert("Error");
-                                },
-                                complete: function (xhr, status) {
-
-                                }
-                            });
-                        });
-                        $("#menu li:eq(0)").addClass("bd");
-                        $("#menu li").on('click', function () {
-                            $(this).addClass("bd").siblings().removeClass("bd");
-                        });
-                    }
-                });
-            }
-        }
+    
+    var toast = $(`
+        <div class="toast ${type}">
+            <i class="fas ${iconMap[type]}"></i>
+            <span class="toast-message">${message}</span>
+            <button class="toast-close"><i class="fas fa-times"></i></button>
+        </div>
+    `);
+    
+    $('#toastContainer').append(toast);
+    
+    toast.find('.toast-close').on('click', function() {
+        toast.remove();
     });
-});
-//Set turnpage function
-function turnpage(content) {
-    if (content.indexOf('http://www.xfjxs.com/') > -1) {
-        var headurl = content.split('.html')[0].replace(/\/\d+$/g, '');
-        $.ajax({
-            url: proxy[0] + content,
-            dataType: 'html',
-            type: "GET",
-            success: function (data) {
-                $('#reader').empty();
-                var html = $.parseHTML(data);
-                var title = $(html).find('h1').text();
-                var para = $(html).find('.yuedu_zhengwen');
-                var btn = $(html).find('.button2 a');
-                var arr = [];
-                for (let i of btn) {
-                    arr.push(i.attributes[0].value);
-                }
-                arr = arr.filter((x, y) => y == 1 || y == 3).map(x => headurl + '/' + x);
-                $('#reader').append(`<h2>${title}</h2>${para[0].innerHTML.replace(/最新网址：www.xfjxs.com/g, '').replace(/&nbsp;&nbsp;&nbsp;&nbsp;/g, '')}<br /><br /><div class="centerbtn"><button onclick="turnpage('${arr[0]}')">Prev</button><button onclick="turnpage('${arr[1]}')">Next</button></div>`);
-                $('#center_tip').remove();
-                $('#center_tip').remove();
-                $('#readzone').scrollTop(0);
-                $('#left').hide();
-                $('.toggle').css({ 'left': '5px' });
-            },
-            error: function () {
-                alert("Error");
-            },
-            complete: function (xhr, status) {
-
-            }
+    
+    // Auto remove after 3 seconds
+    setTimeout(function() {
+        toast.fadeOut(300, function() {
+            $(this).remove();
         });
-    } else if (content.indexOf('bestlightnovel') > -1 || content.indexOf('novelonlinefull') > -1) {
-        $.ajax({
-            url: proxy[0] + content,
-            dataType: 'html',
-            type: "GET",
-            success: function (data) {
-                $('#reader').empty();
-                var html = $.parseHTML(data);
-                var para = $(html).find('#vung_doc');
-                var btn = Object.values($(html).find('a.btn_theodoi.btn_doc').map((x, y) => y.href));
-                var arr = [];
-                for (let i of btn) {
-                    arr.push(i);
-                }
-                $('#reader').append(`${para[0].outerHTML}<br /><br /><div class="centerbtn"><button onclick="turnpage('${arr[0]}')">Prev</button><button onclick="turnpage('${arr[1]}')">Next</button></div>`);
-                $('#readzone').scrollTop(0);
-                $('#left').hide();
-                $('.toggle').css({ 'left': '5px' });
-            },
-            error: function () {
-                alert("Error");
-            },
-            complete: function (xhr, status) {
+    }, 3000);
+}
 
-            }
-        });
+// Modal dialog system
+function showModal(title, message, onConfirm, type = 'warning') {
+    $('#modalTitle').text(title);
+    $('#modalBody').text(message);
+    
+    var iconClass = type === 'error' ? 'error' : 'warning';
+    $('#modalOverlay .modal-icon').removeClass('warning error').addClass(iconClass);
+    $('#modalOverlay .modal-icon i').removeClass('fa-exclamation-triangle fa-exclamation-circle');
+    $('#modalOverlay .modal-icon i').addClass(type === 'error' ? 'fa-exclamation-circle' : 'fa-exclamation-triangle');
+    
+    $('#modalOverlay').removeClass('hidden');
+    
+    // Remove previous handlers
+    $('#modalConfirm').off('click');
+    $('#modalCancel').off('click');
+    
+    $('#modalConfirm').on('click', function() {
+        $('#modalOverlay').addClass('hidden');
+        if (onConfirm) onConfirm();
+    });
+    
+    $('#modalCancel').on('click', function() {
+        $('#modalOverlay').addClass('hidden');
+    });
+}
+
+// Loading control
+function showLoading(show = true) {
+    if (show) {
+        $('#loadingOverlay').removeClass('hidden');
+    } else {
+        $('#loadingOverlay').addClass('hidden');
     }
 }
-//Set Toggle Menu
-$('.toggle').click(function () {
-    $('#left').toggle();
-    if ($('#left').is(':visible')) {
-        $('.toggle').css({ 'left': $('#left').width() - 50 });
+
+// Toggle sidebar - toggle chapter list and toolbar visibility
+function toggleSidebar() {
+    var sidebar = $('#sidebar');
+    var toolbar = $('.top-toolbar');
+    var readerArea = $('#readerArea');
+    
+    // Toggle sidebar
+    if (window.innerWidth <= 768) {
+        sidebar.toggleClass('show-mobile');
     } else {
-        $('.toggle').css({ 'left': '5px' });
+        sidebar.toggleClass('collapsed');
     }
-});
-//Set Tools Menu
-$("#menuicon").on({
-    mouseenter: function () {
-        $(this).css({ "opacity": 1 })
-    },
-    click: function () {
-        $('#control div:gt(0)').slideToggle(500);
-        $('#channelist').hide();
-        $('#inputlink').hide();
-        $('#epcontent').hide();
-    },
-    mouseleave: function () {
-        $(this).css({ "opacity": 0.5 })
+    
+    // Show toolbar when sidebar is expanded, hide when collapsed
+    var isExpanded = (window.innerWidth <= 768) ? sidebar.hasClass('show-mobile') : !sidebar.hasClass('collapsed');
+    
+    if (isExpanded) {
+        toolbar.removeClass('hidden');
+        readerArea.removeClass('expanded');
+    } else {
+        toolbar.addClass('hidden');
+        readerArea.addClass('expanded');
     }
-});
-//Set return home page
-$("#prev").on({
-    mouseenter: function () {
-        $(this).css({ "opacity": 1 })
-    },
-    click: function () {
-        window.location.href = "/Easy-Web-TV-M3u8/routes/novel.html";
-    },
-    mouseleave: function () {
-        $(this).css({ "opacity": 0.5 })
+}
+
+// Load favorites
+function loadFavorites() {
+    var favList = $('#favList');
+    favList.empty();
+    
+    var hasFavorites = false;
+    
+    for (var key of Object.keys(localStorage)) {
+        if (key.startsWith(FAV_PREFIX)) {
+            hasFavorites = true;
+            var url = key.replace(FAV_PREFIX, '');
+            var name = localStorage.getItem(key);
+            
+            favList.append(`
+                <div class="fav-item" data-url="${url}">
+                    <div class="fav-item-info">
+                        <div class="fav-item-name">${name}</div>
+                    </div>
+                    <button class="fav-item-remove" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `);
+        }
     }
-});
-//Set Github link
-$("#github").on({
-    mouseenter: function () {
-        $(this).css({ "opacity": 1 })
-    },
-    click: function () {
-        window.open("https://github.com/zhangboheng/Easy-Web-TV-M3u8");
-    },
-    mouseleave: function () {
-        $(this).css({ "opacity": 0.5 })
+    
+    if (!hasFavorites) {
+        favList.html(`
+            <div class="no-favorites">
+                <i class="fas fa-heart-broken"></i>
+                <p>No favorites yet</p>
+            </div>
+        `);
     }
-});
-//Set documents list
-$("#favorite").on({
-    mouseenter: function () {
-        $(this).css({ "opacity": 1 })
-    },
-    click: function () {
-        $('#channelist').toggle(500);
-    },
-    mouseleave: function () {
-        $(this).css({ "opacity": 0.5 })
+    
+    // Bind click events
+    $('.fav-item').on('click', function(e) {
+        if (!$(e.target).closest('.fav-item-remove').length) {
+            var url = $(this).data('url');
+            var name = $(this).find('.fav-item-name').text();
+            $('#favPanel').removeClass('show');
+            loadChapter(url, name);
+        }
+    });
+    
+    $('.fav-item-remove').on('click', function(e) {
+        e.stopPropagation();
+        var item = $(this).closest('.fav-item');
+        var url = item.data('url');
+        
+        showModal('Remove Favorite', 'Are you sure you want to remove this from favorites?', function() {
+            localStorage.removeItem(FAV_PREFIX + url);
+            loadFavorites();
+            updateChapterFavorites();
+            showToast('Removed from favorites', 'success');
+        });
+    });
+}
+
+// Toggle favorite
+function toggleFavorite(url, name) {
+    var favKey = FAV_PREFIX + url;
+    var isFavorited = localStorage.getItem(favKey) === name;
+    
+    if (isFavorited) {
+        localStorage.removeItem(favKey);
+        showToast('Removed from favorites', 'success');
+    } else {
+        localStorage.setItem(favKey, name);
+        showToast('Added to favorites', 'success');
     }
-});
-//Set epcontent list
-$("#epdetail").on({
-    mouseenter: function () {
-        $(this).css({ "opacity": 1 })
-    },
-    click: function () {
-        $('#epcontent').toggle(500);
-    },
-    mouseleave: function () {
-        $(this).css({ "opacity": 0.5 })
+    
+    loadFavorites();
+    updateChapterFavorites();
+}
+
+// Update chapter list favorite icons
+function updateChapterFavorites() {
+    $('.chapter-item').each(function() {
+        var url = $(this).data('url');
+        var name = $(this).data('name');
+        var favKey = FAV_PREFIX + url;
+        var isFav = localStorage.getItem(favKey) === name;
+        
+        $(this).find('.fav-btn').toggleClass('active', isFav);
+    });
+}
+
+// Render chapter list
+function renderChapters(chapterData) {
+    var list = $('#chapterList');
+    list.empty();
+    
+    chapters = chapterData;
+    
+    for (var i = 0; i < chapterData.length; i++) {
+        var chapter = chapterData[i];
+        var favKey = FAV_PREFIX + chapter.url;
+        var isFav = localStorage.getItem(favKey) === chapter.name;
+        
+        list.append(`
+            <div class="chapter-item" data-url="${chapter.url}" data-name="${chapter.name}" data-index="${i}">
+                <span class="chapter-name">${chapter.name}</span>
+                <button class="fav-btn ${isFav ? 'active' : ''}" title="Add to favorites">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+        `);
     }
+    
+    // Bind click events
+    $('.chapter-item').on('click', function(e) {
+        if (!$(e.target).closest('.fav-btn').length) {
+            var url = $(this).data('url');
+            var name = $(this).data('name');
+            var index = $(this).data('index');
+            
+            $('.chapter-item').removeClass('active');
+            $(this).addClass('active');
+            
+            currentChapterIndex = index;
+            loadChapter(url, name);
+        }
+    });
+    
+    $('.fav-btn').on('click', function(e) {
+        e.stopPropagation();
+        var url = $(this).closest('.chapter-item').data('url');
+        var name = $(this).closest('.chapter-item').data('name');
+        toggleFavorite(url, name);
+    });
+}
+
+// Load chapter content
+function loadChapter(url, chapterName) {
+    showLoading(true);
+    
+    $.ajax({
+        url: getRandomProxy() + url,
+        dataType: 'html',
+        type: 'GET',
+        success: function(data) {
+            var html = $.parseHTML(data);
+            
+            var title = '';
+            var content = '';
+            var prevUrl = '';
+            var nextUrl = '';
+            
+            if (url.indexOf('royalroad.com') > -1) {
+                // Try multiple selectors for chapter title
+                title = $(html).find('.chapter-title').text().trim();
+                if (!title) {
+                    title = $(html).find('h1').first().text().trim();
+                }
+                if (!title) {
+                    title = $(html).find('[property="name"]').text().trim();
+                }
+                
+                // Try multiple selectors for chapter content
+                var chapterContent = $(html).find('.chapter-content');
+                if (chapterContent.length === 0) {
+                    chapterContent = $(html).find('.fic-chapter-content');
+                }
+                if (chapterContent.length === 0) {
+                    chapterContent = $(html).find('[property="articleBody"]');
+                }
+                if (chapterContent.length === 0) {
+                    chapterContent = $(html).find('article .content');
+                }
+                if (chapterContent.length === 0) {
+                    // Last resort: find the largest text block
+                    var maxLen = 0;
+                    $(html).find('div, section, article').each(function() {
+                        var text = $(this).html();
+                        if (text && text.length > maxLen && $(this).find('p').length > 3) {
+                            maxLen = text.length;
+                            chapterContent = $(this);
+                        }
+                    });
+                }
+                
+                if (chapterContent.length) {
+                    content = chapterContent.html();
+                    
+                    // Clean up content - remove unwanted elements
+                    var tempDiv = $('<div>').html(content);
+                    tempDiv.find('script, style, .ads, .advertisement, .comments').remove();
+                    content = tempDiv.html();
+                }
+                
+                // Navigation - try multiple selectors
+                // Previous chapter
+                var prevLink = $(html).find('a[href*="/chapter/"]').filter(function() {
+                    var text = $(this).text().toLowerCase();
+                    return text.indexOf('previous') > -1 || text.indexOf('prev') > -1;
+                });
+                if (prevLink.length === 0) {
+                    prevLink = $(html).find('[rel="prev"]');
+                }
+                if (prevLink.length === 0) {
+                    prevLink = $(html).find('.nav-previous a, .prev-chapter a');
+                }
+                
+                // Next chapter
+                var nextLink = $(html).find('a[href*="/chapter/"]').filter(function() {
+                    var text = $(this).text().toLowerCase();
+                    return text.indexOf('next') > -1;
+                });
+                if (nextLink.length === 0) {
+                    nextLink = $(html).find('[rel="next"]');
+                }
+                if (nextLink.length === 0) {
+                    nextLink = $(html).find('.nav-next a, .next-chapter a');
+                }
+                
+                if (prevLink.length && prevLink.attr('href')) {
+                    var prevHref = prevLink.attr('href');
+                    if (prevHref.indexOf('http') === -1) {
+                        prevUrl = 'https://www.royalroad.com' + prevHref;
+                    } else {
+                        prevUrl = prevHref;
+                    }
+                }
+                
+                if (nextLink.length && nextLink.attr('href')) {
+                    var nextHref = nextLink.attr('href');
+                    if (nextHref.indexOf('http') === -1) {
+                        nextUrl = 'https://www.royalroad.com' + nextHref;
+                    } else {
+                        nextUrl = nextHref;
+                    }
+                }
+            }
+            
+            // Update reader
+            $('#chapterTitle').text(title || chapterName || 'Chapter');
+            
+            if (content) {
+                $('#readerContent').html(content);
+            } else {
+                $('#readerContent').html('<p style="text-align: center; color: rgba(255,255,255,0.5);">Unable to load chapter content. Please try again or select another chapter.</p>');
+            }
+            
+            // Update navigation
+            prevChapterUrl = prevUrl;
+            nextChapterUrl = nextUrl;
+            
+            $('#prevChapter').prop('disabled', !prevUrl);
+            $('#nextChapter').prop('disabled', !nextUrl);
+            $('#readerNav').show();
+            
+            // Scroll to top
+            $('#readerArea').scrollTop(0);
+            
+            // Hide sidebar on mobile
+            if (window.innerWidth <= 768) {
+                $('#sidebar').removeClass('show-mobile');
+            }
+            
+            // Update chapter count
+            $('#chapterCount').text(chapters.length);
+        },
+        error: function(xhr, status, error) {
+            console.error('Failed to load chapter:', error);
+            showToast('Failed to load chapter content. Please try again.', 'error');
+        },
+        complete: function() {
+            showLoading(false);
+        }
+    });
+}
+
+// Parse novel data from Royal Road
+function parseRoyalRoad(initlink) {
+    originUrl = 'https://www.royalroad.com';
+    
+    $.ajax({
+        url: getRandomProxy() + initlink,
+        dataType: 'html',
+        type: 'GET',
+        success: function(data) {
+            var html = $.parseHTML(data);
+            
+            // Try multiple selectors for title
+            var title = $(html).find('h1.font-white').text().trim();
+            if (!title) {
+                title = $(html).find('.fic-title h1').text().trim();
+            }
+            if (!title) {
+                title = $(html).find('h1').first().text().trim();
+            }
+            
+            // Try multiple selectors for author
+            var author = $(html).find('.fic-title a.font-white').text().trim();
+            if (!author) {
+                author = $(html).find('.author a').text().trim();
+            }
+            if (!author) {
+                author = $(html).find('[property="author"]').text().trim();
+            }
+            
+            // Try multiple selectors for description
+            var info = $(html).find('.hidden-content').text().trim();
+            if (!info) {
+                info = $(html).find('.description').text().trim();
+            }
+            if (!info) {
+                info = $(html).find('[property="description"]').text().trim();
+            }
+            
+            currentNovelTitle = title;
+            novelInfo = 'Author: ' + author + '\n\n' + info;
+            
+            $('#novelTitle').text(title || 'Unknown Title');
+            $('#infoTitle').text(title || 'Unknown Title');
+            $('#infoContent').text(novelInfo || 'No description available.');
+            document.title = (title || 'Novel') + ' - Novel Reader';
+            
+            // Parse chapter list - try multiple selectors
+            var chapterData = [];
+            
+            // Method 1: Standard chapter table
+            var chapterRows = $(html).find('#chapters tbody tr');
+            
+            if (chapterRows.length > 0) {
+                chapterRows.each(function(index, row) {
+                    var link = $(row).find('a').first();
+                    var chapterUrl = link.attr('href');
+                    var chapterName = link.text().trim();
+                    
+                    if (chapterUrl && chapterName) {
+                        if (chapterUrl.indexOf('http') === -1) {
+                            chapterUrl = originUrl + chapterUrl;
+                        }
+                        chapterData.push({
+                            name: chapterName,
+                            url: chapterUrl
+                        });
+                    }
+                });
+            }
+            
+            // Method 2: Chapter links in various containers
+            if (chapterData.length === 0) {
+                $(html).find('a[href*="/chapter/"]').each(function() {
+                    var chapterUrl = $(this).attr('href');
+                    var chapterName = $(this).text().trim();
+                    
+                    if (chapterUrl && chapterName && chapterName.length > 0) {
+                        if (chapterUrl.indexOf('http') === -1) {
+                            chapterUrl = originUrl + chapterUrl;
+                        }
+                        chapterData.push({
+                            name: chapterName,
+                            url: chapterUrl
+                        });
+                    }
+                });
+            }
+            
+            // Method 3: Fiction chapters list
+            if (chapterData.length === 0) {
+                $(html).find('.chapter-row, .fiction-chapter').each(function() {
+                    var link = $(this).find('a').first();
+                    var chapterUrl = link.attr('href');
+                    var chapterName = link.text().trim();
+                    
+                    if (chapterUrl && chapterName) {
+                        if (chapterUrl.indexOf('http') === -1) {
+                            chapterUrl = originUrl + chapterUrl;
+                        }
+                        chapterData.push({
+                            name: chapterName,
+                            url: chapterUrl
+                        });
+                    }
+                });
+            }
+            
+            if (chapterData.length === 0) {
+                showToast('No chapters found. The page structure may have changed.', 'warning');
+                showLoading(false);
+                return;
+            }
+            
+            renderChapters(chapterData);
+            
+            // Auto load first chapter
+            if (chapterData[0]) {
+                $('.chapter-item').first().addClass('active');
+                currentChapterIndex = 0;
+                loadChapter(chapterData[0].url, chapterData[0].name);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Failed to load novel:', error);
+            showToast('Failed to load novel. Please try again.', 'error');
+            showLoading(false);
+        }
+    });
+}
+
+// Turn page (prev/next)
+function turnPage(url) {
+    if (!url) return;
+    
+    // Find chapter index
+    for (var i = 0; i < chapters.length; i++) {
+        if (chapters[i].url === url) {
+            currentChapterIndex = i;
+            break;
+        }
+    }
+    
+    loadChapter(url, '');
+    
+    // Update active state
+    $('.chapter-item').removeClass('active');
+    $('.chapter-item[data-url="' + url + '"]').addClass('active');
+}
+
+// Initialize
+$(document).ready(function() {
+    console.log('=== Novel Reader JS Loaded ===');
+    
+    // Load favorites
+    loadFavorites();
+    
+    // Parse URL parameters
+    var initlink = decodeURIComponent(window.location.href).split('web=')[1];
+    
+    console.log('Init link:', initlink);
+    
+    if (initlink) {
+        showLoading(true);
+        
+        if (initlink.indexOf('https://www.royalroad.com/') > -1) {
+            parseRoyalRoad(initlink);
+        } else {
+            showToast('Unsupported novel source. Only Royal Road is supported.', 'error');
+            showLoading(false);
+        }
+    } else {
+        showToast('No novel URL provided', 'warning');
+        showLoading(false);
+    }
+    
+    // UI Event handlers
+    // Toggle Sidebar button
+    $('#toggleSidebar').on('click', function() {
+        toggleSidebar();
+    });
+    
+    // Menu Button - hides toolbar for immersive reading
+    $('#menuBtn').on('click', function() {
+        var sidebar = $('#sidebar');
+        var toolbar = $('.top-toolbar');
+        var readerArea = $('#readerArea');
+        
+        // Hide toolbar for immersive reading
+        toolbar.addClass('hidden');
+        readerArea.addClass('expanded');
+        
+        // Collapse sidebar
+        if (window.innerWidth <= 768) {
+            sidebar.removeClass('show-mobile');
+        } else {
+            sidebar.addClass('collapsed');
+        }
+    });
+    
+    $('#backBtn').on('click', function() {
+        window.location.href = '/Easy-Web-TV-M3u8/';
+    });
+    
+    $('#favBtn').on('click', function() {
+        $('#favPanel').toggleClass('show');
+    });
+    
+    $('#closeFavPanel').on('click', function() {
+        $('#favPanel').removeClass('show');
+    });
+    
+    $('#infoBtn').on('click', function() {
+        $('#novelInfo').slideToggle(300);
+    });
+    
+    $('#prevChapter').on('click', function() {
+        if (prevChapterUrl) {
+            turnPage(prevChapterUrl);
+        }
+    });
+    
+    $('#nextChapter').on('click', function() {
+        if (nextChapterUrl) {
+            turnPage(nextChapterUrl);
+        }
+    });
+    
+    // Close panels when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('#favPanel, #favBtn').length) {
+            $('#favPanel').removeClass('show');
+        }
+    });
+    
+    // Keyboard navigation
+    $(document).on('keydown', function(e) {
+        if (e.key === 'ArrowLeft' && prevChapterUrl) {
+            turnPage(prevChapterUrl);
+        } else if (e.key === 'ArrowRight' && nextChapterUrl) {
+            turnPage(nextChapterUrl);
+        }
+    });
 });

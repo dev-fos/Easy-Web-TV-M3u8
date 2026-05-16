@@ -1,518 +1,394 @@
-//Set global array proxy links to solve CORS error
+// Comprehensive (Theater) Page JS - Modern UI Version
+// Proxy for CORS
 var proxy = {
     0: 'https://cors.luckydesigner.workers.dev/?',
+    1: 'https://corsproxy.io/?',
+    2: 'https://api.allorigins.win/raw?url=',
 };
-//Set global pagenum and random
-var pnum = 1;
 var rand = Math.floor(Math.random() * Object.keys(proxy).length);
-$(document).ready(function() {
-    //Toggle menu and adjust size
-    $(".toggle").css({ 'left': $('#left').width() - 50 });
-    $('.toggle').click(function() {
-        $('#left').toggle();
-        if ($('#left').is(':visible')) {
-            $('.toggle').css({ 'left': $('#left').width() - 50 });
-        } else {
-            $('.toggle').css({ 'left': '5px' });
-        }
-    });
-    //Get select source
-    try {
-        let ms = window.localStorage.getItem('movie').split(",");
-        let arr = ["tky", "bjy", "hyzy", "wlys", "gszy", "hnzy"];
-        let lst = arr.filter(x => ms.includes(x)).map(x => arr.indexOf(x));
-        let sts = [
-            '<option value="https://caiji.maotaizy.cc/api.php/provide/vod/from/mtm3u8/at/xml/">茅台资源</option>',
-            '<option value="https://cj.rycjapi.com/api.php/provide/vod/from/rym3u8/at/xml/">如意资源</option>',
-            '<option value="https://www.huyaapi.com/api.php/provide/vod/at/json">虎牙资源</option>',
-            '<option value="https://collect.wolongzyw.com/api.php/provide/vod/at/xml">卧龙影视</option>',
-            '<option value="https://api.guangsuapi.com/api.php/provide/vod/from/gsm3u8/at/xml/">光速资源</option>',
-            '<option value="https://www.hongniuzy2.com/api.php/provide/vod/from/hnm3u8/at/xml/">红牛资源</option>',
-        ];
-        for (let i of lst) {
-            $('#selectapi').append(sts[i]);
-        }
-    } catch (e) {
-        $('#selectapi').append(`
-            <option value="https://caiji.maotaizy.cc/api.php/provide/vod/from/mtm3u8/at/xml/">茅台资源</option>
-            <option value="https://cj.rycjapi.com/api.php/provide/vod/from/rym3u8/at/xml/">如意资源</option>
-            <option value="https://www.huyaapi.com/api.php/provide/vod/at/json">虎牙资源</option>
-            <option value="https://collect.wolongzyw.com/api.php/provide/vod/at/xml">卧龙影视</option>
-            <option value="https://api.guangsuapi.com/api.php/provide/vod/from/gsm3u8/at/xml/">光速资源</option>
-            <option value="https://www.hongniuzy2.com/api.php/provide/vod/from/hnm3u8/at/xml/">红牛资源</option>
-        `);
+
+// Global variables
+var currentLink = '';
+var currentCategory = '';
+var pageNum = 1;
+var isLoading = false;
+
+// Toast notification
+function showToast(message, type = 'info') {
+    var iconMap = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        info: 'fa-info-circle',
+        warning: 'fa-exclamation-triangle'
+    };
+    
+    $('.toast-notification').remove();
+    
+    var toast = $(`
+        <div class="toast-notification ${type}" style="
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.9);
+            border: 2px solid ${type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#a3001b'};
+            border-radius: 10px;
+            color: #fff;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        ">
+            <i class="fas ${iconMap[type]}" style="color: ${type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#a3001b'}"></i>
+            <span>${message}</span>
+        </div>
+    `);
+    
+    $('body').append(toast);
+    
+    setTimeout(function() {
+        toast.fadeOut(300, function() {
+            $(this).remove();
+        });
+    }, 3000);
+}
+
+// Filter ad text from category names
+function filterTypeName(name) {
+    if (!name) return name;
+    return name.replace(/\\?">\* src=https?:\/\/[^\s<]+<\/script>/gi, '').trim();
+}
+
+// Toggle sidebar
+function toggleSidebar() {
+    var sidebar = $('#sidebar');
+    
+    if (window.innerWidth <= 768) {
+        sidebar.toggleClass('show-mobile');
+    } else {
+        sidebar.toggleClass('collapsed');
     }
-    //Variable zone
-    var initlink = $('#selectapi').val();
-    //Initial homepage menu and episod lists
-    iniMenu(initlink);
-    //Select Different Source Website
-    $('#selectapi').on('change', function() {
-        var key = $(this).val();
-        $('.itemContainer').empty();
-        iniMenu(key);
-        pnum = 1;
-    });
-    //Reinitial page num
-    $("#menu").click(function() {
-        pnum = 1;
-    });
-    //Scroll down to load more
-    $(window).scroll(function(e) {
-        $('#left').hide();
-        $('.toggle').css({ 'left': '5px' });
-        var ks = $('.hiddens');
-        var kt = $('#search');
-        var str = ks[0].children[0].innerHTML;
-        var sts = kt[0].value;
-        var scrollTop = $(this).scrollTop(),
-            scrollHeight = $(document).height(),
-            windowHeight = $(this).height();
-        var positionValue = (scrollTop + windowHeight) - scrollHeight;
-        var link = $('#selectapi').val();
-        var globallink
-        if (positionValue <= 0 && positionValue >= -50) {
-            $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-            pnum++;
-            if (sts.length > 0) {
-                if (link == 'https://collect.wolongzyw.com/api.php/provide/vod/at/xml' || link == 'https://api.guangsuapi.com/api.php/provide/vod/from/gsm3u8/at/xml/') {
-                    globallink = proxy[rand] + `${link}?ac=list&wd=${sts}&pg=${pnum}`;
-                } else if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                    globallink = proxy[rand] + `${link}?ac=videolist&wd=${sts}&pg=${pnum}`;
-                } else {
-                    globallink = proxy[rand] + `${link}?ac=videolist&wd=${sts}&pg=${pnum}`;
-                }
-            } else {
-                globallink = proxy[rand] + `${link}?ac=videolist&t=${str}&pg=${pnum}`;
+}
+
+// Show/Hide loading
+function showLoading(show = true, isSearch = false) {
+    if (show) {
+        if (isSearch) {
+            $('#contentArea').find('.search-loading').remove();
+            $('#contentGrid').hide();
+            $('#contentArea').prepend(`
+                <div class="loading-state search-loading">
+                    <i class="fas fa-spinner"></i>
+                    <span>Searching...</span>
+                </div>
+            `);
+        } else if (pageNum > 1) {
+            $('#loadMoreIndicator').show();
+        } else {
+            $('#contentGrid').html(`
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <span>Loading videos...</span>
+                </div>
+            `);
+        }
+    } else {
+        $('#loadMoreIndicator').hide();
+        $('.search-loading').remove();
+        $('#contentGrid').show();
+    }
+}
+
+// Load categories
+function loadCategories(link) {
+    var baseUrl = link.endsWith('/') ? link : link + '/';
+    var apiUrl = proxy[rand] + encodeURIComponent(baseUrl + '?ac=&pg=1');
+    
+    $('#categoryList').html(`
+        <div class="loading-state">
+            <i class="fas fa-spinner"></i>
+            <span>Loading categories...</span>
+        </div>
+    `);
+    
+    $.ajax({
+        type: 'GET',
+        url: apiUrl,
+        dataType: 'json',
+        success: function(data) {
+            $('#categoryList').empty();
+            
+            var categories = data.class || [];
+            
+            // Add "Latest Update" category
+            $('#categoryList').append(`
+                <div class="category-item active" data-id="">
+                    <i class="fas fa-clock"></i>
+                    <span>最新更新</span>
+                </div>
+            `);
+            
+            // Add other categories
+            for (var i = 0; i < categories.length; i++) {
+                var cat = categories[i];
+                var catId = cat.type_id;
+                var catName = filterTypeName(cat.type_name);
+                
+                $('#categoryList').append(`
+                    <div class="category-item" data-id="${catId}">
+                        <i class="fas fa-folder"></i>
+                        <span>${catName}</span>
+                    </div>
+                `);
             }
-            $.ajax({
-                type: 'GET',
-                url: globallink,
-                dataType: link == 'https://www.huyaapi.com/api.php/provide/vod/at/json' ? 'json' : 'html',
-                success: function(data) {
-                    if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                        $test = data.list;
-                        $id = data.list;
-                        $total = data.pagecount;
-                    } else {
-                        var xml = $.parseXML(data),
-                            $xml = $(xml),
-                            $test = $xml.find('pic'),
-                            $total = $xml.find('list'),
-                            $type = $xml.find('type'),
-                            $name = $xml.find('name'),
-                            $id = $xml.find('id');
-                        var pic;
-                    }
-                    var count = link == 'https://www.huyaapi.com/api.php/provide/vod/at/json' ? $total : Number($total[0].attributes[1].value);
-                    if (pnum <= count) {
-                        $('.loadingimg').remove();
-                        if ($(window).width() > 1024) {
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < $id.length; i++) {
-                                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                    if (i % 4 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 4 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 4 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 4 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    }
-                                } else {
-                                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                    if (i % 4 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 4 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 4 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 4 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                            $(`.itemContainer:eq(3)`).hide();
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < $id.length; i++) {
-                                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                    if (i % 3 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 3 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 3 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    }
-                                } else {
-                                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                    if (i % 3 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 3 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 3 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        } else if ($(window).width() <= 640) {
-                            $(`.itemContainer:eq(2)`).hide();
-                            $(`.itemContainer:eq(3)`).hide();
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < $id.length; i++) {
-                                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    }
-                                } else {
-                                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        $('.loadingimg').remove();
-                    }
+            
+            // Bind click handler
+            $('.category-item').on('click', function() {
+                $('.category-item').removeClass('active');
+                $(this).addClass('active');
+                currentCategory = $(this).data('id');
+                pageNum = 1;
+                $('#searchInput').val('');
+                loadVideos(currentLink, currentCategory, 1);
+                
+                // Hide sidebar on mobile
+                if (window.innerWidth <= 768) {
+                    $('#sidebar').removeClass('show-mobile');
                 }
             });
+        },
+        error: function() {
+            $('#categoryList').html(`
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Failed to load categories</p>
+                </div>
+            `);
+            showToast('Failed to load categories', 'error');
+        }
+    });
+}
+
+// Load videos
+function loadVideos(link, category, page) {
+    if (isLoading) return;
+    isLoading = true;
+    
+    showLoading(page > 1, false);
+    
+    if (page === 1) {
+        showLoading(true, false);
+    }
+    
+    var baseUrl = link.endsWith('/') ? link : link + '/';
+    var apiUrl = category 
+        ? proxy[rand] + encodeURIComponent(baseUrl + '?ac=videolist&t=' + category + '&pg=' + page)
+        : proxy[rand] + encodeURIComponent(baseUrl + '?ac=videolist&pg=' + page);
+    
+    $.ajax({
+        type: 'GET',
+        url: apiUrl,
+        dataType: 'json',
+        success: function(data) {
+            if (page === 1) {
+                $('#contentGrid').empty();
+            }
+            
+            var videos = data.list || [];
+            
+            if (videos.length === 0 && page === 1) {
+                $('#contentGrid').html(`
+                    <div class="empty-state">
+                        <i class="fas fa-video-slash"></i>
+                        <p>No videos found</p>
+                    </div>
+                `);
+            } else {
+                $('#contentGrid').addClass('has-results');
+                
+                for (var i = 0; i < videos.length; i++) {
+                    var video = videos[i];
+                    var videoId = video.vod_id;
+                    var videoName = video.vod_name;
+                    var videoPic = video.vod_pic || '../images/noimage.jpeg';
+                    var videoType = filterTypeName(video.type_name) || '未知';
+                    
+                    var cardHtml = `
+                        <a href="../catalogues/complay.html?web=${link}&tab=${videoId}" class="card-item">
+                            <img class="card-image" src="${videoPic}" alt="${videoName}" onerror="this.src='../images/noimage.jpeg'">
+                            <div class="card-overlay"></div>
+                            <div class="card-play-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-type">${videoType}</span>
+                                <h4 class="card-title">${videoName}</h4>
+                            </div>
+                        </a>
+                    `;
+                    $('#contentGrid').append(cardHtml);
+                }
+            }
+            
+            showLoading(false);
+            isLoading = false;
+        },
+        error: function() {
+            if (page === 1) {
+                $('#contentGrid').html(`
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load videos</p>
+                    </div>
+                `);
+            }
+            showLoading(false);
+            isLoading = false;
+            showToast('Failed to load videos', 'error');
+        }
+    });
+}
+
+// Search videos
+function searchVideos(link, term, page) {
+    if (isLoading) return;
+    isLoading = true;
+    
+    showLoading(page > 1, page === 1);
+    
+    var baseUrl = link.endsWith('/') ? link : link + '/';
+    var apiUrl = proxy[rand] + encodeURIComponent(baseUrl + '?ac=videolist&wd=' + encodeURIComponent(term) + '&pg=' + (page || 1));
+    
+    $.ajax({
+        type: 'GET',
+        url: apiUrl,
+        dataType: 'json',
+        success: function(data) {
+            if (page === 1) {
+                $('#contentGrid').removeClass('has-results').empty();
+            }
+            
+            showLoading(false);
+            
+            var videos = data.list || data.vod_list || data.data || [];
+            
+            if (videos.length === 0 && page === 1) {
+                $('#contentGrid').html(`
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <p>No results found for "${term}"</p>
+                    </div>
+                `);
+            } else if (videos.length > 0) {
+                $('#contentGrid').addClass('has-results');
+                
+                for (var i = 0; i < videos.length; i++) {
+                    var video = videos[i];
+                    var videoId = video.vod_id;
+                    var videoName = video.vod_name;
+                    var videoPic = video.vod_pic || '../images/noimage.jpeg';
+                    var videoType = filterTypeName(video.type_name) || '未知';
+                    
+                    var cardHtml = `
+                        <a href="../catalogues/complay.html?web=${link}&tab=${videoId}" class="card-item">
+                            <img class="card-image" src="${videoPic}" alt="${videoName}" onerror="this.src='../images/noimage.jpeg'">
+                            <div class="card-overlay"></div>
+                            <div class="card-play-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-type">${videoType}</span>
+                                <h4 class="card-title">${videoName}</h4>
+                            </div>
+                        </a>
+                    `;
+                    $('#contentGrid').append(cardHtml);
+                }
+            }
+            
+            isLoading = false;
+        },
+        error: function() {
+            showLoading(false);
+            
+            if (page === 1) {
+                $('#contentGrid').html(`
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Search failed</p>
+                    </div>
+                `);
+            }
+            
+            isLoading = false;
+            showToast('Search failed', 'error');
+        }
+    });
+}
+
+// Initialize
+$(document).ready(function() {
+    console.log('=== Theater (Comprehensive) Page Loaded ===');
+    
+    // Set initial source
+    currentLink = $('#sourceSelect').val();
+    
+    // Load initial data
+    loadCategories(currentLink);
+    loadVideos(currentLink, '', 1);
+    
+    // Back button
+    $('#backBtn').on('click', function() {
+        window.history.back();
+    });
+    
+    // Menu toggle
+    $('#menuBtn').on('click', function() {
+        toggleSidebar();
+    });
+    
+    $('#toggleSidebar').on('click', function() {
+        toggleSidebar();
+    });
+    
+    // Source select change
+    $('#sourceSelect').on('change', function() {
+        currentLink = $(this).val();
+        currentCategory = '';
+        pageNum = 1;
+        loadCategories(currentLink);
+        loadVideos(currentLink, '', 1);
+    });
+    
+    // Search handler
+    $('#searchInput').on('keyup', function(e) {
+        if (e.which === 13) {
+            var searchTerm = $(this).val().trim();
+            if (searchTerm) {
+                currentCategory = '';
+                pageNum = 1;
+                $('.category-item').removeClass('active');
+                searchVideos(currentLink, searchTerm, 1);
+            } else {
+                loadVideos(currentLink, currentCategory, 1);
+            }
+        }
+    });
+    
+    // Infinite scroll
+    $('#contentArea').on('scroll', function() {
+        var scrollTop = $(this).scrollTop();
+        var scrollHeight = $(this)[0].scrollHeight;
+        var clientHeight = $(this).height();
+        
+        if (scrollTop + clientHeight >= scrollHeight - 100 && !isLoading) {
+            pageNum++;
+            var searchTerm = $('#searchInput').val().trim();
+            if (searchTerm) {
+                searchVideos(currentLink, searchTerm, pageNum);
+            } else {
+                loadVideos(currentLink, currentCategory, pageNum);
+            }
         }
     });
 });
-
-//Initial homepage menu
-function iniMenu(link) {
-    var menu;
-    var list;
-    if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-        menu = $.getJSON(proxy[rand] + `${link}?ac=&pg=1`);
-        list = $.getJSON(proxy[rand] + `${link}?ac=videolist&pg=1`);
-    } else {
-        menu = $.ajax({
-            type: "GET",
-            url: proxy[rand] + `${link}?ac=&pg=1`,
-            dataType: "xml",
-        });
-        list = $.ajax({
-            type: "GET",
-            url: proxy[rand] + `${link}?ac=videolist&pg=1`,
-            dataType: "xml",
-        });
-    }
-    $('#root').append(`<div class="loadingimg"><img src="../images/loading.gif" tag="Easy Web TV"></div>`);
-    $.when(menu, list).done(function(alp, bet) {
-        $("#menu").empty();
-        if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-            $lef = alp[0]['class'];
-            $test = bet[0]['list'];
-        } else {
-            var xml = $.parseXML(alp[2].responseText),
-                $xml = $(xml),
-                $lef = $xml.find('ty');
-            var xmls = $.parseXML(bet[2].responseText),
-                $xmls = $(xmls),
-                $id = $xmls.find('id'),
-                $test = $xmls.find('pic'),
-                $type = $xmls.find('type'),
-                $name = $xmls.find('name');
-            var pic;
-        }
-        $("#menu").append('<li style="background-color:#fff"><input id="search" type="text" placeholder="Search..." /></li>');
-        $("#menu").append(`<li><p><span class="0">最近更新</span></p></li>`);
-        for (let i of $lef) {
-            if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                $("#menu").append(`<li><p><span class="${i.type_id}">${i.type_name}</span></p></li>`);
-            } else {
-                $("#menu").append(`<li><p><span class="${i.id}">${i.innerHTML}</span></p></li>`);
-            }
-        };
-        $('.loadingimg').remove();
-        if ($(window).width() > 1024) {
-            $(`.itemContainer:eq(4)`).hide();
-            for (let i = 0; i < $test.length; i++) {
-                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                    if (i % 4 == 0) {
-                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    } else if (i % 4 == 1) {
-                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    } else if (i % 4 == 2) {
-                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    } else if (i % 4 == 3) {
-                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    }
-                } else {
-                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                    if (i % 4 == 0) {
-                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    } else if (i % 4 == 1) {
-                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    } else if (i % 4 == 2) {
-                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    } else if (i % 4 == 3) {
-                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    }
-                }
-            };
-        } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-            $(`.itemContainer:eq(3)`).hide();
-            $(`.itemContainer:eq(4)`).hide();
-            for (let i = 0; i < $test.length; i++) {
-                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                    if (i % 3 == 0) {
-                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    } else if (i % 3 == 1) {
-                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    } else if (i % 3 == 2) {
-                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    }
-                } else {
-                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                    if (i % 3 == 0) {
-                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    } else if (i % 3 == 1) {
-                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    } else if (i % 3 == 2) {
-                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    }
-                }
-            };
-        } else if ($(window).width() <= 640) {
-            $(`.itemContainer:eq(2)`).hide();
-            $(`.itemContainer:eq(3)`).hide();
-            $(`.itemContainer:eq(4)`).hide();
-            for (let i = 0; i < $test.length; i++) {
-                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                    if (i % 2 == 0) {
-                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    } else if (i % 2 == 1) {
-                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                    }
-                } else {
-                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                    if (i % 2 == 0) {
-                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    } else if (i % 2 == 1) {
-                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                    }
-                }
-            }
-        }
-    }).done(function() {
-        var searchlink = '';
-        $("#search").on('keyup', function(e) {
-            if (e.which == 13) {
-                //Search Items
-                var valThis = $(this).val().toLowerCase();
-                if (link == 'https://www.hongniuzy2.com/api.php/provide/vod/from/hnm3u8/at/xml/') {
-                    alert('红牛资源 not support search');
-                } else if (link == 'https://caiji.maotaizy.cc/api.php/provide/vod/from/mtm3u8/at/xml/') {
-                    alert('茅台资源 not support search');
-                } else if (link == 'https://cj.rycjapi.com/api.php/provide/vod/from/rym3u8/at/xml/') {
-                    alert('如意资源 not support search');
-                } else if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                    searchlink = proxy[rand] + `${link}?ac=videolist&wd=${valThis}`;
-                } else if (link == "https://collect.wolongzyw.com/api.php/provide/vod/at/xml" || link == 'https://api.guangsuapi.com/api.php/provide/vod/from/gsm3u8/at/xml/') {
-                    searchlink = proxy[rand] + `${link}?ac=list&wd=${valThis}`;
-                }
-                $.ajax({
-                    tyep: 'GET',
-                    url: searchlink,
-                    dataType: link == 'https://www.huyaapi.com/api.php/provide/vod/at/json' ? 'json' : 'html',
-                    success: function(data) {
-                        if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                            $test = data.list;
-                            $id = data.list;
-                        } else {
-                            var xml = $.parseXML(data),
-                                $xml = $(xml),
-                                $test = $xml.find('pic'),
-                                $type = $xml.find('type'),
-                                $name = $xml.find('name'),
-                                $id = $xml.find('id');
-                            var pic;
-                        }
-                        $('.itemContainer').empty();
-                        if ($(window).width() > 1024) {
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < $id.length; i++) {
-                                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                    if (i % 4 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 4 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 4 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 4 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    }
-                                } else {
-                                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                    if (i % 4 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 4 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 4 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 4 == 3) {
-                                        $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                            $(`.itemContainer:eq(3)`).hide();
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < $id.length; i++) {
-                                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                    if (i % 3 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 3 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 3 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    }
-                                } else {
-                                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                    if (i % 3 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 3 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 3 == 2) {
-                                        $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        } else if ($(window).width() <= 640) {
-                            $(`.itemContainer:eq(2)`).hide();
-                            $(`.itemContainer:eq(3)`).hide();
-                            $(`.itemContainer:eq(4)`).hide();
-                            for (let i = 0; i < $id.length; i++) {
-                                if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                    }
-                                } else {
-                                    pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                    if (i % 2 == 0) {
-                                        $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    } else if (i % 2 == 1) {
-                                        $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        })
-    }).done(function() {
-        $("#menu li:eq(1)").addClass("bd");
-        $("#menu li:gt(1)").on('click', function(){
-            $(this).addClass("bd").siblings().removeClass("bd");
-        });
-        //Click to choose category
-        $('#menu').on("click", "span", function(e) {
-            let className = e.originalEvent.target.className;
-            $('.hiddens').empty();
-            $('.hiddens').append(`<p>${className}</p>`);
-            $('#search').val('');
-            $.ajax({
-                tyep: 'GET',
-                url: proxy[rand] + `${link}?ac=videolist&t=${className}`,
-                dataType: link == 'https://www.huyaapi.com/api.php/provide/vod/at/json' ? 'json' : 'html',
-                success: function(data) {
-                    if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                        $test = data.list;
-                        $id = data.list;
-                    } else {
-                        var xml = $.parseXML(data),
-                            $xml = $(xml),
-                            $test = $xml.find('pic'),
-                            $type = $xml.find('type'),
-                            $name = $xml.find('name'),
-                            $id = $xml.find('id');
-                        var pic;
-                    }
-                    $('.itemContainer').empty();
-                    if ($(window).width() > 1024) {
-                        $(`.itemContainer:eq(4)`).hide();
-                        for (let i = 0; i < $test.length; i++) {
-                            if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                if (i % 4 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                } else if (i % 4 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                } else if (i % 4 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                } else if (i % 4 == 3) {
-                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                }
-                            } else {
-                                pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                if (i % 4 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                } else if (i % 4 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                } else if (i % 4 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                } else if (i % 4 == 3) {
-                                    $(`.itemContainer:eq(3)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                }
-                            }
-                        }
-                    } else if ($(window).width() <= 1024 && $(window).width() > 640) {
-                        $(`.itemContainer:eq(3)`).hide();
-                        $(`.itemContainer:eq(4)`).hide();
-                        for (let i = 0; i < $test.length; i++) {
-                            if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                if (i % 3 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                } else if (i % 3 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                } else if (i % 3 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                }
-                            } else {
-                                pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                if (i % 3 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                } else if (i % 3 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                } else if (i % 3 == 2) {
-                                    $(`.itemContainer:eq(2)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                }
-                            }
-                        }
-                    } else if ($(window).width() <= 640) {
-                        $(`.itemContainer:eq(2)`).hide();
-                        $(`.itemContainer:eq(3)`).hide();
-                        $(`.itemContainer:eq(4)`).hide();
-                        for (let i = 0; i < $test.length; i++) {
-                            if (link == 'https://www.huyaapi.com/api.php/provide/vod/at/json') {
-                                if (i % 2 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                } else if (i % 2 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$test[i]['vod_id']}"><div class="item"><img class="itemImg" src="${$test[i]['vod_pic']}" alt="${$test[i]['vod_name']}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$test[i]['type_name']}]${$test[i]['vod_name']}</span></div></div></a>`)
-                                }
-                            } else {
-                                pic = $test.length == 0 ? '../images/noimage.jpeg' : $test[i].innerHTML;
-                                if (i % 2 == 0) {
-                                    $(`.itemContainer:eq(0)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                } else if (i % 2 == 1) {
-                                    $(`.itemContainer:eq(1)`).append(`<a href="../catalogues/complay.html?web=${link}&tab=${$id[i].innerHTML}"><div class="item"><img class="itemImg" src="${pic}" alt="${$name[i].innerHTML.split("[")[2].split(']')[0]}" /><div class="userInfo"><img class="avatar" src="../images/player.jpg" alt="" /><span class="username">[${$type[i].innerHTML}]${$name[i].innerHTML.split("[")[2].split(']')[0]}</span></div></div></a>`)
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        })
-    });
-}

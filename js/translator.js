@@ -15,7 +15,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Jezici');
         $('#selectform input:eq(2)').next().text('Kategorija');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Osetljiv sadržaj');
-        $('#mySidenav div:eq(1)').find('span').text('Jezici');
+        $('#mySidenav div:eq(1)').find('label').text('Jezici');
         $('#mySidenav div:eq(2)').find('span').text('jasno');
         $('#mySidenav div:eq(3)').find('span').text('Izvor');
         $('#mySidenav div:eq(4)').find('span').text('Verzija');
@@ -35,7 +35,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Taal');
         $('#selectform input:eq(2)').next().text('kategorie');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('sensitiewe inhoud');
-        $('#mySidenav div:eq(1)').find('span').text('Taal');
+        $('#mySidenav div:eq(1)').find('label').text('Taal');
         $('#mySidenav div:eq(2)').find('span').text('duidelik');
         $('#mySidenav div:eq(3)').find('span').text('Bron');
         $('#mySidenav div:eq(4)').find('span').text('Weergawe');
@@ -55,7 +55,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Gjuhët');
         $('#selectform input:eq(2)').next().text('Kategoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Përmbajtje e ndjeshme');
-        $('#mySidenav div:eq(1)').find('span').text('Gjuhët');
+        $('#mySidenav div:eq(1)').find('label').text('Gjuhët');
         $('#mySidenav div:eq(2)').find('span').text('qartë');
         $('#mySidenav div:eq(3)').find('span').text('Burimi');
         $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -75,7 +75,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ቋንቋዎች');
         $('#selectform input:eq(2)').next().text('ምድብ');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('ስሜታዊ ይዘት');
-        $('#mySidenav div:eq(1)').find('span').text('ቋንቋዎች');
+        $('#mySidenav div:eq(1)').find('label').text('ቋንቋዎች');
         $('#mySidenav div:eq(2)').find('span').text('ግልጽ');
         $('#mySidenav div:eq(3)').find('span').text('ምንጭ');
         $('#mySidenav div:eq(4)').find('span').text('ስሪት');
@@ -95,7 +95,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('اللغات');
         $('#selectform input:eq(2)').next().text('فئة');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('المحتوى الحساس');
-        $('#mySidenav div:eq(1)').find('span').text('اللغات');
+        $('#mySidenav div:eq(1)').find('label').text('اللغات');
         $('#mySidenav div:eq(2)').find('span').text('صافي');
         $('#mySidenav div:eq(3)').find('span').text('مصدر');
         $('#mySidenav div:eq(4)').find('span').text('إصدار');
@@ -115,7 +115,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Լեզուներ');
         $('#selectform input:eq(2)').next().text('Կատեգորիա');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sգայուն բովանդակություն');
-        $('#mySidenav div:eq(1)').find('span').text('Լեզուներ');
+        $('#mySidenav div:eq(1)').find('label').text('Լեզուներ');
         $('#mySidenav div:eq(2)').find('span').text('պարզ');
         $('#mySidenav div:eq(3)').find('span').text('Աղբյուր');
         $('#mySidenav div:eq(4)').find('span').text('Տարբերակ');
@@ -135,7 +135,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Dillər');
         $('#selectform input:eq(2)').next().text('Kateqoriya');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Həssas Məzmun');
-        $('#mySidenav div:eq(1)').find('span').text('Dillər');
+        $('#mySidenav div:eq(1)').find('label').text('Dillər');
         $('#mySidenav div:eq(2)').find('span').text('aydın');
         $('#mySidenav div:eq(3)').find('span').text('Mənbə');
         $('#mySidenav div:eq(4)').find('span').text('Versiya');
@@ -155,7 +155,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Hizkuntzak');
         $('#selectform input:eq(2)').next().text('Kategoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Eduki sentikorra');
-        $('#mySidenav div:eq(1)').find('span').text('Hizkuntzak');
+        $('#mySidenav div:eq(1)').find('label').text('Hizkuntzak');
         $('#mySidenav div:eq(2)').find('span').text('argi');
         $('#mySidenav div:eq(3)').find('span').text('Iturria');
         $('#mySidenav div:eq(4)').find('span').text('Bertsioa');
@@ -175,7 +175,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Мовы');
         $('#selectform input:eq(2)').next().text('Катэгорыя');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Адчувальны змест');
-        $('#mySidenav div:eq(1)').find('span').text('Мовы');
+        $('#mySidenav div:eq(1)').find('label').text('Мовы');
         $('#mySidenav div:eq(2)').find('span').text('ясна');
         $('#mySidenav div:eq(3)').find('span').text('Крыніца');
         $('#mySidenav div:eq(4)').find('span').text('Версія');
@@ -195,7 +195,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ভাষা');
         $('#selectform input:eq(2)').next().text('বিভাগ');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('সংবেদনশীল বিষয়বস্তু');
-        $('#mySidenav div:eq(1)').find('span').text('ভাষা');
+        $('#mySidenav div:eq(1)').find('label').text('ভাষা');
         $('#mySidenav div:eq(2)').find('span').text('পরিষ্কার');
         $('#mySidenav div:eq(3)').find('span').text('সূত্র');
         $('#mySidenav div:eq(4)').find('span').text('সংস্করণ');
@@ -215,7 +215,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Езици');
         $('#selectform input:eq(2)').next().text('Категория');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Чувствително съдържание');
-        $('#mySidenav div:eq(1)').find('span').text('Езици');
+        $('#mySidenav div:eq(1)').find('label').text('Езици');
         $('#mySidenav div:eq(2)').find('span').text('ясно');
         $('#mySidenav div:eq(3)').find('span').text('Източник');
         $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -235,7 +235,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Idiomes');
         $('#selectform input:eq(2)').next().text('Categoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contingut sensible');
-        $('#mySidenav div:eq(1)').find('span').text('Idiomes');
+        $('#mySidenav div:eq(1)').find('label').text('Idiomes');
         $('#mySidenav div:eq(2)').find('span').text('clar');
         $('#mySidenav div:eq(3)').find('span').text('Font');
         $('#mySidenav div:eq(4)').find('span').text('Versió');
@@ -255,7 +255,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('语言');
         $('#selectform input:eq(2)').next().text('分类');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('敏感内容');
-        $('#mySidenav div:eq(1)').find('span').text('语言');
+        $('#mySidenav div:eq(1)').find('label').text('语言');
         $('#mySidenav div:eq(2)').find('span').text('清理');
         $('#mySidenav div:eq(3)').find('span').text('来源');
         $('#mySidenav div:eq(4)').find('span').text('版本');
@@ -275,7 +275,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('語言');
         $('#selectform input:eq(2)').next().text('分類');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('敏感內容');
-        $('#mySidenav div:eq(1)').find('span').text('語言');
+        $('#mySidenav div:eq(1)').find('label').text('語言');
         $('#mySidenav div:eq(2)').find('span').text('清除');
         $('#mySidenav div:eq(3)').find('span').text('來源');
         $('#mySidenav div:eq(4)').find('span').text('版本');
@@ -295,7 +295,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Lingue');
         $('#selectform input:eq(2)').next().text('Catigurìa');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Cuntenutu Sensitivu');
-        $('#mySidenav div:eq(1)').find('span').text('Lingue');
+        $('#mySidenav div:eq(1)').find('label').text('Lingue');
         $('#mySidenav div:eq(2)').find('span').text('chjaru');
         $('#mySidenav div:eq(3)').find('span').text('Surghjente');
         $('#mySidenav div:eq(4)').find('span').text('Versione');
@@ -315,7 +315,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Jezici');
         $('#selectform input:eq(2)').next().text('Kategorija');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Osjetljiv sadržaj');
-        $('#mySidenav div:eq(1)').find('span').text('Jezici');
+        $('#mySidenav div:eq(1)').find('label').text('Jezici');
         $('#mySidenav div:eq(2)').find('span').text('čisto');
         $('#mySidenav div:eq(3)').find('span').text('Izvor');
         $('#mySidenav div:eq(4)').find('span').text('Verzija');
@@ -335,7 +335,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Jazyky');
         $('#selectform input:eq(2)').next().text('Kategorie');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Citlivý obsah');
-        $('#mySidenav div:eq(1)').find('span').text('Jazyky');
+        $('#mySidenav div:eq(1)').find('label').text('Jazyky');
         $('#mySidenav div:eq(2)').find('span').text('Průhledná');
         $('#mySidenav div:eq(3)').find('span').text('Zdroj');
         $('#mySidenav div:eq(4)').find('span').text('Verze');
@@ -355,7 +355,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Sprog');
         $('#selectform input:eq(2)').next().text('Kategori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Følsomt indhold');
-        $('#mySidenav div:eq(1)').find('span').text('Sprog');
+        $('#mySidenav div:eq(1)').find('label').text('Sprog');
         $('#mySidenav div:eq(2)').find('span').text('klar');
         $('#mySidenav div:eq(3)').find('span').text('Kilde');
         $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -375,7 +375,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Talen');
         $('#selectform input:eq(2)').next().text('Categorie');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Gevoelige inhoud');
-        $('#mySidenav div:eq(1)').find('span').text('Talen');
+        $('#mySidenav div:eq(1)').find('label').text('Talen');
         $('#mySidenav div:eq(2)').find('span').text('Doorzichtig');
         $('#mySidenav div:eq(3)').find('span').text('Bron');
         $('#mySidenav div:eq(4)').find('span').text('Versie');
@@ -396,7 +396,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Languages');
         $('#selectform input:eq(2)').next().text('Category');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitive Content');
-        $('#mySidenav div:eq(1)').find('span').text('Languages');
+        $('#mySidenav div:eq(1)').find('label').text('Languages');
         $('#mySidenav div:eq(2)').find('span').text('Clear');
         $('#mySidenav div:eq(3)').find('span').text('Source');
         $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -416,7 +416,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Lingvoj');
         $('#selectform input:eq(2)').next().text('Kategorio');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sentema Enhavo');
-        $('#mySidenav div:eq(1)').find('span').text('Lingvoj');
+        $('#mySidenav div:eq(1)').find('label').text('Lingvoj');
         $('#mySidenav div:eq(2)').find('span').text('klara');
         $('#mySidenav div:eq(3)').find('span').text('Fonto');
         $('#mySidenav div:eq(4)').find('span').text('Versio');
@@ -436,7 +436,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Keeled');
         $('#selectform input:eq(2)').next().text('Kategooria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Tundlik sisu');
-        $('#mySidenav div:eq(1)').find('span').text('Keeled');
+        $('#mySidenav div:eq(1)').find('label').text('Keeled');
         $('#mySidenav div:eq(2)').find('span').text('Selge');
         $('#mySidenav div:eq(3)').find('span').text('Allikas');
         $('#mySidenav div:eq(4)').find('span').text('Versioon');
@@ -456,7 +456,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Mga Wika');
         $('#selectform input:eq(2)').next().text('Kategoryang');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitibong Nilalaman');
-        $('#mySidenav div:eq(1)').find('span').text('Mga Wika');
+        $('#mySidenav div:eq(1)').find('label').text('Mga Wika');
         $('#mySidenav div:eq(2)').find('span').text('Malinaw');
         $('#mySidenav div:eq(3)').find('span').text('Pinagmulan');
         $('#mySidenav div:eq(4)').find('span').text('Bersyon');
@@ -476,7 +476,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Kieli (kielet');
         $('#selectform input:eq(2)').next().text('Kategoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Arkaluonteinen sisältö');
-        $('#mySidenav div:eq(1)').find('span').text('Kieli (kielet');
+        $('#mySidenav div:eq(1)').find('label').text('Kieli (kielet');
         $('#mySidenav div:eq(2)').find('span').text('Asia selvä');
         $('#mySidenav div:eq(3)').find('span').text('Lähde');
         $('#mySidenav div:eq(4)').find('span').text('Versio');
@@ -496,7 +496,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Langages');
         $('#selectform input:eq(2)').next().text('Catégorie');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contenu sensible');
-        $('#mySidenav div:eq(1)').find('span').text('Langages');
+        $('#mySidenav div:eq(1)').find('label').text('Langages');
         $('#mySidenav div:eq(2)').find('span').text('dégager');
         $('#mySidenav div:eq(3)').find('span').text('La source');
         $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -516,7 +516,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Idiomas');
         $('#selectform input:eq(2)').next().text('Categoría');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contido sensible');
-        $('#mySidenav div:eq(1)').find('span').text('Idiomas');
+        $('#mySidenav div:eq(1)').find('label').text('Idiomas');
         $('#mySidenav div:eq(2)').find('span').text('Claro');
         $('#mySidenav div:eq(3)').find('span').text('Fonte');
         $('#mySidenav div:eq(4)').find('span').text('Versión');
@@ -536,7 +536,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ენები');
         $('#selectform input:eq(2)').next().text('კატეგორია');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('მგრძნობიარე შინაარსი');
-        $('#mySidenav div:eq(1)').find('span').text('ენები');
+        $('#mySidenav div:eq(1)').find('label').text('ენები');
         $('#mySidenav div:eq(2)').find('span').text('ნათელია');
         $('#mySidenav div:eq(3)').find('span').text('წყარო');
         $('#mySidenav div:eq(4)').find('span').text('ვერსია');
@@ -556,7 +556,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Sprachen');
         $('#selectform input:eq(2)').next().text('Kategorie');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensible Inhalte');
-        $('#mySidenav div:eq(1)').find('span').text('Sprachen');
+        $('#mySidenav div:eq(1)').find('label').text('Sprachen');
         $('#mySidenav div:eq(2)').find('span').text('klar');
         $('#mySidenav div:eq(3)').find('span').text('Quelle');
         $('#mySidenav div:eq(4)').find('span').text('Ausführung');
@@ -576,7 +576,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Γλώσσες');
         $('#selectform input:eq(2)').next().text('Κατηγορία');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Ευαίσθητο Περιεχόμενο');
-        $('#mySidenav div:eq(1)').find('span').text('Γλώσσες');
+        $('#mySidenav div:eq(1)').find('label').text('Γλώσσες');
         $('#mySidenav div:eq(2)').find('span').text('Σαφή');
         $('#mySidenav div:eq(3)').find('span').text('Πηγή');
         $('#mySidenav div:eq(4)').find('span').text('Εκδοχή');
@@ -596,7 +596,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ભાષાઓ');
         $('#selectform input:eq(2)').next().text('શ્રેણી');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('સંવેદનશીલ સામગ્રી');
-        $('#mySidenav div:eq(1)').find('span').text('ભાષાઓ');
+        $('#mySidenav div:eq(1)').find('label').text('ભાષાઓ');
         $('#mySidenav div:eq(2)').find('span').text('ચોખ્ખુ');
         $('#mySidenav div:eq(3)').find('span').text('સ્ત્રોત');
         $('#mySidenav div:eq(4)').find('span').text('આવૃત્તિ');
@@ -616,7 +616,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Harsuna');
         $('#selectform input:eq(2)').next().text('Nau\'i');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Abun ciki Mai Sahihi');
-        $('#mySidenav div:eq(1)').find('span').text('Harsuna');
+        $('#mySidenav div:eq(1)').find('label').text('Harsuna');
         $('#mySidenav div:eq(2)').find('span').text('Bayyana');
         $('#mySidenav div:eq(3)').find('span').text('Source');
         $('#mySidenav div:eq(4)').find('span').text('Sigar');
@@ -636,7 +636,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ʻLelo');
         $('#selectform input:eq(2)').next().text('Māhele');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('ʻIke nahenahe');
-        $('#mySidenav div:eq(1)').find('span').text('ʻLelo');
+        $('#mySidenav div:eq(1)').find('label').text('ʻLelo');
         $('#mySidenav div:eq(2)').find('span').text('Maopopo');
         $('#mySidenav div:eq(3)').find('span').text('Punawai');
         $('#mySidenav div:eq(4)').find('span').text('Mana');
@@ -656,7 +656,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('שפות');
         $('#selectform input:eq(2)').next().text('קטגוריה');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('תוכן רגיש');
-        $('#mySidenav div:eq(1)').find('span').text('שפות');
+        $('#mySidenav div:eq(1)').find('label').text('שפות');
         $('#mySidenav div:eq(2)').find('span').text('ברור');
         $('#mySidenav div:eq(3)').find('span').text('מָקוֹר');
         $('#mySidenav div:eq(4)').find('span').text('גִרְסָה');
@@ -676,7 +676,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('भाषा: हिन्दी');
         $('#selectform input:eq(2)').next().text('श्रेणी');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('संवेदनशील सामग्री');
-        $('#mySidenav div:eq(1)').find('span').text('भाषा: हिन्दी');
+        $('#mySidenav div:eq(1)').find('label').text('भाषा: हिन्दी');
         $('#mySidenav div:eq(2)').find('span').text('स्पष्ट');
         $('#mySidenav div:eq(3)').find('span').text('स्रोत');
         $('#mySidenav div:eq(4)').find('span').text('संस्करण');
@@ -696,7 +696,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Nyelvek');
         $('#selectform input:eq(2)').next().text('Kategória');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Érzékeny tartalom');
-        $('#mySidenav div:eq(1)').find('span').text('Nyelvek');
+        $('#mySidenav div:eq(1)').find('label').text('Nyelvek');
         $('#mySidenav div:eq(2)').find('span').text('Egyértelmű');
         $('#mySidenav div:eq(3)').find('span').text('Forrás');
         $('#mySidenav div:eq(4)').find('span').text('Változat');
@@ -716,7 +716,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Tungumál');
         $('#selectform input:eq(2)').next().text('Flokkur');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Viðkvæmt efni');
-        $('#mySidenav div:eq(1)').find('span').text('Tungumál');
+        $('#mySidenav div:eq(1)').find('label').text('Tungumál');
         $('#mySidenav div:eq(2)').find('span').text('Hreinsa');
         $('#mySidenav div:eq(3)').find('span').text('Heimild');
         $('#mySidenav div:eq(4)').find('span').text('Útgáfa');
@@ -736,7 +736,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Bahasa');
         $('#selectform input:eq(2)').next().text('Kategori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Konten Sensitif');
-        $('#mySidenav div:eq(1)').find('span').text('Bahasa');
+        $('#mySidenav div:eq(1)').find('label').text('Bahasa');
         $('#mySidenav div:eq(2)').find('span').text('jernih');
         $('#mySidenav div:eq(3)').find('span').text('Sumber');
         $('#mySidenav div:eq(4)').find('span').text('Versi: kapan');
@@ -756,7 +756,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Teangacha');
         $('#selectform input:eq(2)').next().text('Catagóir');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Ábhar Íogair');
-        $('#mySidenav div:eq(1)').find('span').text('Teangacha');
+        $('#mySidenav div:eq(1)').find('label').text('Teangacha');
         $('#mySidenav div:eq(2)').find('span').text('Glan');
         $('#mySidenav div:eq(3)').find('span').text('Foinse');
         $('#mySidenav div:eq(4)').find('span').text('Leagan');
@@ -776,7 +776,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Le lingue');
         $('#selectform input:eq(2)').next().text('Categoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contenuti sensibili');
-        $('#mySidenav div:eq(1)').find('span').text('Le lingue');
+        $('#mySidenav div:eq(1)').find('label').text('Le lingue');
         $('#mySidenav div:eq(2)').find('span').text('chiara');
         $('#mySidenav div:eq(3)').find('span').text('Fonte');
         $('#mySidenav div:eq(4)').find('span').text('Versione');
@@ -796,7 +796,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('言語');
         $('#selectform input:eq(2)').next().text('カテゴリー');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('デリケートなコンテンツ');
-        $('#mySidenav div:eq(1)').find('span').text('言語');
+        $('#mySidenav div:eq(1)').find('label').text('言語');
         $('#mySidenav div:eq(2)').find('span').text('クリア');
         $('#mySidenav div:eq(3)').find('span').text('ソース');
         $('#mySidenav div:eq(4)').find('span').text('バージョン');
@@ -816,7 +816,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ಭಾಷೆಗಳು');
         $('#selectform input:eq(2)').next().text('ವರ್ಗ');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('ಸೂಕ್ಷ್ಮ ವಿಷಯ');
-        $('#mySidenav div:eq(1)').find('span').text('ಭಾಷೆಗಳು');
+        $('#mySidenav div:eq(1)').find('label').text('ಭಾಷೆಗಳು');
         $('#mySidenav div:eq(2)').find('span').text('ಸ್ಪಷ್ಟ');
         $('#mySidenav div:eq(3)').find('span').text('ಮೂಲ');
         $('#mySidenav div:eq(4)').find('span').text('ಆವೃತ್ತಿ');
@@ -836,7 +836,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Тілдер');
         $('#selectform input:eq(2)').next().text('Санат');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Сезімтал мазмұн');
-        $('#mySidenav div:eq(1)').find('span').text('Тілдер');
+        $('#mySidenav div:eq(1)').find('label').text('Тілдер');
         $('#mySidenav div:eq(2)').find('span').text('Таза');
         $('#mySidenav div:eq(3)').find('span').text('Дереккөз');
         $('#mySidenav div:eq(4)').find('span').text('Нұсқа');
@@ -856,7 +856,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ភាសា');
         $('#selectform input:eq(2)').next().text('ប្រភេទ');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('មាតិការសើប');
-        $('#mySidenav div:eq(1)').find('span').text('ភាសា');
+        $('#mySidenav div:eq(1)').find('label').text('ភាសា');
         $('#mySidenav div:eq(2)').find('span').text('ច្បាស់');
         $('#mySidenav div:eq(3)').find('span').text('ប្រភព');
         $('#mySidenav div:eq(4)').find('span').text('កំណែ');
@@ -876,7 +876,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('언어');
         $('#selectform input:eq(2)').next().text('श्रेणी');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('범주');
-        $('#mySidenav div:eq(1)').find('span').text('언어');
+        $('#mySidenav div:eq(1)').find('label').text('언어');
         $('#mySidenav div:eq(2)').find('span').text('분명한');
         $('#mySidenav div:eq(3)').find('span').text('원천');
         $('#mySidenav div:eq(4)').find('span').text('버전');
@@ -896,7 +896,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Ziman');
         $('#selectform input:eq(2)').next().text('Liq');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Naveroka Hestiyar');
-        $('#mySidenav div:eq(1)').find('span').text('Ziman');
+        $('#mySidenav div:eq(1)').find('label').text('Ziman');
         $('#mySidenav div:eq(2)').find('span').text('Zelal');
         $('#mySidenav div:eq(3)').find('span').text('Kanî');
         $('#mySidenav div:eq(4)').find('span').text('Awa');
@@ -916,7 +916,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Тилдер');
         $('#selectform input:eq(2)').next().text('Категория');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Сезимдүү мазмун');
-        $('#mySidenav div:eq(1)').find('span').text('Тилдер');
+        $('#mySidenav div:eq(1)').find('label').text('Тилдер');
         $('#mySidenav div:eq(2)').find('span').text('Тазалоо');
         $('#mySidenav div:eq(3)').find('span').text('Булак');
         $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -936,7 +936,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ພາສາ');
         $('#selectform input:eq(2)').next().text('ປະເພດ');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('ເນື້ອຫາທີ່ລະອຽດອ່ອນ');
-        $('#mySidenav div:eq(1)').find('span').text('ພາສາ');
+        $('#mySidenav div:eq(1)').find('label').text('ພາສາ');
         $('#mySidenav div:eq(2)').find('span').text('ຊັດເຈນ');
         $('#mySidenav div:eq(3)').find('span').text('ແຫຼ່ງຂໍ້ມູນ');
         $('#mySidenav div:eq(4)').find('span').text('ສະບັບ');
@@ -956,7 +956,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Linguae');
         $('#selectform input:eq(2)').next().text('Categoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitivum Content');
-        $('#mySidenav div:eq(1)').find('span').text('Linguae');
+        $('#mySidenav div:eq(1)').find('label').text('Linguae');
         $('#mySidenav div:eq(2)').find('span').text('Patet');
         $('#mySidenav div:eq(3)').find('span').text('Source');
         $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -976,7 +976,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Valodas');
         $('#selectform input:eq(2)').next().text('Kategorija');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitīvs saturs');
-        $('#mySidenav div:eq(1)').find('span').text('Valodas');
+        $('#mySidenav div:eq(1)').find('label').text('Valodas');
         $('#mySidenav div:eq(2)').find('span').text('Skaidrs');
         $('#mySidenav div:eq(3)').find('span').text('Avots');
         $('#mySidenav div:eq(4)').find('span').text('Versija');
@@ -996,7 +996,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Kalbos');
         $('#selectform input:eq(2)').next().text('Kategorija');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Jautrus turinys');
-        $('#mySidenav div:eq(1)').find('span').text('Kalbos');
+        $('#mySidenav div:eq(1)').find('label').text('Kalbos');
         $('#mySidenav div:eq(2)').find('span').text('Skaidrus');
         $('#mySidenav div:eq(3)').find('span').text('Šaltinis');
         $('#mySidenav div:eq(4)').find('span').text('Versija');
@@ -1016,7 +1016,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Јазици');
         $('#selectform input:eq(2)').next().text('Категорија');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Чувствителна содржина');
-        $('#mySidenav div:eq(1)').find('span').text('Јазици');
+        $('#mySidenav div:eq(1)').find('label').text('Јазици');
         $('#mySidenav div:eq(2)').find('span').text('Јасно');
         $('#mySidenav div:eq(3)').find('span').text('Извор');
         $('#mySidenav div:eq(4)').find('span').text('Верзија');
@@ -1036,7 +1036,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Bahasa');
         $('#selectform input:eq(2)').next().text('Kategori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Kandungan Sensitif');
-        $('#mySidenav div:eq(1)').find('span').text('Bahasa');
+        $('#mySidenav div:eq(1)').find('label').text('Bahasa');
         $('#mySidenav div:eq(2)').find('span').text('Jelas');
         $('#mySidenav div:eq(3)').find('span').text('Sumber');
         $('#mySidenav div:eq(4)').find('span').text('Versi');
@@ -1056,7 +1056,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ഭാഷകൾ');
         $('#selectform input:eq(2)').next().text('വിഭാഗം');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('സെൻസിറ്റീവ് ഉള്ളടക്കം');
-        $('#mySidenav div:eq(1)').find('span').text('ഭാഷകൾ');
+        $('#mySidenav div:eq(1)').find('label').text('ഭാഷകൾ');
         $('#mySidenav div:eq(2)').find('span').text('തെളിഞ്ഞ');
         $('#mySidenav div:eq(3)').find('span').text('ഉറവിടം');
         $('#mySidenav div:eq(4)').find('span').text('പതിപ്പ്');
@@ -1076,7 +1076,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Lingwi');
         $('#selectform input:eq(2)').next().text('Kategorija');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Kontenut Sensittiv');
-        $('#mySidenav div:eq(1)').find('span').text('Lingwi');
+        $('#mySidenav div:eq(1)').find('label').text('Lingwi');
         $('#mySidenav div:eq(2)').find('span').text('Ċara');
         $('#mySidenav div:eq(3)').find('span').text('Sors');
         $('#mySidenav div:eq(4)').find('span').text('Verżjoni');
@@ -1096,7 +1096,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('भाषा');
         $('#selectform input:eq(2)').next().text('श्रेणी');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('संवेदनशील सामग्री');
-        $('#mySidenav div:eq(1)').find('span').text('भाषा');
+        $('#mySidenav div:eq(1)').find('label').text('भाषा');
         $('#mySidenav div:eq(2)').find('span').text('साफ करा');
         $('#mySidenav div:eq(3)').find('span').text('स्त्रोत');
         $('#mySidenav div:eq(4)').find('span').text('आवृत्ती');
@@ -1116,7 +1116,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Хэл');
         $('#selectform input:eq(2)').next().text('Ангилал');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Мэдрэмтгий контент');
-        $('#mySidenav div:eq(1)').find('span').text('Хэл');
+        $('#mySidenav div:eq(1)').find('label').text('Хэл');
         $('#mySidenav div:eq(2)').find('span').text('Цэвэр');
         $('#mySidenav div:eq(3)').find('span').text('Эх сурвалж');
         $('#mySidenav div:eq(4)').find('span').text('Хувилбар');
@@ -1136,7 +1136,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('भाषाहरु');
         $('#selectform input:eq(2)').next().text('श्रेणी');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('संवेदनशील सामग्री');
-        $('#mySidenav div:eq(1)').find('span').text('भाषाहरु');
+        $('#mySidenav div:eq(1)').find('label').text('भाषाहरु');
         $('#mySidenav div:eq(2)').find('span').text('खाली');
         $('#mySidenav div:eq(3)').find('span').text('मुहान');
         $('#mySidenav div:eq(4)').find('span').text('संस्करण');
@@ -1156,7 +1156,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Språk');
         $('#selectform input:eq(2)').next().text('Kategori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Følsomt innhold');
-        $('#mySidenav div:eq(1)').find('span').text('Språk');
+        $('#mySidenav div:eq(1)').find('label').text('Språk');
         $('#mySidenav div:eq(2)').find('span').text('klar');
         $('#mySidenav div:eq(3)').find('span').text('Kilde');
         $('#mySidenav div:eq(4)').find('span').text('Versjon');
@@ -1176,7 +1176,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ଭାଷା');
         $('#selectform input:eq(2)').next().text('ବର୍ଗ');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('ସମ୍ବେଦନଶୀଳ ବିଷୟବସ୍ତୁ |');
-        $('#mySidenav div:eq(1)').find('span').text('ଭାଷା');
+        $('#mySidenav div:eq(1)').find('label').text('ଭାଷା');
         $('#mySidenav div:eq(2)').find('span').text('ସଫା');
         $('#mySidenav div:eq(3)').find('span').text('ଉତ୍ସ');
         $('#mySidenav div:eq(4)').find('span').text('ସଂସ୍କରଣ');
@@ -1196,7 +1196,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ژبې');
         $('#selectform input:eq(2)').next().text('کټګوري');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('حساس مواد');
-        $('#mySidenav div:eq(1)').find('span').text('ژبې');
+        $('#mySidenav div:eq(1)').find('label').text('ژبې');
         $('#mySidenav div:eq(2)').find('span').text('پاک');
         $('#mySidenav div:eq(3)').find('span').text('سرچینه');
         $('#mySidenav div:eq(4)').find('span').text('نسخه');
@@ -1216,7 +1216,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('زبان ها');
         $('#selectform input:eq(2)').next().text('دسته بندی');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('محتوای حساس');
-        $('#mySidenav div:eq(1)').find('span').text('زبان ها');
+        $('#mySidenav div:eq(1)').find('label').text('زبان ها');
         $('#mySidenav div:eq(2)').find('span').text('پاک کردن');
         $('#mySidenav div:eq(3)').find('span').text('منبع');
         $('#mySidenav div:eq(4)').find('span').text('نسخه');
@@ -1236,7 +1236,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Języki');
         $('#selectform input:eq(2)').next().text('Kategoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Treści wrażliwe');
-        $('#mySidenav div:eq(1)').find('span').text('Języki');
+        $('#mySidenav div:eq(1)').find('label').text('Języki');
         $('#mySidenav div:eq(2)').find('span').text('Jasne');
         $('#mySidenav div:eq(3)').find('span').text('Źródło');
         $('#mySidenav div:eq(4)').find('span').text('Wersja');
@@ -1256,7 +1256,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('línguas');
         $('#selectform input:eq(2)').next().text('Categoria');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Conteúdo Sensível');
-        $('#mySidenav div:eq(1)').find('span').text('línguas');
+        $('#mySidenav div:eq(1)').find('label').text('línguas');
         $('#mySidenav div:eq(2)').find('span').text('claro');
         $('#mySidenav div:eq(3)').find('span').text('Fonte');
         $('#mySidenav div:eq(4)').find('span').text('Versão');
@@ -1276,7 +1276,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ਭਾਸ਼ਾਵਾਂ');
         $('#selectform input:eq(2)').next().text('ਸ਼੍ਰੇਣੀ');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('ਸੰਵੇਦਨਸ਼ੀਲ ਸਮਗਰੀ');
-        $('#mySidenav div:eq(1)').find('span').text('ਭਾਸ਼ਾਵਾਂ');
+        $('#mySidenav div:eq(1)').find('label').text('ਭਾਸ਼ਾਵਾਂ');
         $('#mySidenav div:eq(2)').find('span').text('ਸਾਫ਼ ਕਰੋ');
         $('#mySidenav div:eq(3)').find('span').text('ਸਰੋਤ');
         $('#mySidenav div:eq(4)').find('span').text('ਵਰਜਨ');
@@ -1296,7 +1296,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Limbi');
         $('#selectform input:eq(2)').next().text('Categorie');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Conținut sensibil');
-        $('#mySidenav div:eq(1)').find('span').text('Limbi');
+        $('#mySidenav div:eq(1)').find('label').text('Limbi');
         $('#mySidenav div:eq(2)').find('span').text('clar');
         $('#mySidenav div:eq(3)').find('span').text('Sursă');
         $('#mySidenav div:eq(4)').find('span').text('Versiune');
@@ -1316,7 +1316,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Языки');
         $('#selectform input:eq(2)').next().text('Категория');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Деликатный контент');
-        $('#mySidenav div:eq(1)').find('span').text('Языки');
+        $('#mySidenav div:eq(1)').find('label').text('Языки');
         $('#mySidenav div:eq(2)').find('span').text('Чисто');
         $('#mySidenav div:eq(3)').find('span').text('Источник');
         $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -1336,7 +1336,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Cànanan');
         $('#selectform input:eq(2)').next().text('Roinn-seòrsa');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Susbaint Mothachail');
-        $('#mySidenav div:eq(1)').find('span').text('Cànanan');
+        $('#mySidenav div:eq(1)').find('label').text('Cànanan');
         $('#mySidenav div:eq(2)').find('span').text('Soilleir');
         $('#mySidenav div:eq(3)').find('span').text('Stòr');
         $('#mySidenav div:eq(4)').find('span').text('Tionndadh');
@@ -1356,7 +1356,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Језици');
         $('#selectform input:eq(2)').next().text('Категорија');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Осетљив садржај');
-        $('#mySidenav div:eq(1)').find('span').text('Језици');
+        $('#mySidenav div:eq(1)').find('label').text('Језици');
         $('#mySidenav div:eq(2)').find('span').text('Јасно');
         $('#mySidenav div:eq(3)').find('span').text('Извор');
         $('#mySidenav div:eq(4)').find('span').text('Верзија');
@@ -1376,7 +1376,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Mitauro');
         $('#selectform input:eq(2)').next().text('Chikamu');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Inonzwisisika Zvemukati');
-        $('#mySidenav div:eq(1)').find('span').text('Mitauro');
+        $('#mySidenav div:eq(1)').find('label').text('Mitauro');
         $('#mySidenav div:eq(2)').find('span').text('Zvakajeka');
         $('#mySidenav div:eq(3)').find('span').text('Kunobva');
         $('#mySidenav div:eq(4)').find('span').text('Shanduro');
@@ -1396,7 +1396,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('وليون');
         $('#selectform input:eq(2)').next().text('قسم');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('حساس مواد');
-        $('#mySidenav div:eq(1)').find('span').text('وليون');
+        $('#mySidenav div:eq(1)').find('label').text('وليون');
         $('#mySidenav div:eq(2)').find('span').text('صاف');
         $('#mySidenav div:eq(3)').find('span').text('ذريعو');
         $('#mySidenav div:eq(4)').find('span').text('نسخو');
@@ -1416,7 +1416,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('භාෂා');
         $('#selectform input:eq(2)').next().text('වර්ගය');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('සංවේදී අන්තර්ගතය');
-        $('#mySidenav div:eq(1)').find('span').text('භාෂා');
+        $('#mySidenav div:eq(1)').find('label').text('භාෂා');
         $('#mySidenav div:eq(2)').find('span').text('පැහැදිලිව');
         $('#mySidenav div:eq(3)').find('span').text('මූලාශ්රය');
         $('#mySidenav div:eq(4)').find('span').text('පිටපත');
@@ -1436,7 +1436,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Jazyky');
         $('#selectform input:eq(2)').next().text('Kategória');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Citlivý obsah');
-        $('#mySidenav div:eq(1)').find('span').text('Jazyky');
+        $('#mySidenav div:eq(1)').find('label').text('Jazyky');
         $('#mySidenav div:eq(2)').find('span').text('jasný');
         $('#mySidenav div:eq(3)').find('span').text('Zdroj');
         $('#mySidenav div:eq(4)').find('span').text('Verzia');
@@ -1456,7 +1456,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Jeziki');
         $('#selectform input:eq(2)').next().text('Kategorija');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Občutljiva vsebina');
-        $('#mySidenav div:eq(1)').find('span').text('Jeziki');
+        $('#mySidenav div:eq(1)').find('label').text('Jeziki');
         $('#mySidenav div:eq(2)').find('span').text('Jasno');
         $('#mySidenav div:eq(3)').find('span').text('Vir');
         $('#mySidenav div:eq(4)').find('span').text('Različica');
@@ -1476,7 +1476,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Luqadaha');
         $('#selectform input:eq(2)').next().text('Qaybta');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Mawduuc Xasaasi ah');
-        $('#mySidenav div:eq(1)').find('span').text('Luqadaha');
+        $('#mySidenav div:eq(1)').find('label').text('Luqadaha');
         $('#mySidenav div:eq(2)').find('span').text('Cad');
         $('#mySidenav div:eq(3)').find('span').text('Xigasho');
         $('#mySidenav div:eq(4)').find('span').text('Nooca');
@@ -1496,7 +1496,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Lipuo');
         $('#selectform input:eq(2)').next().text('Sehlopha');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Litaba tse bonolo');
-        $('#mySidenav div:eq(1)').find('span').text('Lipuo');
+        $('#mySidenav div:eq(1)').find('label').text('Lipuo');
         $('#mySidenav div:eq(2)').find('span').text('E hlakile');
         $('#mySidenav div:eq(3)').find('span').text('Mohloli');
         $('#mySidenav div:eq(4)').find('span').text('Mofuta');
@@ -1516,7 +1516,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Idiomas');
         $('#selectform input:eq(2)').next().text('Categoría');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contenido sensible');
-        $('#mySidenav div:eq(1)').find('span').text('Idiomas');
+        $('#mySidenav div:eq(1)').find('label').text('Idiomas');
         $('#mySidenav div:eq(2)').find('span').text('claro');
         $('#mySidenav div:eq(3)').find('span').text('Fuente');
         $('#mySidenav div:eq(4)').find('span').text('Versión');
@@ -1536,7 +1536,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Bahasa');
         $('#selectform input:eq(2)').next().text('Kategori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Eusi sénsitip');
-        $('#mySidenav div:eq(1)').find('span').text('Bahasa');
+        $('#mySidenav div:eq(1)').find('label').text('Bahasa');
         $('#mySidenav div:eq(2)').find('span').text('Jelas');
         $('#mySidenav div:eq(3)').find('span').text('Sumber');
         $('#mySidenav div:eq(4)').find('span').text('Vérsi');
@@ -1556,7 +1556,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Lugha');
         $('#selectform input:eq(2)').next().text('Jamii');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Maudhui Nyeti');
-        $('#mySidenav div:eq(1)').find('span').text('Lugha');
+        $('#mySidenav div:eq(1)').find('label').text('Lugha');
         $('#mySidenav div:eq(2)').find('span').text('Wazi');
         $('#mySidenav div:eq(3)').find('span').text('Chanzo');
         $('#mySidenav div:eq(4)').find('span').text('Toleo');
@@ -1576,7 +1576,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('språk');
         $('#selectform input:eq(2)').next().text('Kategori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Känsligt innehåll');
-        $('#mySidenav div:eq(1)').find('span').text('språk');
+        $('#mySidenav div:eq(1)').find('label').text('språk');
         $('#mySidenav div:eq(2)').find('span').text('Klar');
         $('#mySidenav div:eq(3)').find('span').text('Källa');
         $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -1596,7 +1596,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Забонҳо');
         $('#selectform input:eq(2)').next().text('Категория');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Мундариҷаи ҳассос');
-        $('#mySidenav div:eq(1)').find('span').text('Забонҳо');
+        $('#mySidenav div:eq(1)').find('label').text('Забонҳо');
         $('#mySidenav div:eq(2)').find('span').text('Тоза');
         $('#mySidenav div:eq(3)').find('span').text('Сарчашма');
         $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -1616,7 +1616,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('மொழிகள்');
         $('#selectform input:eq(2)').next().text('வகை');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('உணர்திறன் உள்ளடக்கம்');
-        $('#mySidenav div:eq(1)').find('span').text('மொழிகள்');
+        $('#mySidenav div:eq(1)').find('label').text('மொழிகள்');
         $('#mySidenav div:eq(2)').find('span').text('தெளிவான');
         $('#mySidenav div:eq(3)').find('span').text('ஆதாரம்');
         $('#mySidenav div:eq(4)').find('span').text('பதிப்பு');
@@ -1636,7 +1636,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Телләр');
         $('#selectform input:eq(2)').next().text('Төркем');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Сәнгатьле эчтәлек');
-        $('#mySidenav div:eq(1)').find('span').text('Телләр');
+        $('#mySidenav div:eq(1)').find('label').text('Телләр');
         $('#mySidenav div:eq(2)').find('span').text('Чиста');
         $('#mySidenav div:eq(3)').find('span').text('Чыганак');
         $('#mySidenav div:eq(4)').find('span').text('Вариант');
@@ -1656,7 +1656,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('భాషలు');
         $('#selectform input:eq(2)').next().text('వర్గం');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('సున్నితమైన కంటెంట్');
-        $('#mySidenav div:eq(1)').find('span').text('భాషలు');
+        $('#mySidenav div:eq(1)').find('label').text('భాషలు');
         $('#mySidenav div:eq(2)').find('span').text('క్లియర్');
         $('#mySidenav div:eq(3)').find('span').text('మూలం');
         $('#mySidenav div:eq(4)').find('span').text('సంస్కరణ: Telugu');
@@ -1676,7 +1676,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('ภาษา');
         $('#selectform input:eq(2)').next().text('หมวดหมู่');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('เนื้อหาละเอียดอ่อน');
-        $('#mySidenav div:eq(1)').find('span').text('ภาษา');
+        $('#mySidenav div:eq(1)').find('label').text('ภาษา');
         $('#mySidenav div:eq(2)').find('span').text('แจ่มใส');
         $('#mySidenav div:eq(3)').find('span').text('แหล่งที่มา');
         $('#mySidenav div:eq(4)').find('span').text('เวอร์ชั่น');
@@ -1696,7 +1696,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Diller');
         $('#selectform input:eq(2)').next().text('Kategori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Hassas İçerik');
-        $('#mySidenav div:eq(1)').find('span').text('Diller');
+        $('#mySidenav div:eq(1)').find('label').text('Diller');
         $('#mySidenav div:eq(2)').find('span').text('Açık');
         $('#mySidenav div:eq(3)').find('span').text('Kaynak');
         $('#mySidenav div:eq(4)').find('span').text('Sürüm');
@@ -1716,7 +1716,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Diller');
         $('#selectform input:eq(2)').next().text('Kategoriýa');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Duýgur mazmun');
-        $('#mySidenav div:eq(1)').find('span').text('Diller');
+        $('#mySidenav div:eq(1)').find('label').text('Diller');
         $('#mySidenav div:eq(2)').find('span').text('Arassala');
         $('#mySidenav div:eq(3)').find('span').text('Çeşme');
         $('#mySidenav div:eq(4)').find('span').text('Wersiýa');
@@ -1736,7 +1736,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Мови');
         $('#selectform input:eq(2)').next().text('Категорія');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Чутливий вміст');
-        $('#mySidenav div:eq(1)').find('span').text('Мови');
+        $('#mySidenav div:eq(1)').find('label').text('Мови');
         $('#mySidenav div:eq(2)').find('span').text('Ясно');
         $('#mySidenav div:eq(3)').find('span').text('Джерело');
         $('#mySidenav div:eq(4)').find('span').text('Версія');
@@ -1756,7 +1756,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('زبانیں۔');
         $('#selectform input:eq(2)').next().text('قسم');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('حساس مواد۔');
-        $('#mySidenav div:eq(1)').find('span').text('زبانیں۔');
+        $('#mySidenav div:eq(1)').find('label').text('زبانیں۔');
         $('#mySidenav div:eq(2)').find('span').text('صاف');
         $('#mySidenav div:eq(3)').find('span').text('ذریعہ');
         $('#mySidenav div:eq(4)').find('span').text('ورژن');
@@ -1776,7 +1776,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('تىللار');
         $('#selectform input:eq(2)').next().text('سەھىپە');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('سەزگۈر مەزمۇن');
-        $('#mySidenav div:eq(1)').find('span').text('تىللار');
+        $('#mySidenav div:eq(1)').find('label').text('تىللار');
         $('#mySidenav div:eq(2)').find('span').text('پاكىز');
         $('#mySidenav div:eq(3)').find('span').text('مەنبە');
         $('#mySidenav div:eq(4)').find('span').text('نەشرى');
@@ -1796,7 +1796,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Tillar');
         $('#selectform input:eq(2)').next().text('Turkum');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Nozik tarkib');
-        $('#mySidenav div:eq(1)').find('span').text('Tillar');
+        $('#mySidenav div:eq(1)').find('label').text('Tillar');
         $('#mySidenav div:eq(2)').find('span').text('Ochiq');
         $('#mySidenav div:eq(3)').find('span').text('Manba');
         $('#mySidenav div:eq(4)').find('span').text('Versiya');
@@ -1816,7 +1816,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Ngôn ngữ');
         $('#selectform input:eq(2)').next().text('Loại');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Nội dung nhạy cảm');
-        $('#mySidenav div:eq(1)').find('span').text('Ngôn ngữ');
+        $('#mySidenav div:eq(1)').find('label').text('Ngôn ngữ');
         $('#mySidenav div:eq(2)').find('span').text('Sạch');
         $('#mySidenav div:eq(3)').find('span').text('Nguồn');
         $('#mySidenav div:eq(4)').find('span').text('Phiên bản');
@@ -1836,7 +1836,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Ieithoedd');
         $('#selectform input:eq(2)').next().text('Categori');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Cynnwys Sensitif');
-        $('#mySidenav div:eq(1)').find('span').text('Ieithoedd');
+        $('#mySidenav div:eq(1)').find('label').text('Ieithoedd');
         $('#mySidenav div:eq(2)').find('span').text('Clir');
         $('#mySidenav div:eq(3)').find('span').text('Ffynhonnell');
         $('#mySidenav div:eq(4)').find('span').text('Fersiwn');
@@ -1856,7 +1856,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Talen');
         $('#selectform input:eq(2)').next().text('Kategory');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitive Ynhâld');
-        $('#mySidenav div:eq(1)').find('span').text('Talen');
+        $('#mySidenav div:eq(1)').find('label').text('Talen');
         $('#mySidenav div:eq(2)').find('span').text('Opklearje');
         $('#mySidenav div:eq(3)').find('span').text('Boarne');
         $('#mySidenav div:eq(4)').find('span').text('Ferzje');
@@ -1876,7 +1876,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Iilwimi');
         $('#selectform input:eq(2)').next().text('Udidi');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Umxholo onovakalelo');
-        $('#mySidenav div:eq(1)').find('span').text('Iilwimi');
+        $('#mySidenav div:eq(1)').find('label').text('Iilwimi');
         $('#mySidenav div:eq(2)').find('span').text('Kucacile');
         $('#mySidenav div:eq(3)').find('span').text('Imvelaphi');
         $('#mySidenav div:eq(4)').find('span').text('Inguqulelo');
@@ -1896,7 +1896,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('שפראכן');
         $('#selectform input:eq(2)').next().text('קאַטעגאָריע');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('סענסיטיווע אינהאַלט');
-        $('#mySidenav div:eq(1)').find('span').text('שפראכן');
+        $('#mySidenav div:eq(1)').find('label').text('שפראכן');
         $('#mySidenav div:eq(2)').find('span').text('קלאָר');
         $('#mySidenav div:eq(3)').find('span').text('מקור');
         $('#mySidenav div:eq(4)').find('span').text('ווערסיע');
@@ -1916,7 +1916,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Awọn ede');
         $('#selectform input:eq(2)').next().text('Ẹka');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Akoonu Ifarahan');
-        $('#mySidenav div:eq(1)').find('span').text('Awọn ede');
+        $('#mySidenav div:eq(1)').find('label').text('Awọn ede');
         $('#mySidenav div:eq(2)').find('span').text('Ko o');
         $('#mySidenav div:eq(3)').find('span').text('Orisun');
         $('#mySidenav div:eq(4)').find('span').text('Ẹya');
@@ -1936,7 +1936,7 @@ $(document).ready(function() {
         $('#selectform input:eq(1)').next().text('Izilimi');
         $('#selectform input:eq(2)').next().text('Isigaba');
         $('#mySidenav div:eq(0)').find('span:eq(0)').text('Okuqukethwe okubucayi');
-        $('#mySidenav div:eq(1)').find('span').text('Izilimi');
+        $('#mySidenav div:eq(1)').find('label').text('Izilimi');
         $('#mySidenav div:eq(2)').find('span').text('Kucacile');
         $('#mySidenav div:eq(3)').find('span').text('Umthombo');
         $('#mySidenav div:eq(4)').find('span').text('Inguqulo');
@@ -1961,7 +1961,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Languages');
             $('#selectform input:eq(2)').next().text('Category');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitive Content');
-            $('#mySidenav div:eq(1)').find('span').text('Languages');
+            $('#mySidenav div:eq(1)').find('label').text('Languages');
             $('#mySidenav div:eq(2)').find('span').text('Clear');
             $('#mySidenav div:eq(3)').find('span').text('Source');
             $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -1981,7 +1981,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Taal');
             $('#selectform input:eq(2)').next().text('Kategorie');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('sensitiewe inhoud');
-            $('#mySidenav div:eq(1)').find('span').text('Taal');
+            $('#mySidenav div:eq(1)').find('label').text('Taal');
             $('#mySidenav div:eq(2)').find('span').text('duidelik');
             $('#mySidenav div:eq(3)').find('span').text('Bron');
             $('#mySidenav div:eq(4)').find('span').text('weergawe');
@@ -2001,7 +2001,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Gjuhët');
             $('#selectform input:eq(2)').next().text('Kategoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Përmbajtje e ndjeshme');
-            $('#mySidenav div:eq(1)').find('span').text('Gjuhët');
+            $('#mySidenav div:eq(1)').find('label').text('Gjuhët');
             $('#mySidenav div:eq(2)').find('span').text('qartë');
             $('#mySidenav div:eq(3)').find('span').text('Burimi');
             $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -2021,7 +2021,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ቋንቋዎች');
             $('#selectform input:eq(2)').next().text('ምድብ');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('ስሜታዊ ይዘት');
-            $('#mySidenav div:eq(1)').find('span').text('ቋንቋዎች');
+            $('#mySidenav div:eq(1)').find('label').text('ቋንቋዎች');
             $('#mySidenav div:eq(2)').find('span').text('ግልጽ');
             $('#mySidenav div:eq(3)').find('span').text('ምንጭ');
             $('#mySidenav div:eq(4)').find('span').text('ስሪት');
@@ -2041,7 +2041,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('اللغات');
             $('#selectform input:eq(2)').next().text('فئة');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('المحتوى الحساس');
-            $('#mySidenav div:eq(1)').find('span').text('اللغات');
+            $('#mySidenav div:eq(1)').find('label').text('اللغات');
             $('#mySidenav div:eq(2)').find('span').text('صافي');
             $('#mySidenav div:eq(3)').find('span').text('مصدر');
             $('#mySidenav div:eq(4)').find('span').text('إصدار');
@@ -2061,7 +2061,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Լեզուներ');
             $('#selectform input:eq(2)').next().text('Կատեգորիա');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sգայուն բովանդակություն');
-            $('#mySidenav div:eq(1)').find('span').text('Լեզուներ');
+            $('#mySidenav div:eq(1)').find('label').text('Լեզուներ');
             $('#mySidenav div:eq(2)').find('span').text('պարզ');
             $('#mySidenav div:eq(3)').find('span').text('Աղբյուր');
             $('#mySidenav div:eq(4)').find('span').text('Տարբերակ');
@@ -2081,7 +2081,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Dillər');
             $('#selectform input:eq(2)').next().text('Kateqoriya');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Həssas Məzmun');
-            $('#mySidenav div:eq(1)').find('span').text('Dillər');
+            $('#mySidenav div:eq(1)').find('label').text('Dillər');
             $('#mySidenav div:eq(2)').find('span').text('aydın');
             $('#mySidenav div:eq(3)').find('span').text('Mənbə');
             $('#mySidenav div:eq(4)').find('span').text('Versiya');
@@ -2101,7 +2101,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Hizkuntzak');
             $('#selectform input:eq(2)').next().text('Kategoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Eduki sentikorra');
-            $('#mySidenav div:eq(1)').find('span').text('Hizkuntzak');
+            $('#mySidenav div:eq(1)').find('label').text('Hizkuntzak');
             $('#mySidenav div:eq(2)').find('span').text('argi');
             $('#mySidenav div:eq(3)').find('span').text('Iturria');
             $('#mySidenav div:eq(4)').find('span').text('Bertsioa');
@@ -2121,7 +2121,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Мовы');
             $('#selectform input:eq(2)').next().text('Катэгорыя');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Адчувальны змест');
-            $('#mySidenav div:eq(1)').find('span').text('Мовы');
+            $('#mySidenav div:eq(1)').find('label').text('Мовы');
             $('#mySidenav div:eq(2)').find('span').text('ясна');
             $('#mySidenav div:eq(3)').find('span').text('Крыніца');
             $('#mySidenav div:eq(4)').find('span').text('Версія');
@@ -2141,7 +2141,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ভাষা');
             $('#selectform input:eq(2)').next().text('বিভাগ');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('সংবেদনশীল বিষয়বস্তু');
-            $('#mySidenav div:eq(1)').find('span').text('ভাষা');
+            $('#mySidenav div:eq(1)').find('label').text('ভাষা');
             $('#mySidenav div:eq(2)').find('span').text('পরিষ্কার');
             $('#mySidenav div:eq(3)').find('span').text('সূত্র');
             $('#mySidenav div:eq(4)').find('span').text('সংস্করণ');
@@ -2161,7 +2161,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Jezici');
             $('#selectform input:eq(2)').next().text('Kategorija');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Osetljiv sadržaj');
-            $('#mySidenav div:eq(1)').find('span').text('Jezici');
+            $('#mySidenav div:eq(1)').find('label').text('Jezici');
             $('#mySidenav div:eq(2)').find('span').text('jasno');
             $('#mySidenav div:eq(3)').find('span').text('Izvor');
             $('#mySidenav div:eq(4)').find('span').text('Verzija');
@@ -2181,7 +2181,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Езици');
             $('#selectform input:eq(2)').next().text('Категория');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Чувствително съдържание');
-            $('#mySidenav div:eq(1)').find('span').text('Езици');
+            $('#mySidenav div:eq(1)').find('label').text('Езици');
             $('#mySidenav div:eq(2)').find('span').text('ясно');
             $('#mySidenav div:eq(3)').find('span').text('Източник');
             $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -2201,7 +2201,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Idiomes');
             $('#selectform input:eq(2)').next().text('Categoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contingut sensible');
-            $('#mySidenav div:eq(1)').find('span').text('Idiomes');
+            $('#mySidenav div:eq(1)').find('label').text('Idiomes');
             $('#mySidenav div:eq(2)').find('span').text('clar');
             $('#mySidenav div:eq(3)').find('span').text('Font');
             $('#mySidenav div:eq(4)').find('span').text('Versió');
@@ -2221,7 +2221,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('语言');
             $('#selectform input:eq(2)').next().text('分类');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('敏感内容');
-            $('#mySidenav div:eq(1)').find('span').text('语言');
+            $('#mySidenav div:eq(1)').find('label').text('语言');
             $('#mySidenav div:eq(2)').find('span').text('清理');
             $('#mySidenav div:eq(3)').find('span').text('来源');
             $('#mySidenav div:eq(4)').find('span').text('版本');
@@ -2241,7 +2241,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('語言');
             $('#selectform input:eq(2)').next().text('分類');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('敏感內容');
-            $('#mySidenav div:eq(1)').find('span').text('語言');
+            $('#mySidenav div:eq(1)').find('label').text('語言');
             $('#mySidenav div:eq(2)').find('span').text('清除');
             $('#mySidenav div:eq(3)').find('span').text('来源');
             $('#mySidenav div:eq(4)').find('span').text('版本');
@@ -2261,7 +2261,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Lingue');
             $('#selectform input:eq(2)').next().text('Catigurìa');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Cuntenutu Sensitivu');
-            $('#mySidenav div:eq(1)').find('span').text('Lingue');
+            $('#mySidenav div:eq(1)').find('label').text('Lingue');
             $('#mySidenav div:eq(2)').find('span').text('chjaru');
             $('#mySidenav div:eq(3)').find('span').text('Surghjente');
             $('#mySidenav div:eq(4)').find('span').text('Versione');
@@ -2281,7 +2281,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Jazyky');
             $('#selectform input:eq(2)').next().text('Kategorie');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Citlivý obsah');
-            $('#mySidenav div:eq(1)').find('span').text('Jazyky');
+            $('#mySidenav div:eq(1)').find('label').text('Jazyky');
             $('#mySidenav div:eq(2)').find('span').text('Průhledná');
             $('#mySidenav div:eq(3)').find('span').text('Zdroj');
             $('#mySidenav div:eq(4)').find('span').text('Verze');
@@ -2301,7 +2301,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Sprog');
             $('#selectform input:eq(2)').next().text('Kategori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Følsomt indhold');
-            $('#mySidenav div:eq(1)').find('span').text('Sprog');
+            $('#mySidenav div:eq(1)').find('label').text('Sprog');
             $('#mySidenav div:eq(2)').find('span').text('klar');
             $('#mySidenav div:eq(3)').find('span').text('Kilde');
             $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -2321,7 +2321,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Talen');
             $('#selectform input:eq(2)').next().text('Categorie');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Gevoelige inhoud');
-            $('#mySidenav div:eq(1)').find('span').text('Talen');
+            $('#mySidenav div:eq(1)').find('label').text('Talen');
             $('#mySidenav div:eq(2)').find('span').text('Doorzichtig');
             $('#mySidenav div:eq(3)').find('span').text('Bron');
             $('#mySidenav div:eq(4)').find('span').text('Versie');
@@ -2341,7 +2341,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Lingvoj');
             $('#selectform input:eq(2)').next().text('Kategorio');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sentema Enhavo');
-            $('#mySidenav div:eq(1)').find('span').text('Lingvoj');
+            $('#mySidenav div:eq(1)').find('label').text('Lingvoj');
             $('#mySidenav div:eq(2)').find('span').text('klara');
             $('#mySidenav div:eq(3)').find('span').text('Fonto');
             $('#mySidenav div:eq(4)').find('span').text('Versio');
@@ -2361,7 +2361,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Keeled');
             $('#selectform input:eq(2)').next().text('Kategooria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Tundlik sisu');
-            $('#mySidenav div:eq(1)').find('span').text('Keeled');
+            $('#mySidenav div:eq(1)').find('label').text('Keeled');
             $('#mySidenav div:eq(2)').find('span').text('Selge');
             $('#mySidenav div:eq(3)').find('span').text('Allikas');
             $('#mySidenav div:eq(4)').find('span').text('Versioon');
@@ -2381,7 +2381,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Mga Wika');
             $('#selectform input:eq(2)').next().text('Kategoryang');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitibong Nilalaman');
-            $('#mySidenav div:eq(1)').find('span').text('Mga Wika');
+            $('#mySidenav div:eq(1)').find('label').text('Mga Wika');
             $('#mySidenav div:eq(2)').find('span').text('Malinaw');
             $('#mySidenav div:eq(3)').find('span').text('Pinagmulan');
             $('#mySidenav div:eq(4)').find('span').text('Bersyon');
@@ -2401,7 +2401,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Kieli (kielet');
             $('#selectform input:eq(2)').next().text('Kategoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Arkaluonteinen sisältö');
-            $('#mySidenav div:eq(1)').find('span').text('Kieli (kielet');
+            $('#mySidenav div:eq(1)').find('label').text('Kieli (kielet');
             $('#mySidenav div:eq(2)').find('span').text('Asia selvä');
             $('#mySidenav div:eq(3)').find('span').text('Lähde');
             $('#mySidenav div:eq(4)').find('span').text('Versio');
@@ -2421,7 +2421,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Langages');
             $('#selectform input:eq(2)').next().text('Catégorie');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contenu sensible');
-            $('#mySidenav div:eq(1)').find('span').text('Langages');
+            $('#mySidenav div:eq(1)').find('label').text('Langages');
             $('#mySidenav div:eq(2)').find('span').text('dégager');
             $('#mySidenav div:eq(3)').find('span').text('La source');
             $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -2441,7 +2441,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Idiomas');
             $('#selectform input:eq(2)').next().text('Categoría');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contido sensible');
-            $('#mySidenav div:eq(1)').find('span').text('Idiomas');
+            $('#mySidenav div:eq(1)').find('label').text('Idiomas');
             $('#mySidenav div:eq(2)').find('span').text('Claro');
             $('#mySidenav div:eq(3)').find('span').text('Fonte');
             $('#mySidenav div:eq(4)').find('span').text('Versión');
@@ -2461,7 +2461,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ენები');
             $('#selectform input:eq(2)').next().text('კატეგორია');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('მგრძნობიარე შინაარსი');
-            $('#mySidenav div:eq(1)').find('span').text('ენები');
+            $('#mySidenav div:eq(1)').find('label').text('ენები');
             $('#mySidenav div:eq(2)').find('span').text('ნათელია');
             $('#mySidenav div:eq(3)').find('span').text('წყარო');
             $('#mySidenav div:eq(4)').find('span').text('ვერსია');
@@ -2481,7 +2481,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Sprachen');
             $('#selectform input:eq(2)').next().text('Kategorie');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensible Inhalte');
-            $('#mySidenav div:eq(1)').find('span').text('Sprachen');
+            $('#mySidenav div:eq(1)').find('label').text('Sprachen');
             $('#mySidenav div:eq(2)').find('span').text('klar');
             $('#mySidenav div:eq(3)').find('span').text('Quelle');
             $('#mySidenav div:eq(4)').find('span').text('Ausführung');
@@ -2501,7 +2501,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Γλώσσες');
             $('#selectform input:eq(2)').next().text('Κατηγορία');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Ευαίσθητο Περιεχόμενο');
-            $('#mySidenav div:eq(1)').find('span').text('Γλώσσες');
+            $('#mySidenav div:eq(1)').find('label').text('Γλώσσες');
             $('#mySidenav div:eq(2)').find('span').text('Σαφή');
             $('#mySidenav div:eq(3)').find('span').text('Πηγή');
             $('#mySidenav div:eq(4)').find('span').text('Εκδοχή');
@@ -2521,7 +2521,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ભાષાઓ');
             $('#selectform input:eq(2)').next().text('શ્રેણી');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('સંવેદનશીલ સામગ્રી');
-            $('#mySidenav div:eq(1)').find('span').text('ભાષાઓ');
+            $('#mySidenav div:eq(1)').find('label').text('ભાષાઓ');
             $('#mySidenav div:eq(2)').find('span').text('ચોખ્ખુ');
             $('#mySidenav div:eq(3)').find('span').text('સ્ત્રોત');
             $('#mySidenav div:eq(4)').find('span').text('આવૃત્તિ');
@@ -2541,7 +2541,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Harsuna');
             $('#selectform input:eq(2)').next().text('Nau\'i');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Abun ciki Mai Sahihi');
-            $('#mySidenav div:eq(1)').find('span').text('Harsuna');
+            $('#mySidenav div:eq(1)').find('label').text('Harsuna');
             $('#mySidenav div:eq(2)').find('span').text('Bayyana');
             $('#mySidenav div:eq(3)').find('span').text('Source');
             $('#mySidenav div:eq(4)').find('span').text('Sigar');
@@ -2561,7 +2561,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ʻLelo');
             $('#selectform input:eq(2)').next().text('Māhele');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('ʻIke nahenahe');
-            $('#mySidenav div:eq(1)').find('span').text('ʻLelo');
+            $('#mySidenav div:eq(1)').find('label').text('ʻLelo');
             $('#mySidenav div:eq(2)').find('span').text('Maopopo');
             $('#mySidenav div:eq(3)').find('span').text('Punawai');
             $('#mySidenav div:eq(4)').find('span').text('Mana');
@@ -2581,7 +2581,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('שפות');
             $('#selectform input:eq(2)').next().text('קטגוריה');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('תוכן רגיש');
-            $('#mySidenav div:eq(1)').find('span').text('שפות');
+            $('#mySidenav div:eq(1)').find('label').text('שפות');
             $('#mySidenav div:eq(2)').find('span').text('ברור');
             $('#mySidenav div:eq(3)').find('span').text('מָקוֹר');
             $('#mySidenav div:eq(4)').find('span').text('גִרְסָה');
@@ -2601,7 +2601,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('भाषा: हिन्दी');
             $('#selectform input:eq(2)').next().text('श्रेणी');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('संवेदनशील सामग्री');
-            $('#mySidenav div:eq(1)').find('span').text('भाषा: हिन्दी');
+            $('#mySidenav div:eq(1)').find('label').text('भाषा: हिन्दी');
             $('#mySidenav div:eq(2)').find('span').text('स्पष्ट');
             $('#mySidenav div:eq(3)').find('span').text('स्रोत');
             $('#mySidenav div:eq(4)').find('span').text('संस्करण');
@@ -2621,7 +2621,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Nyelvek');
             $('#selectform input:eq(2)').next().text('Kategória');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Érzékeny tartalom');
-            $('#mySidenav div:eq(1)').find('span').text('Nyelvek');
+            $('#mySidenav div:eq(1)').find('label').text('Nyelvek');
             $('#mySidenav div:eq(2)').find('span').text('Egyértelmű');
             $('#mySidenav div:eq(3)').find('span').text('Forrás');
             $('#mySidenav div:eq(4)').find('span').text('Változat');
@@ -2641,7 +2641,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Tungumál');
             $('#selectform input:eq(2)').next().text('Flokkur');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Viðkvæmt efni');
-            $('#mySidenav div:eq(1)').find('span').text('Tungumál');
+            $('#mySidenav div:eq(1)').find('label').text('Tungumál');
             $('#mySidenav div:eq(2)').find('span').text('Hreinsa');
             $('#mySidenav div:eq(3)').find('span').text('Heimild');
             $('#mySidenav div:eq(4)').find('span').text('Útgáfa');
@@ -2661,7 +2661,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Bahasa');
             $('#selectform input:eq(2)').next().text('Kategori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Konten Sensitif');
-            $('#mySidenav div:eq(1)').find('span').text('Bahasa');
+            $('#mySidenav div:eq(1)').find('label').text('Bahasa');
             $('#mySidenav div:eq(2)').find('span').text('jernih');
             $('#mySidenav div:eq(3)').find('span').text('Sumber');
             $('#mySidenav div:eq(4)').find('span').text('Versi: kapan');
@@ -2681,7 +2681,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Teangacha');
             $('#selectform input:eq(2)').next().text('Catagóir');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Ábhar Íogair');
-            $('#mySidenav div:eq(1)').find('span').text('Teangacha');
+            $('#mySidenav div:eq(1)').find('label').text('Teangacha');
             $('#mySidenav div:eq(2)').find('span').text('Glan');
             $('#mySidenav div:eq(3)').find('span').text('Foinse');
             $('#mySidenav div:eq(4)').find('span').text('Leagan');
@@ -2701,7 +2701,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Le lingue');
             $('#selectform input:eq(2)').next().text('Categoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contenuti sensibili');
-            $('#mySidenav div:eq(1)').find('span').text('Le lingue');
+            $('#mySidenav div:eq(1)').find('label').text('Le lingue');
             $('#mySidenav div:eq(2)').find('span').text('chiara');
             $('#mySidenav div:eq(3)').find('span').text('Fonte');
             $('#mySidenav div:eq(4)').find('span').text('Versione');
@@ -2721,7 +2721,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('言語');
             $('#selectform input:eq(2)').next().text('カテゴリー');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('デリケートなコンテンツ');
-            $('#mySidenav div:eq(1)').find('span').text('言語');
+            $('#mySidenav div:eq(1)').find('label').text('言語');
             $('#mySidenav div:eq(2)').find('span').text('クリア');
             $('#mySidenav div:eq(3)').find('span').text('ソース');
             $('#mySidenav div:eq(4)').find('span').text('バージョン');
@@ -2741,7 +2741,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ಭಾಷೆಗಳು');
             $('#selectform input:eq(2)').next().text('ವರ್ಗ');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('ಸೂಕ್ಷ್ಮ ವಿಷಯ');
-            $('#mySidenav div:eq(1)').find('span').text('ಭಾಷೆಗಳು');
+            $('#mySidenav div:eq(1)').find('label').text('ಭಾಷೆಗಳು');
             $('#mySidenav div:eq(2)').find('span').text('ಸ್ಪಷ್ಟ');
             $('#mySidenav div:eq(3)').find('span').text('ಮೂಲ');
             $('#mySidenav div:eq(4)').find('span').text('ಆವೃತ್ತಿ');
@@ -2761,7 +2761,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Тілдер');
             $('#selectform input:eq(2)').next().text('Санат');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Сезімтал мазмұн');
-            $('#mySidenav div:eq(1)').find('span').text('Тілдер');
+            $('#mySidenav div:eq(1)').find('label').text('Тілдер');
             $('#mySidenav div:eq(2)').find('span').text('Таза');
             $('#mySidenav div:eq(3)').find('span').text('Дереккөз');
             $('#mySidenav div:eq(4)').find('span').text('Нұсқа');
@@ -2781,7 +2781,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ភាសា');
             $('#selectform input:eq(2)').next().text('ប្រភេទ');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('មាតិការសើប');
-            $('#mySidenav div:eq(1)').find('span').text('ភាសា');
+            $('#mySidenav div:eq(1)').find('label').text('ភាសា');
             $('#mySidenav div:eq(2)').find('span').text('ច្បាស់');
             $('#mySidenav div:eq(3)').find('span').text('ប្រភព');
             $('#mySidenav div:eq(4)').find('span').text('កំណែ');
@@ -2801,7 +2801,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('언어');
             $('#selectform input:eq(2)').next().text('श्रेणी');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('범주');
-            $('#mySidenav div:eq(1)').find('span').text('언어');
+            $('#mySidenav div:eq(1)').find('label').text('언어');
             $('#mySidenav div:eq(2)').find('span').text('분명한');
             $('#mySidenav div:eq(3)').find('span').text('원천');
             $('#mySidenav div:eq(4)').find('span').text('버전');
@@ -2821,7 +2821,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Ziman');
             $('#selectform input:eq(2)').next().text('Liq');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Naveroka Hestiyar');
-            $('#mySidenav div:eq(1)').find('span').text('Ziman');
+            $('#mySidenav div:eq(1)').find('label').text('Ziman');
             $('#mySidenav div:eq(2)').find('span').text('Zelal');
             $('#mySidenav div:eq(3)').find('span').text('Kanî');
             $('#mySidenav div:eq(4)').find('span').text('Awa');
@@ -2841,7 +2841,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Тилдер');
             $('#selectform input:eq(2)').next().text('Категория');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Сезимдүү мазмун');
-            $('#mySidenav div:eq(1)').find('span').text('Тилдер');
+            $('#mySidenav div:eq(1)').find('label').text('Тилдер');
             $('#mySidenav div:eq(2)').find('span').text('Тазалоо');
             $('#mySidenav div:eq(3)').find('span').text('Булак');
             $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -2861,7 +2861,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ພາສາ');
             $('#selectform input:eq(2)').next().text('ປະເພດ');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('ເນື້ອຫາທີ່ລະອຽດອ່ອນ');
-            $('#mySidenav div:eq(1)').find('span').text('ພາສາ');
+            $('#mySidenav div:eq(1)').find('label').text('ພາສາ');
             $('#mySidenav div:eq(2)').find('span').text('ຊັດເຈນ');
             $('#mySidenav div:eq(3)').find('span').text('ແຫຼ່ງຂໍ້ມູນ');
             $('#mySidenav div:eq(4)').find('span').text('ສະບັບ');
@@ -2881,7 +2881,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Linguae');
             $('#selectform input:eq(2)').next().text('Categoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitivum Content');
-            $('#mySidenav div:eq(1)').find('span').text('Linguae');
+            $('#mySidenav div:eq(1)').find('label').text('Linguae');
             $('#mySidenav div:eq(2)').find('span').text('Patet');
             $('#mySidenav div:eq(3)').find('span').text('Source');
             $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -2901,7 +2901,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Valodas');
             $('#selectform input:eq(2)').next().text('Kategorija');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitīvs saturs');
-            $('#mySidenav div:eq(1)').find('span').text('Valodas');
+            $('#mySidenav div:eq(1)').find('label').text('Valodas');
             $('#mySidenav div:eq(2)').find('span').text('Skaidrs');
             $('#mySidenav div:eq(3)').find('span').text('Avots');
             $('#mySidenav div:eq(4)').find('span').text('Versija');
@@ -2921,7 +2921,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Kalbos');
             $('#selectform input:eq(2)').next().text('Kategorija');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Jautrus turinys');
-            $('#mySidenav div:eq(1)').find('span').text('Kalbos');
+            $('#mySidenav div:eq(1)').find('label').text('Kalbos');
             $('#mySidenav div:eq(2)').find('span').text('Skaidrus');
             $('#mySidenav div:eq(3)').find('span').text('Šaltinis');
             $('#mySidenav div:eq(4)').find('span').text('Versija');
@@ -2941,7 +2941,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Јазици');
             $('#selectform input:eq(2)').next().text('Категорија');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Чувствителна содржина');
-            $('#mySidenav div:eq(1)').find('span').text('Јазици');
+            $('#mySidenav div:eq(1)').find('label').text('Јазици');
             $('#mySidenav div:eq(2)').find('span').text('Јасно');
             $('#mySidenav div:eq(3)').find('span').text('Извор');
             $('#mySidenav div:eq(4)').find('span').text('Верзија');
@@ -2961,7 +2961,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Bahasa');
             $('#selectform input:eq(2)').next().text('Kategori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Kandungan Sensitif');
-            $('#mySidenav div:eq(1)').find('span').text('Bahasa');
+            $('#mySidenav div:eq(1)').find('label').text('Bahasa');
             $('#mySidenav div:eq(2)').find('span').text('Jelas');
             $('#mySidenav div:eq(3)').find('span').text('Sumber');
             $('#mySidenav div:eq(4)').find('span').text('Versi');
@@ -2981,7 +2981,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ഭാഷകൾ');
             $('#selectform input:eq(2)').next().text('വിഭാഗം');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('സെൻസിറ്റീവ് ഉള്ളടക്കം');
-            $('#mySidenav div:eq(1)').find('span').text('ഭാഷകൾ');
+            $('#mySidenav div:eq(1)').find('label').text('ഭാഷകൾ');
             $('#mySidenav div:eq(2)').find('span').text('തെളിഞ്ഞ');
             $('#mySidenav div:eq(3)').find('span').text('ഉറവിടം');
             $('#mySidenav div:eq(4)').find('span').text('പതിപ്പ്');
@@ -3001,7 +3001,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Lingwi');
             $('#selectform input:eq(2)').next().text('Kategorija');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Kontenut Sensittiv');
-            $('#mySidenav div:eq(1)').find('span').text('Lingwi');
+            $('#mySidenav div:eq(1)').find('label').text('Lingwi');
             $('#mySidenav div:eq(2)').find('span').text('Ċara');
             $('#mySidenav div:eq(3)').find('span').text('Sors');
             $('#mySidenav div:eq(4)').find('span').text('Verżjoni');
@@ -3021,7 +3021,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('भाषा');
             $('#selectform input:eq(2)').next().text('श्रेणी');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('संवेदनशील सामग्री');
-            $('#mySidenav div:eq(1)').find('span').text('भाषा');
+            $('#mySidenav div:eq(1)').find('label').text('भाषा');
             $('#mySidenav div:eq(2)').find('span').text('साफ करा');
             $('#mySidenav div:eq(3)').find('span').text('स्त्रोत');
             $('#mySidenav div:eq(4)').find('span').text('आवृत्ती');
@@ -3041,7 +3041,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Хэл');
             $('#selectform input:eq(2)').next().text('Ангилал');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Мэдрэмтгий контент');
-            $('#mySidenav div:eq(1)').find('span').text('Хэл');
+            $('#mySidenav div:eq(1)').find('label').text('Хэл');
             $('#mySidenav div:eq(2)').find('span').text('Цэвэр');
             $('#mySidenav div:eq(3)').find('span').text('Эх сурвалж');
             $('#mySidenav div:eq(4)').find('span').text('Хувилбар');
@@ -3061,7 +3061,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('भाषाहरु');
             $('#selectform input:eq(2)').next().text('श्रेणी');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('संवेदनशील सामग्री');
-            $('#mySidenav div:eq(1)').find('span').text('भाषाहरु');
+            $('#mySidenav div:eq(1)').find('label').text('भाषाहरु');
             $('#mySidenav div:eq(2)').find('span').text('खाली');
             $('#mySidenav div:eq(3)').find('span').text('मुहान');
             $('#mySidenav div:eq(4)').find('span').text('संस्करण');
@@ -3081,7 +3081,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Språk');
             $('#selectform input:eq(2)').next().text('Kategori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Følsomt innhold');
-            $('#mySidenav div:eq(1)').find('span').text('Språk');
+            $('#mySidenav div:eq(1)').find('label').text('Språk');
             $('#mySidenav div:eq(2)').find('span').text('klar');
             $('#mySidenav div:eq(3)').find('span').text('Kilde');
             $('#mySidenav div:eq(4)').find('span').text('Versjon');
@@ -3101,7 +3101,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ଭାଷା');
             $('#selectform input:eq(2)').next().text('ବର୍ଗ');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('ସମ୍ବେଦନଶୀଳ ବିଷୟବସ୍ତୁ |');
-            $('#mySidenav div:eq(1)').find('span').text('ଭାଷା');
+            $('#mySidenav div:eq(1)').find('label').text('ଭାଷା');
             $('#mySidenav div:eq(2)').find('span').text('ସଫା');
             $('#mySidenav div:eq(3)').find('span').text('ଉତ୍ସ');
             $('#mySidenav div:eq(4)').find('span').text('ସଂସ୍କରଣ');
@@ -3121,7 +3121,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ژبې');
             $('#selectform input:eq(2)').next().text('کټګوري');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('حساس مواد');
-            $('#mySidenav div:eq(1)').find('span').text('ژبې');
+            $('#mySidenav div:eq(1)').find('label').text('ژبې');
             $('#mySidenav div:eq(2)').find('span').text('پاک');
             $('#mySidenav div:eq(3)').find('span').text('سرچینه');
             $('#mySidenav div:eq(4)').find('span').text('نسخه');
@@ -3141,7 +3141,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('زبان ها');
             $('#selectform input:eq(2)').next().text('دسته بندی');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('محتوای حساس');
-            $('#mySidenav div:eq(1)').find('span').text('زبان ها');
+            $('#mySidenav div:eq(1)').find('label').text('زبان ها');
             $('#mySidenav div:eq(2)').find('span').text('پاک کردن');
             $('#mySidenav div:eq(3)').find('span').text('منبع');
             $('#mySidenav div:eq(4)').find('span').text('نسخه');
@@ -3161,7 +3161,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Języki');
             $('#selectform input:eq(2)').next().text('Kategoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Treści wrażliwe');
-            $('#mySidenav div:eq(1)').find('span').text('Języki');
+            $('#mySidenav div:eq(1)').find('label').text('Języki');
             $('#mySidenav div:eq(2)').find('span').text('Jasne');
             $('#mySidenav div:eq(3)').find('span').text('Źródło');
             $('#mySidenav div:eq(4)').find('span').text('Wersja');
@@ -3181,7 +3181,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('línguas');
             $('#selectform input:eq(2)').next().text('Categoria');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Conteúdo Sensível');
-            $('#mySidenav div:eq(1)').find('span').text('línguas');
+            $('#mySidenav div:eq(1)').find('label').text('línguas');
             $('#mySidenav div:eq(2)').find('span').text('claro');
             $('#mySidenav div:eq(3)').find('span').text('Fonte');
             $('#mySidenav div:eq(4)').find('span').text('Versão');
@@ -3201,7 +3201,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ਭਾਸ਼ਾਵਾਂ');
             $('#selectform input:eq(2)').next().text('ਸ਼੍ਰੇਣੀ');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('ਸੰਵੇਦਨਸ਼ੀਲ ਸਮਗਰੀ');
-            $('#mySidenav div:eq(1)').find('span').text('ਭਾਸ਼ਾਵਾਂ');
+            $('#mySidenav div:eq(1)').find('label').text('ਭਾਸ਼ਾਵਾਂ');
             $('#mySidenav div:eq(2)').find('span').text('ਸਾਫ਼ ਕਰੋ');
             $('#mySidenav div:eq(3)').find('span').text('ਸਰੋਤ');
             $('#mySidenav div:eq(4)').find('span').text('ਵਰਜਨ');
@@ -3221,7 +3221,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Limbi');
             $('#selectform input:eq(2)').next().text('Categorie');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Conținut sensibil');
-            $('#mySidenav div:eq(1)').find('span').text('Limbi');
+            $('#mySidenav div:eq(1)').find('label').text('Limbi');
             $('#mySidenav div:eq(2)').find('span').text('clar');
             $('#mySidenav div:eq(3)').find('span').text('Sursă');
             $('#mySidenav div:eq(4)').find('span').text('Versiune');
@@ -3241,7 +3241,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Языки');
             $('#selectform input:eq(2)').next().text('Категория');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Деликатный контент');
-            $('#mySidenav div:eq(1)').find('span').text('Языки');
+            $('#mySidenav div:eq(1)').find('label').text('Языки');
             $('#mySidenav div:eq(2)').find('span').text('Чисто');
             $('#mySidenav div:eq(3)').find('span').text('Источник');
             $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -3261,7 +3261,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Cànanan');
             $('#selectform input:eq(2)').next().text('Roinn-seòrsa');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Susbaint Mothachail');
-            $('#mySidenav div:eq(1)').find('span').text('Cànanan');
+            $('#mySidenav div:eq(1)').find('label').text('Cànanan');
             $('#mySidenav div:eq(2)').find('span').text('Soilleir');
             $('#mySidenav div:eq(3)').find('span').text('Stòr');
             $('#mySidenav div:eq(4)').find('span').text('Tionndadh');
@@ -3281,7 +3281,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Језици');
             $('#selectform input:eq(2)').next().text('Категорија');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Осетљив садржај');
-            $('#mySidenav div:eq(1)').find('span').text('Језици');
+            $('#mySidenav div:eq(1)').find('label').text('Језици');
             $('#mySidenav div:eq(2)').find('span').text('Јасно');
             $('#mySidenav div:eq(3)').find('span').text('Извор');
             $('#mySidenav div:eq(4)').find('span').text('Верзија');
@@ -3301,7 +3301,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Mitauro');
             $('#selectform input:eq(2)').next().text('Chikamu');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Inonzwisisika Zvemukati');
-            $('#mySidenav div:eq(1)').find('span').text('Mitauro');
+            $('#mySidenav div:eq(1)').find('label').text('Mitauro');
             $('#mySidenav div:eq(2)').find('span').text('Zvakajeka');
             $('#mySidenav div:eq(3)').find('span').text('Kunobva');
             $('#mySidenav div:eq(4)').find('span').text('Shanduro');
@@ -3321,7 +3321,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('وليون');
             $('#selectform input:eq(2)').next().text('قسم');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('حساس مواد');
-            $('#mySidenav div:eq(1)').find('span').text('وليون');
+            $('#mySidenav div:eq(1)').find('label').text('وليون');
             $('#mySidenav div:eq(2)').find('span').text('صاف');
             $('#mySidenav div:eq(3)').find('span').text('ذريعو');
             $('#mySidenav div:eq(4)').find('span').text('نسخو');
@@ -3341,7 +3341,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('භාෂා');
             $('#selectform input:eq(2)').next().text('වර්ගය');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('සංවේදී අන්තර්ගතය');
-            $('#mySidenav div:eq(1)').find('span').text('භාෂා');
+            $('#mySidenav div:eq(1)').find('label').text('භාෂා');
             $('#mySidenav div:eq(2)').find('span').text('පැහැදිලිව');
             $('#mySidenav div:eq(3)').find('span').text('මූලාශ්රය');
             $('#mySidenav div:eq(4)').find('span').text('පිටපත');
@@ -3361,7 +3361,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Jezici');
             $('#selectform input:eq(2)').next().text('Kategorija');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Osjetljiv sadržaj');
-            $('#mySidenav div:eq(1)').find('span').text('Jezici');
+            $('#mySidenav div:eq(1)').find('label').text('Jezici');
             $('#mySidenav div:eq(2)').find('span').text('čisto');
             $('#mySidenav div:eq(3)').find('span').text('Izvor');
             $('#mySidenav div:eq(4)').find('span').text('Verzija');
@@ -3381,7 +3381,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Jazyky');
             $('#selectform input:eq(2)').next().text('Kategória');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Citlivý obsah');
-            $('#mySidenav div:eq(1)').find('span').text('Jazyky');
+            $('#mySidenav div:eq(1)').find('label').text('Jazyky');
             $('#mySidenav div:eq(2)').find('span').text('jasný');
             $('#mySidenav div:eq(3)').find('span').text('Zdroj');
             $('#mySidenav div:eq(4)').find('span').text('Verzia');
@@ -3401,7 +3401,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Jeziki');
             $('#selectform input:eq(2)').next().text('Kategorija');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Občutljiva vsebina');
-            $('#mySidenav div:eq(1)').find('span').text('Jeziki');
+            $('#mySidenav div:eq(1)').find('label').text('Jeziki');
             $('#mySidenav div:eq(2)').find('span').text('Jasno');
             $('#mySidenav div:eq(3)').find('span').text('Vir');
             $('#mySidenav div:eq(4)').find('span').text('Različica');
@@ -3421,7 +3421,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Luqadaha');
             $('#selectform input:eq(2)').next().text('Qaybta');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Mawduuc Xasaasi ah');
-            $('#mySidenav div:eq(1)').find('span').text('Luqadaha');
+            $('#mySidenav div:eq(1)').find('label').text('Luqadaha');
             $('#mySidenav div:eq(2)').find('span').text('Cad');
             $('#mySidenav div:eq(3)').find('span').text('Xigasho');
             $('#mySidenav div:eq(4)').find('span').text('Nooca');
@@ -3441,7 +3441,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Lipuo');
             $('#selectform input:eq(2)').next().text('Sehlopha');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Litaba tse bonolo');
-            $('#mySidenav div:eq(1)').find('span').text('Lipuo');
+            $('#mySidenav div:eq(1)').find('label').text('Lipuo');
             $('#mySidenav div:eq(2)').find('span').text('E hlakile');
             $('#mySidenav div:eq(3)').find('span').text('Mohloli');
             $('#mySidenav div:eq(4)').find('span').text('Mofuta');
@@ -3461,7 +3461,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Idiomas');
             $('#selectform input:eq(2)').next().text('Categoría');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Contenido sensible');
-            $('#mySidenav div:eq(1)').find('span').text('Idiomas');
+            $('#mySidenav div:eq(1)').find('label').text('Idiomas');
             $('#mySidenav div:eq(2)').find('span').text('claro');
             $('#mySidenav div:eq(3)').find('span').text('Fuente');
             $('#mySidenav div:eq(4)').find('span').text('Versión');
@@ -3481,7 +3481,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Bahasa');
             $('#selectform input:eq(2)').next().text('Kategori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Eusi sénsitip');
-            $('#mySidenav div:eq(1)').find('span').text('Bahasa');
+            $('#mySidenav div:eq(1)').find('label').text('Bahasa');
             $('#mySidenav div:eq(2)').find('span').text('Jelas');
             $('#mySidenav div:eq(3)').find('span').text('Sumber');
             $('#mySidenav div:eq(4)').find('span').text('Vérsi');
@@ -3501,7 +3501,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Lugha');
             $('#selectform input:eq(2)').next().text('Jamii');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Maudhui Nyeti');
-            $('#mySidenav div:eq(1)').find('span').text('Lugha');
+            $('#mySidenav div:eq(1)').find('label').text('Lugha');
             $('#mySidenav div:eq(2)').find('span').text('Wazi');
             $('#mySidenav div:eq(3)').find('span').text('Chanzo');
             $('#mySidenav div:eq(4)').find('span').text('Toleo');
@@ -3521,7 +3521,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('språk');
             $('#selectform input:eq(2)').next().text('Kategori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Känsligt innehåll');
-            $('#mySidenav div:eq(1)').find('span').text('språk');
+            $('#mySidenav div:eq(1)').find('label').text('språk');
             $('#mySidenav div:eq(2)').find('span').text('Klar');
             $('#mySidenav div:eq(3)').find('span').text('Källa');
             $('#mySidenav div:eq(4)').find('span').text('Version');
@@ -3541,7 +3541,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Забонҳо');
             $('#selectform input:eq(2)').next().text('Категория');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Мундариҷаи ҳассос');
-            $('#mySidenav div:eq(1)').find('span').text('Забонҳо');
+            $('#mySidenav div:eq(1)').find('label').text('Забонҳо');
             $('#mySidenav div:eq(2)').find('span').text('Тоза');
             $('#mySidenav div:eq(3)').find('span').text('Сарчашма');
             $('#mySidenav div:eq(4)').find('span').text('Версия');
@@ -3561,7 +3561,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('மொழிகள்');
             $('#selectform input:eq(2)').next().text('வகை');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('உணர்திறன் உள்ளடக்கம்');
-            $('#mySidenav div:eq(1)').find('span').text('மொழிகள்');
+            $('#mySidenav div:eq(1)').find('label').text('மொழிகள்');
             $('#mySidenav div:eq(2)').find('span').text('தெளிவான');
             $('#mySidenav div:eq(3)').find('span').text('ஆதாரம்');
             $('#mySidenav div:eq(4)').find('span').text('பதிப்பு');
@@ -3581,7 +3581,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Телләр');
             $('#selectform input:eq(2)').next().text('Төркем');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Сәнгатьле эчтәлек');
-            $('#mySidenav div:eq(1)').find('span').text('Телләр');
+            $('#mySidenav div:eq(1)').find('label').text('Телләр');
             $('#mySidenav div:eq(2)').find('span').text('Чиста');
             $('#mySidenav div:eq(3)').find('span').text('Чыганак');
             $('#mySidenav div:eq(4)').find('span').text('Вариант');
@@ -3601,7 +3601,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('భాషలు');
             $('#selectform input:eq(2)').next().text('వర్గం');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('సున్నితమైన కంటెంట్');
-            $('#mySidenav div:eq(1)').find('span').text('భాషలు');
+            $('#mySidenav div:eq(1)').find('label').text('భాషలు');
             $('#mySidenav div:eq(2)').find('span').text('క్లియర్');
             $('#mySidenav div:eq(3)').find('span').text('మూలం');
             $('#mySidenav div:eq(4)').find('span').text('సంస్కరణ: Telugu');
@@ -3621,7 +3621,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('ภาษา');
             $('#selectform input:eq(2)').next().text('หมวดหมู่');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('เนื้อหาละเอียดอ่อน');
-            $('#mySidenav div:eq(1)').find('span').text('ภาษา');
+            $('#mySidenav div:eq(1)').find('label').text('ภาษา');
             $('#mySidenav div:eq(2)').find('span').text('แจ่มใส');
             $('#mySidenav div:eq(3)').find('span').text('แหล่งที่มา');
             $('#mySidenav div:eq(4)').find('span').text('เวอร์ชั่น');
@@ -3641,7 +3641,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Diller');
             $('#selectform input:eq(2)').next().text('Kategori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Hassas İçerik');
-            $('#mySidenav div:eq(1)').find('span').text('Diller');
+            $('#mySidenav div:eq(1)').find('label').text('Diller');
             $('#mySidenav div:eq(2)').find('span').text('Açık');
             $('#mySidenav div:eq(3)').find('span').text('Kaynak');
             $('#mySidenav div:eq(4)').find('span').text('Sürüm');
@@ -3661,7 +3661,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Diller');
             $('#selectform input:eq(2)').next().text('Kategoriýa');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Duýgur mazmun');
-            $('#mySidenav div:eq(1)').find('span').text('Diller');
+            $('#mySidenav div:eq(1)').find('label').text('Diller');
             $('#mySidenav div:eq(2)').find('span').text('Arassala');
             $('#mySidenav div:eq(3)').find('span').text('Çeşme');
             $('#mySidenav div:eq(4)').find('span').text('Wersiýa');
@@ -3681,7 +3681,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Мови');
             $('#selectform input:eq(2)').next().text('Категорія');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Чутливий вміст');
-            $('#mySidenav div:eq(1)').find('span').text('Мови');
+            $('#mySidenav div:eq(1)').find('label').text('Мови');
             $('#mySidenav div:eq(2)').find('span').text('Ясно');
             $('#mySidenav div:eq(3)').find('span').text('Джерело');
             $('#mySidenav div:eq(4)').find('span').text('Версія');
@@ -3701,7 +3701,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('زبانیں۔');
             $('#selectform input:eq(2)').next().text('قسم');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('حساس مواد۔');
-            $('#mySidenav div:eq(1)').find('span').text('زبانیں۔');
+            $('#mySidenav div:eq(1)').find('label').text('زبانیں۔');
             $('#mySidenav div:eq(2)').find('span').text('صاف');
             $('#mySidenav div:eq(3)').find('span').text('ذریعہ');
             $('#mySidenav div:eq(4)').find('span').text('ورژن');
@@ -3721,7 +3721,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('تىللار');
             $('#selectform input:eq(2)').next().text('سەھىپە');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('سەزگۈر مەزمۇن');
-            $('#mySidenav div:eq(1)').find('span').text('تىللار');
+            $('#mySidenav div:eq(1)').find('label').text('تىللار');
             $('#mySidenav div:eq(2)').find('span').text('پاكىز');
             $('#mySidenav div:eq(3)').find('span').text('مەنبە');
             $('#mySidenav div:eq(4)').find('span').text('نەشرى');
@@ -3741,7 +3741,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Tillar');
             $('#selectform input:eq(2)').next().text('Turkum');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Nozik tarkib');
-            $('#mySidenav div:eq(1)').find('span').text('Tillar');
+            $('#mySidenav div:eq(1)').find('label').text('Tillar');
             $('#mySidenav div:eq(2)').find('span').text('Ochiq');
             $('#mySidenav div:eq(3)').find('span').text('Manba');
             $('#mySidenav div:eq(4)').find('span').text('Versiya');
@@ -3761,7 +3761,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Ngôn ngữ');
             $('#selectform input:eq(2)').next().text('Loại');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Nội dung nhạy cảm');
-            $('#mySidenav div:eq(1)').find('span').text('Ngôn ngữ');
+            $('#mySidenav div:eq(1)').find('label').text('Ngôn ngữ');
             $('#mySidenav div:eq(2)').find('span').text('Sạch');
             $('#mySidenav div:eq(3)').find('span').text('Nguồn');
             $('#mySidenav div:eq(4)').find('span').text('Phiên bản');
@@ -3781,7 +3781,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Ieithoedd');
             $('#selectform input:eq(2)').next().text('Categori');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Cynnwys Sensitif');
-            $('#mySidenav div:eq(1)').find('span').text('Ieithoedd');
+            $('#mySidenav div:eq(1)').find('label').text('Ieithoedd');
             $('#mySidenav div:eq(2)').find('span').text('Clir');
             $('#mySidenav div:eq(3)').find('span').text('Ffynhonnell');
             $('#mySidenav div:eq(4)').find('span').text('Fersiwn');
@@ -3801,7 +3801,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Talen');
             $('#selectform input:eq(2)').next().text('Kategory');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Sensitive Ynhâld');
-            $('#mySidenav div:eq(1)').find('span').text('Talen');
+            $('#mySidenav div:eq(1)').find('label').text('Talen');
             $('#mySidenav div:eq(2)').find('span').text('Opklearje');
             $('#mySidenav div:eq(3)').find('span').text('Boarne');
             $('#mySidenav div:eq(4)').find('span').text('Ferzje');
@@ -3821,7 +3821,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Iilwimi');
             $('#selectform input:eq(2)').next().text('Udidi');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Umxholo onovakalelo');
-            $('#mySidenav div:eq(1)').find('span').text('Iilwimi');
+            $('#mySidenav div:eq(1)').find('label').text('Iilwimi');
             $('#mySidenav div:eq(2)').find('span').text('Kucacile');
             $('#mySidenav div:eq(3)').find('span').text('Imvelaphi');
             $('#mySidenav div:eq(4)').find('span').text('Inguqulelo');
@@ -3841,7 +3841,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('שפראכן');
             $('#selectform input:eq(2)').next().text('קאַטעגאָריע');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('סענסיטיווע אינהאַלט');
-            $('#mySidenav div:eq(1)').find('span').text('שפראכן');
+            $('#mySidenav div:eq(1)').find('label').text('שפראכן');
             $('#mySidenav div:eq(2)').find('span').text('קלאָר');
             $('#mySidenav div:eq(3)').find('span').text('מקור');
             $('#mySidenav div:eq(4)').find('span').text('ווערסיע');
@@ -3861,7 +3861,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Awọn ede');
             $('#selectform input:eq(2)').next().text('Ẹka');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Akoonu Ifarahan');
-            $('#mySidenav div:eq(1)').find('span').text('Awọn ede');
+            $('#mySidenav div:eq(1)').find('label').text('Awọn ede');
             $('#mySidenav div:eq(2)').find('span').text('Ko o');
             $('#mySidenav div:eq(3)').find('span').text('Orisun');
             $('#mySidenav div:eq(4)').find('span').text('Ẹya');
@@ -3881,7 +3881,7 @@ $(document).ready(function() {
             $('#selectform input:eq(1)').next().text('Izilimi');
             $('#selectform input:eq(2)').next().text('Isigaba');
             $('#mySidenav div:eq(0)').find('span:eq(0)').text('Okuqukethwe okubucayi');
-            $('#mySidenav div:eq(1)').find('span').text('Izilimi');
+            $('#mySidenav div:eq(1)').find('label').text('Izilimi');
             $('#mySidenav div:eq(2)').find('span').text('Kucacile');
             $('#mySidenav div:eq(3)').find('span').text('Umthombo');
             $('#mySidenav div:eq(4)').find('span').text('Inguqulo');

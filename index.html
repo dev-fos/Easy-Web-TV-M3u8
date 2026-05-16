@@ -1,186 +1,363 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Easy Web TV：Online SmartTV</title>
+    <title>Easy Web TV：Online SmartTV - Watch 6000+ TV Channels, Movies, Radio & More</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="author" content="Zhang Boheng">
-    <meta name="keywords" content="iptv, movie, github, online tv, web tv, series tv...">
+    <meta name="description" content="Easy Web TV - Your ultimate online entertainment hub. Watch 6000+ TV channels, movies, series, anime, listen to 28000+ radio stations, read novels, manga, and play games - all in one place.">
+    <meta name="keywords" content="IPTV, online TV, web TV, live streaming, movies, series, anime, radio stations, manga, novels, music, games, free entertainment, watch TV online">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Easy Web TV：Online SmartTV">
+    <meta property="og:description" content="Watch 6000+ TV channels, movies, series, anime, listen to 28000+ radio stations, read novels, manga, and play games - all in one place.">
+    <meta property="og:image" content="images/banner.jpg">
+    <meta property="og:url" content="https://zhangboheng.github.io/Easy-Web-TV-M3u8/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Easy Web TV">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Easy Web TV：Online SmartTV">
+    <meta name="twitter:description" content="Watch 6000+ TV channels, movies, series, anime, listen to 28000+ radio stations, read novels, manga, and play games.">
+    <meta name="twitter:image" content="images/banner.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/logo.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#a3001b">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
     <link rel="stylesheet" href="css/style.css" />
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/index.js"></script>
 </head>
-<style>
-    body {
-        background-image: url("images/bg.jpg");
-        overflow-x: hidden;
-    }
-    
-    #languages,
-    #source {
-        width: 50%;
-        cursor: pointer;
-    }
-</style>
 
 <body>
-    <div id="mySidenav" class="sidenav">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" role="status" aria-label="Loading">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Loading...</span>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav id="mySidenav" class="sidenav" aria-label="Main Navigation">
         <h3>Easy Web TV</h3>
         <hr>
         <div>
             <span>Sensitive Content</span>
             <label class="switch">
-            <input type="checkbox" id="adultban">
-            <span class="slider round"></span>
+                <input type="checkbox" id="adultban" aria-label="Toggle sensitive content">
+                <span class="slider round"></span>
             </label>
         </div>
         <div>
-            <span>Languages</span>
-            <select id="languages" name="languages">
+            <label for="languages">Languages</label>
+            <select id="languages" name="languages" aria-label="Select language">
             </select>
         </div>
         <div>
             <span>Clear</span>
-            <button class="cachebtn">All</button>
+            <button class="cachebtn" aria-label="Clear all cache">All</button>
         </div>
         <div>
             <span>Source</span>
-            <button class="cachebtn"><a href="#sourcebox" data-reveal-id="sourceitem">Control</a></button>
+            <button class="cachebtn" aria-label="Open source control"><a href="#sourcebox" data-reveal-id="sourceitem">Control</a></button>
         </div>
         <div>
             <span>Version</span>
-            <label class="switch" style="cursor: pointer;"><a href="#logbox" data-reveal-id="logboxitem" style="color:#fff">8.2.0</a></label>
+            <label class="switch" style="cursor: pointer;"><a href="#logbox" data-reveal-id="logboxitem" style="color:#fff">8.2.1</a></label>
         </div>
         <div>
             <span>About</span>
             <label class="switch" style="cursor: pointer;"><a href="#infobox" data-reveal-id="infoboxitem" style="color:#fff">APP</a></label>
         </div>
-    </div>
-    <div id="main">
-        <span style="cursor:pointer"><img src="images/menuicon.png"></span>
-    </div>
-    <div id="popupbox">
+    </nav>
+
+    <!-- Menu Toggle Button with Settings Buttons Below -->
+    <header id="main">
+        <div class="header-buttons">
+            <button id="menu-toggle-btn" tabindex="0" aria-label="Open menu" aria-expanded="false" aria-controls="mySidenav">
+                <img src="images/menuicon.png" alt="Menu" loading="lazy">
+            </button>
+            <button id="theme-toggle" class="icon-btn" tabindex="0" aria-label="Toggle dark/light mode">
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+            <button id="share-btn" class="icon-btn" tabindex="0" aria-label="Share this app">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+            </button>
+            <button id="keyboard-help-btn" class="icon-btn" tabindex="0" aria-label="Show keyboard shortcuts">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Selection Dialog -->
+    <div id="popupbox" role="dialog" aria-modal="true" aria-labelledby="popupbox-title">
         <div id="chooseitem" class="reveal-modal">
-            <a href="#" class="close-reveal-modal">×</a>
-            <h2>Select</h2>
-            <div id="selectform">
-                <input type="radio" name="radioName" value="1" checked/> <span>Contries</span> <br />
-                <input type="radio" name="radioName" value="2" /> <span>Languages</span> <br />
-                <input type="radio" name="radioName" value="3" /> <span>Category</span> <br />
+            <a href="#" class="close-reveal-modal" aria-label="Close dialog">×</a>
+            <h2 id="popupbox-title">Select</h2>
+            <div id="selectform" role="radiogroup" aria-label="Select category type">
+                <input type="radio" name="radioName" value="1" id="radio-countries" checked/> 
+                <label for="radio-countries">Countries</label> <br />
+                <input type="radio" name="radioName" value="2" id="radio-languages" /> 
+                <label for="radio-languages">Languages</label> <br />
+                <input type="radio" name="radioName" value="3" id="radio-category" /> 
+                <label for="radio-category">Category</label> <br />
             </div>
-            <button class="stylebtn">GO!</button>
+            <button class="stylebtn" aria-label="Confirm selection">GO!</button>
         </div>
     </div>
-    <div id="sourcebox">
+
+    <!-- Source Control Dialog -->
+    <div id="sourcebox" role="dialog" aria-modal="true" aria-labelledby="sourcebox-title">
         <div id="sourceitem" class="source-modal">
-            <a href="#" class="close-source-modal">×</a>
-            <h2>Select</h2>
-            <div id="selectform">
-                <input type="radio" name="sourceName" value="1" checked/> <span>Moive</span> <br />
-                <input type="radio" name="sourceName" value="2" /> <span>Novel</span> <br />
-                <input type="radio" name="sourceName" value="3" /> <span>Manga</span> <br />
-                <input type="radio" name="sourceName" value="4" /> <span>Music</span> <br />
-                <input type="radio" name="sourceName" value="5" /> <span>Porn</span> <br />
+            <a href="#" class="close-source-modal" aria-label="Close dialog">×</a>
+            <h2 id="sourcebox-title">Select</h2>
+            <div id="selectform" role="radiogroup" aria-label="Select source type">
+                <input type="radio" name="sourceName" value="1" id="source-movie" checked/> 
+                <label for="source-movie">Movie</label> <br />
+                <input type="radio" name="sourceName" value="2" id="source-novel" /> 
+                <label for="source-novel">Novel</label> <br />
+                <input type="radio" name="sourceName" value="3" id="source-manga" /> 
+                <label for="source-manga">Manga</label> <br />
+                <input type="radio" name="sourceName" value="4" id="source-music" /> 
+                <label for="source-music">Music</label> <br />
+                <input type="radio" name="sourceName" value="5" id="source-porn" /> 
+                <label for="source-porn">Porn</label> <br />
             </div>
-            <button class="stylebtn" onclick="goToSource()"><img src="./images/nextselect.svg" style="width:30px;"></button>
+            <button class="stylebtn" onclick="goToSource()" aria-label="Next step"><img src="./images/nextselect.svg" style="width:30px;" alt="Next"></button>
         </div>
     </div>
-    <div id="logbox">
+
+    <!-- Version Log Dialog -->
+    <div id="logbox" role="dialog" aria-modal="true" aria-labelledby="logbox-title">
         <div id="logboxitem" class="log-modal">
-            <a href="#" class="close-log-modal">×</a>
+            <a href="#" class="close-log-modal" aria-label="Close dialog">×</a>
+            <h2 id="logbox-title" class="visually-hidden">Version History</h2>
             <div class="scrollidbar" style="text-align: left;">
             </div>
         </div>
     </div>
-    <div id="infobox">
+
+    <!-- About Dialog -->
+    <div id="infobox" role="dialog" aria-modal="true" aria-labelledby="infobox-title">
         <div id="infoboxitem" class="log-modal">
-            <a href="#" class="close-log-modal">×</a>
+            <a href="#" class="close-log-modal" aria-label="Close dialog">×</a>
+            <h2 id="infobox-title" class="visually-hidden">About</h2>
             <div class="scrollappbar" style="text-align: left;">
                 <p>App Will Publish 2022 or later.</p>
                 <p>Developer: Zhang Boheng</p>
                 <div class="circlescon" style="display:flex;">
-                    <li>
-                        <a target="_blank" href="https://github.com/zhangboheng/"><img src="images/github.svg"></a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="https://www.youtube.com/c/LuckyDesigner"><img src="images/youtube.svg"></a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="https://t.me/Luckydesignerspace"><img src="images/telegram.svg"></a>
-                    </li>
-                    <li>
-                        <img src="images/wechat.svg">
-                        <div class="qrcode">
-                            <img src="images/wechatpub.jpg" style="width:100%; height:auto" />
-                        </div>
-                    </li>
+                    <ul>
+                        <li>
+                            <a target="_blank" href="https://github.com/zhangboheng/" aria-label="GitHub Profile"><img src="images/github.svg" alt="GitHub"></a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="https://www.youtube.com/c/LuckyDesigner" aria-label="YouTube Channel"><img src="images/youtube.svg" alt="YouTube"></a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="https://t.me/Luckydesignerspace" aria-label="Telegram Channel"><img src="images/telegram.svg" alt="Telegram"></a>
+                        </li>
+                        <li>
+                            <button style="background: none; border: none; padding: 0; cursor: pointer;" aria-label="WeChat QR Code">
+                                <img src="images/wechat.svg" alt="WeChat">
+                            </button>
+                            <div class="qrcode">
+                                <img src="images/wechatpub.jpg" style="width:100%; height:auto" alt="WeChat QR Code" />
+                            </div>
+                        </li>
+                    </ul>
                 </div>
                 <p>Copyright 2019-2021 行运设计师 www.luckydesigner.space All Rights Reserved.</p>
             </div>
         </div>
     </div>
-    <div class="bodyCon08">
-        <div class="students">
+
+    <!-- Main Content Section -->
+    <main class="bodyCon08">
+        <section class="students" aria-label="Entertainment Categories">
             <div id="four_flash">
                 <div class="flashBg">
                     <ul class="mobile">
-                        <li>
-                            <img src="images/tv.svg" />
+                        <li class="fade-in" tabindex="0">
+                            <img src="images/tv.svg" alt="TV Channels" loading="lazy" />
                             <dd>
-                                <a href="#popupbox" data-reveal-id="chooseitem"><button class="stylebtn">Enter</button></a>
+                                <a href="routes/tv.html"><button class="stylebtn" tabindex="0" aria-label="Enter TV channels">Enter</button></a>
                             </dd>
                             <p>Watch 6000+ TV Channels...</p>
                         </li>
 
-                        <li>
-                            <img src="images/comprehensive.svg" />
+                        <li class="fade-in" tabindex="0">
+                            <img src="images/comprehensive.svg" alt="Movies and Series" loading="lazy" />
                             <dd>
-                                <a href="routes/comprehensive.html"><button class="stylebtn">Enter</button></a>
+                                <a href="routes/comprehensive.html"><button class="stylebtn" tabindex="0" aria-label="Enter movies and series">Enter</button></a>
                             </dd>
                             <p>Watch Movies, Series, Animes...</p>
                         </li>
-                        <li>
-                            <img src="images/radio.svg" />
+                        <li class="fade-in" tabindex="0">
+                            <img src="images/radio.svg" alt="Radio Stations" loading="lazy" />
                             <dd>
-                                <a href="#popupbox" data-reveal-id="chooseitem"><button class="stylebtn">Enter</button></a>
+                                <a href="routes/radio.html"><button class="stylebtn" tabindex="0" aria-label="Enter radio stations">Enter</button></a>
                             </dd>
                             <p>Listen 28000+ Radio Stations...</p>
                         </li>
-                        <li>
-                            <img src="images/reading.svg" />
+                        <li class="fade-in" tabindex="0">
+                            <img src="images/reading.svg" alt="Novels" loading="lazy" />
                             <dd>
-                                <a href="routes/novel.html"><button class="stylebtn">Enter</button></a>
+                                <a href="routes/novel.html"><button class="stylebtn" tabindex="0" aria-label="Enter novels">Enter</button></a>
                             </dd>
                             <p>Reading More Than 100000+ Books...</p>
                         </li>
-                        <li>
-                            <img src="images/manga.svg" />
+                        <li class="fade-in" tabindex="0">
+                            <img src="images/manga.svg" alt="Manga" loading="lazy" />
                             <dd>
-                                <a href="routes/manga.html"><button class="stylebtn">Enter</button></a>
+                                <a href="routes/manga.html"><button class="stylebtn" tabindex="0" aria-label="Enter manga">Enter</button></a>
                             </dd>
                             <p>Reading Lots of Manga Books...</p>
                         </li>
-                        <li>
-                            <img src="images/music.svg" />
+                        <li class="fade-in" tabindex="0">
+                            <img src="images/music.svg" alt="Music" loading="lazy" />
                             <dd>
-                                <a href="routes/music.html"><button class="stylebtn">Enter</button></a>
+                                <a href="routes/music.html"><button class="stylebtn" tabindex="0" aria-label="Enter music">Enter</button></a>
                             </dd>
                             <p>Listen to The World Music...</p>
                         </li>
-                        <li>
-                            <img src="images/game.svg" />
+                        <li class="fade-in" tabindex="0">
+                            <img src="images/game.svg" alt="Games" loading="lazy" />
                             <dd>
-                                <a href="routes/game.html"><button class="stylebtn">Enter</button></a>
+                                <a href="routes/game.html"><button class="stylebtn" tabindex="0" aria-label="Enter games">Enter</button></a>
                             </dd>
                             <p>Constructing until version 9.0.0</p>
                         </li>
                     </ul>
                 </div>
             </div>
+        </section>
+    </main>
+
+    <!-- Error Toast -->
+    <div id="error-toast" class="error-toast" role="alert" aria-live="polite">
+        <span class="error-message"></span>
+    </div>
+
+    <!-- Age Confirmation Modal -->
+    <div id="age-confirm-overlay" class="modal-overlay" aria-hidden="true"></div>
+    <div id="age-confirm-modal" class="age-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="age-confirm-title">
+        <div class="age-confirm-content">
+            <div class="age-confirm-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h3 id="age-confirm-title">Age Verification</h3>
+            <p class="age-confirm-message">This section contains adult content intended for individuals 18 years or older.</p>
+            <p class="age-confirm-question">Are you over 18 years old?</p>
+            <div class="age-confirm-buttons">
+                <button id="age-confirm-yes" class="age-btn age-btn-yes">Yes, I'm 18+</button>
+                <button id="age-confirm-no" class="age-btn age-btn-no">No, I'm under 18</button>
+            </div>
         </div>
     </div>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="keyboard-modal-overlay" class="modal-overlay" aria-hidden="true"></div>
+    <div id="keyboard-modal" class="keyboard-modal" role="dialog" aria-modal="true" aria-labelledby="keyboard-modal-title">
+        <button class="close-btn" aria-label="Close keyboard shortcuts">&times;</button>
+        <h3 id="keyboard-modal-title">⌨️ Keyboard Shortcuts</h3>
+        <div class="shortcuts-section">
+            <h4>Navigation</h4>
+            <ul>
+                <li><span>TV Channels</span><span class="key">1</span></li>
+                <li><span>Movies & Series</span><span class="key">2</span></li>
+                <li><span>Radio Stations</span><span class="key">3</span></li>
+                <li><span>Novels</span><span class="key">4</span></li>
+                <li><span>Manga</span><span class="key">5</span></li>
+                <li><span>Music</span><span class="key">6</span></li>
+                <li><span>Games</span><span class="key">7</span></li>
+            </ul>
+        </div>
+        <div class="shortcuts-section">
+            <h4>Actions</h4>
+            <ul>
+                <li><span>Toggle Menu</span><span class="key">M</span></li>
+                <li><span>Toggle Theme</span><span class="key">T</span></li>
+                <li><span>Share</span><span class="key">S</span></li>
+                <li><span>Show this help</span><span class="key">?</span></li>
+                <li><span>Close dialog</span><span class="key">ESC</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- User Guide Tooltip -->
+    <div id="guide-tooltip" class="guide-tooltip" role="status" aria-live="polite">
+        <div class="guide-content">
+            <span class="guide-title">⌨️ Quick Tips</span>
+            <span class="guide-text">Press <strong>1-7</strong> to navigate | <strong>?</strong> for all shortcuts</span>
+        </div>
+        <button class="close-guide" aria-label="Close guide">&times;</button>
+    </div>
+
+
+    <!-- Install PWA Prompt -->
+    <div id="install-prompt" class="install-prompt" role="dialog" aria-modal="true" aria-labelledby="install-title">
+        <div class="install-content">
+            <h4 id="install-title">Install Easy Web TV</h4>
+            <p>Add to home screen for a better experience</p>
+            <div class="install-buttons">
+                <button id="install-accept" class="install-btn accept">Install</button>
+                <button id="install-dismiss" class="install-btn dismiss">Not now</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/translator.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 </body>
 
 </html>

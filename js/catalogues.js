@@ -7,7 +7,7 @@ $(document).ready(function() {
     var player = videojs(document.querySelector('#video1'));
 
     //Get Current href
-    var key = decodeURIComponent(window.location.href).split('=')[1];
+    var key = decodeURIComponent(window.location.href).split('=')[1].split('&')[0];
 
     //Set Page Title
     $('title').html(key.toUpperCase().split('')[0] + key.slice(1) + ' Channels');
@@ -193,7 +193,7 @@ $(document).ready(function() {
             $(this).css({ "opacity": 1 })
         },
         click: function() {
-            window.location.href = "/Easy-Web-TV-M3u8/routes/category.html";
+            window.location.href = "/Easy-Web-TV-M3u8/routes/tv.html";
         },
         mouseleave: function() {
             $(this).css({ "opacity": 0.5 })
