@@ -1,5 +1,6 @@
 var channels = [];
 var player;
+var currentChannelIndex = -1;  // Track current playing channel index
 
 // Favorite prefix for localStorage - ensures only this app's favorites are shown
 const FAV_PREFIX = 'fav_tvplay_';
@@ -12,6 +13,23 @@ $(document).ready(function() {
     player.on('error', function() {
         player.removeClass('vjs-waiting');
         player.removeClass('vjs-loading');
+    });
+    
+    // Auto-play next channel when current channel ends
+    player.on('ended', function() {
+        console.log('Video ended, checking for next channel...');
+        if (currentChannelIndex >= 0 && currentChannelIndex < channels.length - 1) {
+            var nextIndex = currentChannelIndex + 1;
+            console.log('Auto-playing next channel:', nextIndex + 1);
+            var nextUrl = channels[nextIndex];
+            var $nextItem = $('.channel-item').eq(nextIndex);
+            var nextName = $nextItem.data('name');
+            playChannel(nextUrl, nextName);
+            $('.channel-item').removeClass('active');
+            $nextItem.addClass('active');
+        } else {
+            console.log('No more channels to play');
+        }
     });
     
     // Get Current href parameters
@@ -250,6 +268,14 @@ function renderChannelList(channelList) {
 function playChannel(url, name) {
     if (!player) {
         player = videojs('video1');
+    }
+    
+    // Update current channel index
+    for (var i = 0; i < channels.length; i++) {
+        if (channels[i] === url) {
+            currentChannelIndex = i;
+            break;
+        }
     }
     
     player.src({

@@ -12,6 +12,7 @@ var links = [];
 var videoName = '';
 var videoDes = '';
 var player = null;
+var currentEpisodeIndex = -1;  // Track current playing episode
 
 // Favorite prefix for localStorage - ensures only this app's favorites are shown
 const FAV_PREFIX = 'fav_comprehensive_';
@@ -24,6 +25,18 @@ $(document).ready(function() {
     player.on('error', function() {
         player.removeClass('vjs-waiting');
         player.removeClass('vjs-loading');
+    });
+    
+    // Auto-play next episode when current episode ends
+    player.on('ended', function() {
+        console.log('Video ended, checking for next episode...');
+        if (currentEpisodeIndex >= 0 && currentEpisodeIndex < links.length - 1) {
+            var nextIndex = currentEpisodeIndex + 1;
+            console.log('Auto-playing next episode:', nextIndex + 1);
+            playEpisode(nextIndex);
+        } else {
+            console.log('No more episodes to play');
+        }
     });
     
     // Get Current href parameters
@@ -166,6 +179,7 @@ function renderEpisodeList() {
 function playEpisode(index) {
     if (index < 0 || index >= links.length) return;
     
+    currentEpisodeIndex = index;  // Update current index
     var url = links[index];
     var name = episodes[index];
     

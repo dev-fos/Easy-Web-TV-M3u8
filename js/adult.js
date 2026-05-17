@@ -17,6 +17,8 @@ var currentVideoName = '';
 var currentPlayUrl = '';
 var player = null;
 var favorites = [];
+var playItems = [];  // Store all playable items
+var currentPlayIndex = -1;  // Track current playing index
 
 $(document).ready(function() {
     console.log('=== Adult Player JS Loaded ===');
@@ -29,6 +31,21 @@ $(document).ready(function() {
     player.on('error', function() {
         player.removeClass('vjs-waiting');
         player.removeClass('vjs-loading');
+    });
+    
+    // Auto-play next episode when current episode ends
+    player.on('ended', function() {
+        console.log('Video ended, checking for next episode...');
+        if (currentPlayIndex >= 0 && currentPlayIndex < playItems.length - 1) {
+            var nextIndex = currentPlayIndex + 1;
+            console.log('Auto-playing next episode:', nextIndex + 1);
+            playVideo(playItems[nextIndex].url, playItems[nextIndex].name);
+            // Update active state in playlist
+            $('.channel-item').removeClass('active');
+            $('.channel-item').eq(nextIndex).addClass('active');
+        } else {
+            console.log('No more episodes to play');
+        }
     });
     
     // Parse URL parameters
@@ -356,6 +373,7 @@ function parsePlayUrls(playUrlRaw, apiUrl) {
 
 // Render playlist to sidebar
 function renderPlaylist(items) {
+    playItems = items;  // Store items globally for auto-play
     $('#channelList').empty();
     
     for (var i = 0; i < items.length; i++) {
@@ -406,6 +424,14 @@ function playVideo(url, name) {
     console.log('Name:', name);
     
     currentPlayUrl = url;
+    
+    // Update current play index
+    for (var i = 0; i < playItems.length; i++) {
+        if (playItems[i].url === url) {
+            currentPlayIndex = i;
+            break;
+        }
+    }
     
     // Update title
     $('#currentChannel').text(name || currentVideoName);

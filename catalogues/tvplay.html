@@ -396,19 +396,51 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 60px 0 0 0;
+            padding: 80px 20px 20px 20px;
             position: relative;
+            background: rgba(0,0,0,0.3);
         }
         
         .video-wrapper {
             width: 100%;
-            height: 100%;
+            max-width: 1200px;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            max-height: calc(100vh - 100px);
             position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: max-width 0.4s ease, max-height 0.4s ease;
+        }
+        
+        /* 沉浸式模式 - 侧边栏收起时视频完全扩展 */
+        .sidebar.collapsed ~ .main-content .video-container {
+            padding: 60px 0 0 0;  /* 只保留顶部toolbar的空间 */
+            background: #000;
+        }
+        
+        .sidebar.collapsed ~ .main-content .video-wrapper {
+            max-width: 100%;
+            max-height: calc(100vh - 60px);
+            width: 100%;
+            height: calc(100vh - 60px);
+            aspect-ratio: auto;
+            border-radius: 0;
+            box-shadow: none;
         }
         
         #video1 {
             width: 100%;
             height: 100%;
+            object-fit: contain;
+        }
+        
+        /* Video.js container responsive */
+        .video-js {
+            width: 100% !important;
+            height: 100% !important;
         }
         
         /* Video.js Custom Styles - Hide big play button to avoid duplicate icons */

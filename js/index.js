@@ -776,6 +776,7 @@ $(document).ready(function() {
     //Append log history
     $('.scrollidbar').empty();
     $('.scrollidbar').append(`
+        <p>[2026-05-17] V8.2.3: release add video autoplay next episode feature</p>
         <p>[2026-05-16] V8.2.2 release fixed some bugs</p>
         <p>[2026-05-16] V8.2.1 release beautify UI</p>
         <p>[2021-10-09] V8.2.0 release support to play one game</p>
