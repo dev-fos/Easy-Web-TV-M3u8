@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Music - Easy Web TV</title>
+    <title>Music & Podcast - Easy Web TV</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="author" content="Zhang Boheng">
-    <meta name="keywords" content="iptv, movie, github, online tv, web tv, series tv, music">
+    <meta name="keywords" content="iptv, movie, github, online tv, web tv, series tv, music, podcast">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="../css/main.css" rel="stylesheet" />
     <script src="../js/jquery-3.6.0.min.js"></script>
@@ -106,6 +106,53 @@
             color: #a3001b;
         }
         
+        /* Tab Navigation in Header */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .tab-btn {
+            padding: 10px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .tab-btn i {
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: rgba(163,0,27,0.1);
+            border-color: rgba(163,0,27,0.3);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-color: #a3001b;
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(163,0,27,0.4);
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active i {
+            color: #fff;
+        }
+        
         .header-right {
             display: flex;
             align-items: center;
@@ -148,6 +195,342 @@
             cursor: pointer;
         }
         
+        /* Tab Content Wrapper */
+        .tab-content-wrapper {
+            flex: 1;
+            margin-top: 70px;
+            overflow: hidden;
+            min-height: 0;
+            height: calc(100vh - 70px);
+        }
+        
+        .tab-content {
+            display: none;
+            height: 100%;
+        }
+        
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ============ PODCAST TAB STYLES ============ */
+        
+        /* Podcast Import Area */
+        .podcast-import-area {
+            padding: 20px 30px;
+            background: linear-gradient(90deg, rgba(163,0,27,0.1) 0%, rgba(163,0,27,0.05) 100%);
+            border-bottom: 1px solid rgba(163,0,27,0.3);
+        }
+        
+        .import-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .import-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .import-btn:hover {
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-color: #a3001b;
+            transform: translateY(-2px);
+        }
+        
+        .import-btn i {
+            color: #a3001b;
+            font-size: 16px;
+        }
+        
+        .import-btn:hover i {
+            color: #fff;
+        }
+        
+        .rss-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .rss-input-group input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid rgba(163,0,27,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .rss-input-group input:focus {
+            border-color: #a3001b;
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .rss-input-group input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .rss-add-btn {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border: 2px solid #a3001b;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        
+        .rss-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(163,0,27,0.4);
+        }
+        
+        .podcast-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+        
+        .podcast-action-btn {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .podcast-action-btn:hover {
+            background: rgba(163,0,27,0.15);
+            border-color: rgba(163,0,27,0.4);
+            color: #fff;
+        }
+        
+        .podcast-action-btn.danger:hover {
+            background: rgba(255,0,0,0.2);
+            border-color: rgba(255,0,0,0.4);
+        }
+        
+        /* Podcast Empty State */
+        .podcast-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 30px;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+        }
+        
+        .podcast-empty i {
+            font-size: 64px;
+            color: rgba(163,0,27,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .podcast-empty h3 {
+            color: rgba(255,255,255,0.7);
+            font-size: 20px;
+            margin: 0 0 10px 0;
+        }
+        
+        .podcast-empty p {
+            font-size: 14px;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+        
+        /* Podcast Grid */
+        .podcast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 30px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+        }
+        
+        .podcast-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .podcast-grid::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .podcast-grid::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #a3001b 0%, #8a0016 100%);
+            border-radius: 4px;
+        }
+        
+        /* Card Item (comprehensive style) */
+        .card-item {
+            background: rgba(0,0,0,0.7);
+            border: 2px solid rgba(163,0,27,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            display: block;
+            height: 250px;
+        }
+        
+        .card-item:hover {
+            border-color: #a3001b;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(163,0,27,0.3);
+        }
+        
+        .card-item .card-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-item:hover .card-image {
+            transform: scale(1.05);
+        }
+        
+        .card-item .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.9) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .card-item:hover .card-overlay {
+            opacity: 1;
+        }
+        
+        .card-item .card-play-icon {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .card-item:hover .card-play-icon {
+            opacity: 1;
+        }
+        
+        .card-item .card-play-icon i {
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        .card-item .card-info {
+            padding: 15px;
+            position: relative;
+        }
+        
+        .card-item .card-type {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(163,0,27,0.2);
+            border-radius: 8px;
+            color: #a3001b;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .card-item .card-title {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+        
+        .card-item .podcast-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .card-item:hover .podcast-remove {
+            opacity: 1;
+        }
+        
+        .card-item .podcast-remove:hover {
+            background: rgba(255,0,0,0.7);
+        }
+        
+        .card-item .podcast-remove i {
+            color: #fff;
+            font-size: 12px;
+        }
+        
+        /* ============ MUSIC TAB STYLES ============ */
+        
         /* Sidebar */
         .sidebar {
             position: fixed;
@@ -155,7 +538,6 @@
             top: 70px;
             bottom: 0;
             width: 250px;
-            height: calc(100vh - 70px);
             background: rgba(0,0,0,0.85);
             border-right: 2px solid rgba(163,0,27,0.5);
             display: flex;
@@ -200,10 +582,12 @@
             transition: transform 0.3s ease;
         }
         
+        .sidebar.collapsed + .toggle-sidebar,
         .sidebar.collapsed .toggle-sidebar {
             left: 0;
         }
         
+        .sidebar.collapsed + .toggle-sidebar i,
         .sidebar.collapsed .toggle-sidebar i {
             transform: rotate(180deg);
         }
@@ -229,7 +613,7 @@
         }
         
         .category-list {
-            padding: 15px 0;
+            padding: 0;
         }
         
         .category-item {
@@ -262,30 +646,29 @@
             text-align: center;
         }
         
-        /* Main Content */
-        .main-content {
+        /* Music Main Content */
+        .music-main-content {
             flex: 1;
             height: 0;
             margin-left: 250px;
-            margin-top: 70px;
             padding: 20px;
             overflow-y: auto;
             transition: margin-left 0.3s ease;
         }
         
-        .main-content.expanded {
+        .music-main-content.expanded {
             margin-left: 0;
         }
         
-        .main-content::-webkit-scrollbar {
+        .music-main-content::-webkit-scrollbar {
             width: 8px;
         }
         
-        .main-content::-webkit-scrollbar-track {
+        .music-main-content::-webkit-scrollbar-track {
             background: rgba(255,255,255,0.05);
         }
         
-        .main-content::-webkit-scrollbar-thumb {
+        .music-main-content::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, #a3001b 0%, #8a0016 100%);
             border-radius: 4px;
         }
@@ -425,7 +808,7 @@
                 left: 200px;
             }
             
-            .main-content {
+            .music-main-content {
                 margin-left: 200px;
             }
             
@@ -453,11 +836,11 @@
                 left: 0;
             }
             
-            .sidebar.show-mobile .toggle-sidebar {
+            .sidebar.show-mobile + .toggle-sidebar {
                 left: 250px;
             }
             
-            .main-content {
+            .music-main-content {
                 margin-left: 0;
                 padding: 20px;
             }
@@ -470,16 +853,22 @@
                 flex-wrap: wrap;
                 height: auto;
                 padding: 10px 15px;
+                gap: 10px;
             }
             
             .header-left {
                 order: 1;
             }
             
-            .header-right {
+            .tab-nav {
                 order: 2;
                 width: 100%;
-                margin-top: 10px;
+                justify-content: center;
+            }
+            
+            .header-right {
+                order: 3;
+                width: 100%;
             }
             
             .search-box {
@@ -498,10 +887,35 @@
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 15px;
             }
+            
+            .podcast-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .import-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .rss-input-group {
+                min-width: 0;
+            }
+            
+            .podcast-actions {
+                margin-left: 0;
+                justify-content: center;
+            }
         }
         
         @media screen and (max-width: 480px) {
             .artist-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .podcast-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
@@ -512,6 +926,15 @@
             
             .artist-card .artist-name {
                 font-size: 12px;
+            }
+            
+            .tab-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .tab-btn i {
+                font-size: 14px;
             }
         }
         
@@ -763,8 +1186,264 @@
         }
         
         /* Main content padding when player is shown */
-        .main-content.with-player {
+        .music-main-content.with-player {
             padding-bottom: 100px;
+        }
+        
+        /* ============ TOAST NOTIFICATION ============ */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            min-width: 280px;
+            max-width: 400px;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 12px;
+            pointer-events: auto;
+            animation: toastSlideIn 0.4s ease forwards;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        
+        .toast.toast-exit {
+            animation: toastSlideOut 0.3s ease forwards;
+        }
+        
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .toast-icon i {
+            font-size: 16px;
+            color: #fff;
+        }
+        
+        .toast-body {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .toast-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        
+        .toast-text {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        
+        .toast-close {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+        
+        .toast-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .toast-close i {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Toast types */
+        .toast.success {
+            border: 2px solid rgba(76,175,80,0.6);
+        }
+        .toast.success .toast-icon {
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+        }
+        .toast.success .toast-title {
+            color: #4caf50;
+        }
+        
+        .toast.error {
+            border: 2px solid rgba(244,67,54,0.6);
+        }
+        .toast.error .toast-icon {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+        .toast.error .toast-title {
+            color: #f44336;
+        }
+        
+        .toast.warning {
+            border: 2px solid rgba(255,152,0,0.6);
+        }
+        .toast.warning .toast-icon {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+        .toast.warning .toast-title {
+            color: #ff9800;
+        }
+        
+        .toast.info {
+            border: 2px solid rgba(33,150,243,0.6);
+        }
+        .toast.info .toast-icon {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+        }
+        .toast.info .toast-title {
+            color: #2196f3;
+        }
+        
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes toastSlideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100px); }
+        }
+        
+        /* ============ CONFIRM MODAL ============ */
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 250;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .confirm-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .confirm-modal {
+            background: rgba(20,20,30,0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-radius: 20px;
+            padding: 30px;
+            min-width: 320px;
+            max-width: 420px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .confirm-overlay.show .confirm-modal {
+            transform: scale(1);
+        }
+        
+        .confirm-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .confirm-icon i {
+            font-size: 28px;
+            color: #fff;
+        }
+        
+        .confirm-icon.danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+        
+        .confirm-message {
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        
+        .confirm-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .confirm-btn {
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .confirm-cancel {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .confirm-cancel:hover {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        
+        .confirm-ok {
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-color: #a3001b;
+            color: #fff;
+        }
+        
+        .confirm-ok:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(163,0,27,0.4);
+        }
+        
+        .confirm-ok.danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            border-color: #f44336;
+        }
+        
+        .confirm-ok.danger:hover {
+            box-shadow: 0 5px 15px rgba(244,67,54,0.4);
         }
         
         /* Hide old elements */
@@ -810,80 +1489,144 @@
                 <div class="header-btn" id="backBtn" title="Back">
                     <i class="fas fa-arrow-left"></i>
                 </div>
-                <div class="header-btn" id="menuBtn" title="Menu">
-                    <i class="fas fa-bars"></i>
-                </div>
                 <div class="header-title">
                     <i class="fas fa-music"></i>
-                    <span>Music</span>
+                    <span>Music & Podcast</span>
                 </div>
             </div>
+            <!-- Tab Navigation in Header -->
+            <nav class="tab-nav">
+                <div class="tab-btn active" data-tab="podcast">
+                    <i class="fas fa-podcast"></i>
+                    Podcast
+                </div>
+                <div class="tab-btn" data-tab="music">
+                    <i class="fas fa-music"></i>
+                    Music
+                </div>
+            </nav>
             <div class="header-right">
-                <div class="search-box">
+                <div class="search-box" id="podcastSearchBox" style="display: none;">
+                    <input type="text" id="podcastSearchInput" placeholder="Search podcasts...">
+                    <i class="fas fa-search search-icon" id="podcastSearchBtn"></i>
+                </div>
+                <div class="search-box" id="musicSearchBox">
                     <input type="text" id="searchInput" placeholder="Search artists or songs...">
                     <i class="fas fa-search search-icon" id="searchBtn"></i>
                 </div>
             </div>
         </header>
         
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <!-- Toggle Button -->
-            <div class="toggle-sidebar" id="toggleSidebar">
-                <i class="fas fa-chevron-left"></i>
+        <!-- Tab Content Wrapper -->
+        <div class="tab-content-wrapper">
+            <!-- Podcast Tab -->
+            <div class="tab-content active" id="podcast">
+                <!-- Import Area -->
+                <div class="podcast-import-area">
+                    <div class="import-row">
+                        <button class="import-btn" id="importOpmlBtn">
+                            <i class="fas fa-file-import"></i>
+                            Import OPML
+                        </button>
+                        <input type="file" id="opmlFileInput" accept=".opml,.xml" style="display: none;">
+                        <div class="rss-input-group">
+                            <input type="text" id="rssUrlInput" placeholder="Enter Podcast RSS feed URL...">
+                            <button class="rss-add-btn" id="addRssBtn">
+                                <i class="fas fa-plus"></i>
+                                Add
+                            </button>
+                        </div>
+                        <div class="podcast-actions" id="podcastActions" style="display: none;">
+                            <button class="podcast-action-btn" id="exportOpmlBtn">
+                                <i class="fas fa-file-export"></i>
+                                Export
+                            </button>
+                            <button class="podcast-action-btn danger" id="clearPodcastsBtn">
+                                <i class="fas fa-trash-alt"></i>
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Podcast Empty State -->
+                <div class="podcast-empty" id="podcastEmpty">
+                    <i class="fas fa-podcast"></i>
+                    <h3>No Podcasts Yet</h3>
+                    <p>Import an OPML file or add a Podcast RSS feed URL to get started. Your subscriptions will be saved locally.</p>
+                </div>
+                
+                <!-- Podcast Grid -->
+                <div class="podcast-grid" id="podcastGrid" style="display: none;">
+                    <!-- Podcasts will be loaded here -->
+                </div>
             </div>
-            <div class="category-list" id="categoryList">
-                <div class="category-item active" data-type="all" data-value="-1">
-                    <i class="fas fa-globe"></i>
-                    <span>All Artists</span>
-                </div>
-                <div class="category-item" data-type="area" data-value="7">
-                    <i class="fas fa-flag"></i>
-                    <span>Chinese</span>
-                </div>
-                <div class="category-item" data-type="area" data-value="96">
-                    <i class="fas fa-globe-americas"></i>
-                    <span>Western</span>
-                </div>
-                <div class="category-item" data-type="area" data-value="8">
-                    <i class="fas fa-flag"></i>
-                    <span>Japanese</span>
-                </div>
-                <div class="category-item" data-type="area" data-value="16">
-                    <i class="fas fa-flag"></i>
-                    <span>Korean</span>
-                </div>
-                <div class="category-item" data-type="type" data-value="1">
-                    <i class="fas fa-male"></i>
-                    <span>Male Artists</span>
-                </div>
-                <div class="category-item" data-type="type" data-value="2">
-                    <i class="fas fa-female"></i>
-                    <span>Female Artists</span>
-                </div>
-                <div class="category-item" data-type="type" data-value="3">
-                    <i class="fas fa-users"></i>
-                    <span>Bands</span>
-                </div>
+            
+            <!-- Music Tab -->
+            <div class="tab-content" id="music">
+                <!-- Sidebar -->
+                <aside class="sidebar" id="sidebar">
+                    <!-- Toggle Button -->
+                    <div class="toggle-sidebar" id="toggleSidebar">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div class="sidebar-header">
+                        <h3><i class="fas fa-list"></i> Categories</h3>
+                    </div>
+                    <div class="category-list" id="categoryList">
+                        <div class="category-item active" data-type="all" data-value="-1">
+                            <i class="fas fa-globe"></i>
+                            <span>All Artists</span>
+                        </div>
+                        <div class="category-item" data-type="area" data-value="7">
+                            <i class="fas fa-flag"></i>
+                            <span>Chinese</span>
+                        </div>
+                        <div class="category-item" data-type="area" data-value="96">
+                            <i class="fas fa-globe-americas"></i>
+                            <span>Western</span>
+                        </div>
+                        <div class="category-item" data-type="area" data-value="8">
+                            <i class="fas fa-flag"></i>
+                            <span>Japanese</span>
+                        </div>
+                        <div class="category-item" data-type="area" data-value="16">
+                            <i class="fas fa-flag"></i>
+                            <span>Korean</span>
+                        </div>
+                        <div class="category-item" data-type="type" data-value="1">
+                            <i class="fas fa-male"></i>
+                            <span>Male Artists</span>
+                        </div>
+                        <div class="category-item" data-type="type" data-value="2">
+                            <i class="fas fa-female"></i>
+                            <span>Female Artists</span>
+                        </div>
+                        <div class="category-item" data-type="type" data-value="3">
+                            <i class="fas fa-users"></i>
+                            <span>Bands</span>
+                        </div>
+                    </div>
+                </aside>
+                
+                <!-- Music Main Content -->
+                <main class="music-main-content" id="mainContent">
+                    <div class="artist-grid" id="artistGrid">
+                        <!-- Artists will be loaded here -->
+                    </div>
+                    <div class="load-more" id="loadMore" style="display: none;">
+                        <i class="fas fa-spinner"></i>
+                        <p>Loading more...</p>
+                    </div>
+                </main>
             </div>
-        </aside>
-        
-        <!-- Main Content -->
-        <main class="main-content" id="mainContent">
-            <div class="artist-grid" id="artistGrid">
-                <!-- Artists will be loaded here -->
-            </div>
-            <div class="load-more" id="loadMore" style="display: none;">
-                <i class="fas fa-spinner"></i>
-                <p>Loading more...</p>
-            </div>
-        </main>
+        </div>
         
         <!-- Loading Overlay -->
-        <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-overlay hidden" id="loadingOverlay">
             <div class="loading-spinner">
                 <i class="fas fa-spinner"></i>
-                <p>Loading artists...</p>
+                <p>Loading...</p>
             </div>
         </div>
         
@@ -926,6 +1669,23 @@
                 <button class="player-close" id="closePlayerBtn" title="Close">
                     <i class="fas fa-times"></i>
                 </button>
+            </div>
+        </div>
+        
+        <!-- Toast Notification Container -->
+        <div class="toast-container" id="toastContainer"></div>
+        
+        <!-- Confirm Modal -->
+        <div class="confirm-overlay" id="confirmOverlay">
+            <div class="confirm-modal">
+                <div class="confirm-icon" id="confirmIcon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="confirm-message" id="confirmMessage">Are you sure?</div>
+                <div class="confirm-actions">
+                    <button class="confirm-btn confirm-cancel" id="confirmCancel">Cancel</button>
+                    <button class="confirm-btn confirm-ok" id="confirmOk">Confirm</button>
+                </div>
             </div>
         </div>
         

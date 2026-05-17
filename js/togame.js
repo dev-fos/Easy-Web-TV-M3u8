@@ -276,6 +276,14 @@ var games = [
         url: '../routes/emulatorjs/emulatorjs.html?core=beetle_vb'
     },
     {
+        id: 39,
+        name: 'DOS Emulator',
+        platform: 'DOS',
+        category: 'emulator',
+        image: '../images/dos.svg',
+        url: '../routes/emulatorjs/emulatorjs.html?core=dosbox_pure'
+    },
+    {
         id: 1,
         name: 'Square Obstacles',
         platform: 'PC',

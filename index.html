@@ -41,6 +41,9 @@
 </head>
 
 <body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-canvas"></canvas>
+
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay" role="status" aria-label="Loading">
         <div class="loading-spinner"></div>
@@ -73,7 +76,7 @@
         </div>
         <div>
             <span>Version</span>
-            <label class="switch" style="cursor: pointer;"><a href="#logbox" data-reveal-id="logboxitem" style="color:#fff">8.2.3</a></label>
+            <label class="switch" style="cursor: pointer;"><a href="#logbox" data-reveal-id="logboxitem" style="color:#fff">8.4.0</a></label>
         </div>
         <div>
             <span>About</span>
@@ -258,7 +261,7 @@
                             <dd>
                                 <a href="routes/game.html"><button class="stylebtn" tabindex="0" aria-label="Enter games">Enter</button></a>
                             </dd>
-                            <p>Constructing until version 9.0.0</p>
+                            <p>Play Classic Console Games...</p>
                         </li>
                     </ul>
                 </div>
@@ -343,6 +346,8 @@
         </div>
     </div>
 
+    <script src="js/matrix-rain.js"></script>
+    <script src="js/locales/translations.js"></script>
     <script src="js/translator.js"></script>
     <script>
         // Register Service Worker

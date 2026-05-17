@@ -20,6 +20,10 @@ var currentSongIndex = -1;
 var audioPlayer = null;
 var isPlaying = false;
 
+// Podcast state
+var podcastSubscriptions = [];
+var PODCAST_STORAGE_KEY = 'podcast_subscriptions';
+
 $(document).ready(function () {
     // Initialize audio player
     audioPlayer = document.getElementById('audioPlayer');
@@ -29,11 +33,115 @@ $(document).ready(function () {
         window.history.back();
     });
     
+    // Tab switching
+    $('.tab-btn').on('click', function () {
+        var tabId = $(this).data('tab');
+        
+        // Update tab buttons
+        $('.tab-btn').removeClass('active');
+        $(this).addClass('active');
+        
+        // Update tab content
+        $('.tab-content').removeClass('active');
+        $('#' + tabId).addClass('active');
+        
+        // Show/hide search box based on tab
+        if (tabId === 'podcast') {
+            $('#musicSearchBox').hide();
+            $('#podcastSearchBox').show();
+        } else {
+            $('#musicSearchBox').show();
+            $('#podcastSearchBox').hide();
+        }
+        
+        // Load music data on first switch if needed
+        if (tabId === 'music' && artists.length === 0 && !isLoading) {
+            loadArtists();
+        }
+    });
+    
+    // ============ PODCAST EVENT HANDLERS ============
+    
+    // OPML import button
+    $('#importOpmlBtn').on('click', function () {
+        $('#opmlFileInput').click();
+    });
+    
+    // OPML file selected
+    $('#opmlFileInput').on('change', function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            var content = event.target.result;
+            parseOpml(content);
+            // Reset file input
+            $('#opmlFileInput').val('');
+        };
+        reader.readAsText(file);
+    });
+    
+    // Add RSS feed
+    $('#addRssBtn').on('click', function () {
+        addRssFeed();
+    });
+    
+    $('#rssUrlInput').on('keypress', function (e) {
+        if (e.which === 13) {
+            addRssFeed();
+        }
+    });
+    
+    // Export OPML
+    $('#exportOpmlBtn').on('click', function () {
+        exportOpml();
+    });
+    
+    // Clear all podcasts
+    $('#clearPodcastsBtn').on('click', function () {
+        showConfirm('Are you sure you want to remove all podcast subscriptions?', function () {
+            podcastSubscriptions = [];
+            savePodcastSubscriptions();
+            renderPodcastList();
+            showToast('All podcast subscriptions have been removed.', 'success');
+        }, true);
+    });
+    
+    // Confirm modal buttons
+    $('#confirmOk').on('click', function () {
+        if (confirmCallback) {
+            confirmCallback();
+        }
+        hideConfirm();
+    });
+    
+    $('#confirmCancel').on('click', function () {
+        hideConfirm();
+    });
+    
+    // Remove individual podcast (delegated)
+    $('#podcastGrid').on('click', '.podcast-remove', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var feedUrl = $(this).data('feed');
+        podcastSubscriptions = podcastSubscriptions.filter(function (p) {
+            return p.feedUrl !== feedUrl;
+        });
+        savePodcastSubscriptions();
+        renderPodcastList();
+    });
+    
+    // ============ MUSIC EVENT HANDLERS ============
+    
     // Menu button - toggle sidebar
     $('#menuBtn').on('click', function () {
-        $('#sidebar').toggleClass('collapsed');
-        $('#sidebar').toggleClass('show-mobile');
-        $('#mainContent').toggleClass('expanded');
+        if (window.innerWidth <= 768) {
+            $('#sidebar').toggleClass('show-mobile');
+        } else {
+            $('#sidebar').toggleClass('collapsed');
+            $('#mainContent').toggleClass('expanded');
+        }
     });
     
     // Toggle sidebar button
@@ -95,9 +203,492 @@ $(document).ready(function () {
     // Player controls
     initPlayerControls();
     
-    // Initial load
-    loadArtists();
+    // Podcast search functionality
+    $('#podcastSearchInput').on('keypress', function (e) {
+        if (e.which === 13) {
+            performPodcastSearch();
+        }
+    });
+    
+    $('#podcastSearchBtn').on('click', function () {
+        performPodcastSearch();
+    });
+    
+    // ============ INITIAL LOAD ============
+    
+    // Load podcast subscriptions from localStorage
+    loadPodcastSubscriptions();
+    renderPodcastList();
+    
+    // Show podcast search box, hide music search box (default tab is podcast)
+    $('#podcastSearchBox').show();
+    $('#musicSearchBox').hide();
 });
+
+// ============ TOAST & CONFIRM FUNCTIONS ============
+
+var toastIcons = {
+    success: 'fa-check-circle',
+    error: 'fa-times-circle',
+    warning: 'fa-exclamation-circle',
+    info: 'fa-info-circle'
+};
+
+var toastTitles = {
+    success: 'Success',
+    error: 'Error',
+    warning: 'Warning',
+    info: 'Info'
+};
+
+function showToast(message, type, duration) {
+    type = type || 'info';
+    duration = duration || 3000;
+    
+    var iconClass = toastIcons[type] || toastIcons.info;
+    var titleText = toastTitles[type] || toastTitles.info;
+    
+    var toastHtml = '<div class="toast ' + type + '">';
+    toastHtml += '  <div class="toast-icon"><i class="fas ' + iconClass + '"></i></div>';
+    toastHtml += '  <div class="toast-body">';
+    toastHtml += '    <div class="toast-title">' + titleText + '</div>';
+    toastHtml += '    <div class="toast-text">' + escapeHtml(message) + '</div>';
+    toastHtml += '  </div>';
+    toastHtml += '  <button class="toast-close" onclick="dismissToast(this)"><i class="fas fa-times"></i></button>';
+    toastHtml += '</div>';
+    
+    var $toast = $(toastHtml);
+    $('#toastContainer').append($toast);
+    
+    // Auto dismiss
+    setTimeout(function () {
+        dismissToast($toast.find('.toast-close')[0]);
+    }, duration);
+}
+
+function dismissToast(closeBtn) {
+    var $toast = $(closeBtn).closest('.toast');
+    if ($toast.hasClass('toast-exit')) return;
+    $toast.addClass('toast-exit');
+    setTimeout(function () {
+        $toast.remove();
+    }, 300);
+}
+
+var confirmCallback = null;
+
+function showConfirm(message, onConfirm, isDanger) {
+    isDanger = isDanger || false;
+    confirmCallback = onConfirm;
+    
+    $('#confirmMessage').text(message);
+    
+    if (isDanger) {
+        $('#confirmIcon').addClass('danger');
+        $('#confirmOk').addClass('danger');
+        $('#confirmIcon i').removeClass('fa-exclamation-triangle').addClass('fa-trash-alt');
+    } else {
+        $('#confirmIcon').removeClass('danger');
+        $('#confirmOk').removeClass('danger');
+        $('#confirmIcon i').removeClass('fa-trash-alt').addClass('fa-exclamation-triangle');
+    }
+    
+    $('#confirmOverlay').addClass('show');
+}
+
+function hideConfirm() {
+    $('#confirmOverlay').removeClass('show');
+    confirmCallback = null;
+}
+
+// ============ PODCAST FUNCTIONS ============
+
+function loadPodcastSubscriptions() {
+    try {
+        var stored = localStorage.getItem(PODCAST_STORAGE_KEY);
+        if (stored) {
+            podcastSubscriptions = JSON.parse(stored);
+        }
+    } catch (e) {
+        console.error('Failed to load podcast subscriptions:', e);
+        podcastSubscriptions = [];
+    }
+}
+
+function savePodcastSubscriptions() {
+    try {
+        localStorage.setItem(PODCAST_STORAGE_KEY, JSON.stringify(podcastSubscriptions));
+    } catch (e) {
+        console.error('Failed to save podcast subscriptions:', e);
+    }
+}
+
+function parseOpml(xmlContent) {
+    try {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(xmlContent, 'text/xml');
+        var outlines = doc.querySelectorAll('outline[type="rss"], outline[type="link"]');
+        
+        var newPodcasts = [];
+        outlines.forEach(function (outline) {
+            var text = outline.getAttribute('text') || outline.getAttribute('title') || '';
+            var xmlUrl = outline.getAttribute('xmlUrl') || outline.getAttribute('url') || '';
+            var category = outline.parentElement && outline.parentElement.getAttribute('text') 
+                ? outline.parentElement.getAttribute('text') : '';
+            
+            if (xmlUrl) {
+                // Check if already subscribed
+                var exists = podcastSubscriptions.some(function (p) { return p.feedUrl === xmlUrl; });
+                if (!exists) {
+                    newPodcasts.push({
+                        name: text,
+                        feedUrl: xmlUrl,
+                        category: category,
+                        imageUrl: ''
+                    });
+                }
+            }
+        });
+        
+        if (newPodcasts.length > 0) {
+            podcastSubscriptions = podcastSubscriptions.concat(newPodcasts);
+            savePodcastSubscriptions();
+            renderPodcastList();
+            
+            // Fetch podcast details (cover images) in background
+            newPodcasts.forEach(function (podcast) {
+                fetchPodcastInfo(podcast);
+            });
+        }
+        
+        if (newPodcasts.length === 0 && outlines.length > 0) {
+            showToast('All podcasts from this OPML are already in your subscriptions.', 'warning');
+        } else if (outlines.length === 0) {
+            showToast('No RSS feeds found in this OPML file.', 'warning');
+        } else {
+            showToast('Successfully imported ' + newPodcasts.length + ' podcast(s).', 'success');
+        }
+    } catch (e) {
+        console.error('Failed to parse OPML:', e);
+        showToast('Failed to parse OPML file. Please check the file format.', 'error');
+    }
+}
+
+function addRssFeed() {
+    var url = $('#rssUrlInput').val().trim();
+    if (!url) {
+        showToast('Please enter a valid RSS feed URL.', 'warning');
+        return;
+    }
+    
+    // Auto-prepend https:// if missing
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
+    
+    // Validate URL format using URL constructor
+    try {
+        var urlObj = new URL(url);
+        // Must have a valid hostname with at least one dot (not just a single word)
+        if (!urlObj.hostname || urlObj.hostname.indexOf('.') === -1) {
+            showToast('Invalid URL format. Please enter a complete URL (e.g., https://example.com/feed.xml)', 'error');
+            return;
+        }
+        // Must use http or https protocol
+        if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+            showToast('URL must use http:// or https:// protocol.', 'error');
+            return;
+        }
+    } catch (e) {
+        showToast('Invalid URL format. Please enter a valid URL.', 'error');
+        return;
+    }
+    
+    // Check if already subscribed
+    var exists = podcastSubscriptions.some(function (p) { return p.feedUrl === url; });
+    if (exists) {
+        showToast('This podcast is already in your subscriptions.', 'warning');
+        return;
+    }
+    
+    var podcast = {
+        name: 'Loading...', // Will be updated after fetching
+        feedUrl: url,
+        category: '',
+        imageUrl: ''
+    };
+    
+    podcastSubscriptions.push(podcast);
+    savePodcastSubscriptions();
+    renderPodcastList();
+    $('#rssUrlInput').val('');
+    
+    showToast('Adding podcast... Fetching details from RSS feed.', 'info');
+    
+    // Fetch podcast details
+    fetchPodcastInfo(podcast);
+}
+
+function extractPodcastImage(channel, xmlText) {
+    var imageUrl = '';
+    
+    // Method 1: Find <image> child element and extract <url> text
+    // Browsers may convert <image> to <img>, so we need to handle both
+    var imageEl = channel.children('image').first();
+    if (imageEl.length) {
+        imageUrl = imageEl.children('url').first().text();
+    }
+    // Also try <img> since browsers auto-convert <image> in HTML parser
+    if (!imageUrl) {
+        imageEl = channel.children('img').first();
+        if (imageEl.length) {
+            imageUrl = imageEl.attr('src') || '';
+        }
+    }
+    
+    // Method 2: itunes:image href attribute (try multiple selector variations)
+    if (!imageUrl) {
+        imageUrl = channel.find('itunes\\:image').attr('href') || '';
+    }
+    if (!imageUrl) {
+        // Some browsers handle namespaced elements differently
+        channel.children().each(function () {
+            if (this.tagName && (this.tagName.toLowerCase() === 'itunes:image' || this.tagName.toLowerCase === 'itunes:image')) {
+                imageUrl = $(this).attr('href') || '';
+                if (imageUrl) return false; // break
+            }
+        });
+    }
+    
+    // Method 3: Regex fallback - extract from raw XML text
+    if (!imageUrl && xmlText) {
+        // Try <url>...</url> inside <image> block
+        var urlMatch = xmlText.match(/<image[^>]*>[\s\S]*?<url>\s*(.*?)\s*<\/url>/i);
+        if (urlMatch && urlMatch[1]) {
+            imageUrl = urlMatch[1];
+        }
+        // Try itunes:image href
+        if (!imageUrl) {
+            var itunesMatch = xmlText.match(/<itunes:image\s+href=["']([^"']+)["']/i);
+            if (itunesMatch && itunesMatch[1]) {
+                imageUrl = itunesMatch[1];
+            }
+        }
+    }
+    
+    return imageUrl;
+}
+
+function fetchPodcastInfo(podcast) {
+    var apiUrl = podcast.feedUrl;
+    
+    $.ajax({
+        url: proxy[rand] + encodeURIComponent(apiUrl),
+        type: "GET",
+        dataType: "xml",
+        success: function (data) {
+            try {
+                var xmlText = data.xml || (new XMLSerializer()).serializeToString(data);
+                var channel = $(data).find('channel');
+                var title = channel.find('title').first().text() || podcast.name;
+                var image = extractPodcastImage(channel, xmlText);
+                
+                // Update the podcast info
+                var idx = podcastSubscriptions.findIndex(function (p) { return p.feedUrl === podcast.feedUrl; });
+                if (idx !== -1) {
+                    podcastSubscriptions[idx].name = title;
+                    podcastSubscriptions[idx].imageUrl = image;
+                    savePodcastSubscriptions();
+                    renderPodcastList();
+                }
+            } catch (e) {
+                console.error('Failed to parse podcast info:', e);
+            }
+        },
+        error: function () {
+            // Try alternate proxy
+            var altRand = (rand + 1) % Object.keys(proxy).length;
+            $.ajax({
+                url: proxy[altRand] + encodeURIComponent(apiUrl),
+                type: "GET",
+                dataType: "xml",
+                success: function (data) {
+                    try {
+                        var xmlText = data.xml || (new XMLSerializer()).serializeToString(data);
+                        var channel = $(data).find('channel');
+                        var title = channel.find('title').first().text() || podcast.name;
+                        var image = extractPodcastImage(channel, xmlText);
+                        
+                        var idx = podcastSubscriptions.findIndex(function (p) { return p.feedUrl === podcast.feedUrl; });
+                        if (idx !== -1) {
+                            podcastSubscriptions[idx].name = title;
+                            podcastSubscriptions[idx].imageUrl = image;
+                            savePodcastSubscriptions();
+                            renderPodcastList();
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse podcast info (alt proxy):', e);
+                    }
+                },
+                error: function () {
+                    // Failed to fetch - update name to show it's unavailable
+                    var idx = podcastSubscriptions.findIndex(function (p) { return p.feedUrl === podcast.feedUrl; });
+                    if (idx !== -1 && podcastSubscriptions[idx].name === 'Loading...') {
+                        // Extract domain name as fallback display
+                        try {
+                            var urlObj = new URL(podcast.feedUrl);
+                            podcastSubscriptions[idx].name = urlObj.hostname;
+                        } catch (e) {
+                            podcastSubscriptions[idx].name = 'Unknown Podcast';
+                        }
+                        savePodcastSubscriptions();
+                        renderPodcastList();
+                        showToast('Could not fetch podcast details for: ' + podcastSubscriptions[idx].name + '. The RSS feed may be unavailable.', 'error', 5000);
+                    }
+                    console.error('Failed to fetch podcast info for:', podcast.feedUrl);
+                }
+            });
+        }
+    });
+}
+
+function renderPodcastList() {
+    if (podcastSubscriptions.length === 0) {
+        $('#podcastEmpty').show();
+        $('#podcastGrid').hide();
+        $('#podcastActions').hide();
+        return;
+    }
+    
+    $('#podcastEmpty').hide();
+    $('#podcastGrid').show();
+    $('#podcastActions').show();
+    
+    var html = '';
+    podcastSubscriptions.forEach(function (podcast) {
+        var imgSrc = podcast.imageUrl || '../images/noimage.jpeg';
+        var isLoading = podcast.name === 'Loading...';
+        html += '<a href="../catalogues/podcastplay.html?feed=' + encodeURIComponent(podcast.feedUrl) + '" class="card-item' + (isLoading ? ' loading' : '') + '">';
+        html += '  <img class="card-image" src="' + imgSrc + '" alt="' + escapeHtml(podcast.name) + '" onerror="this.src=\'../images/noimage.jpeg\'">';
+        html += '  <div class="card-overlay"></div>';
+        html += '  <div class="card-play-icon"><i class="fas fa-play"></i></div>';
+        html += '  <div class="card-info">';
+        if (podcast.category) {
+            html += '    <div class="card-type">' + escapeHtml(podcast.category) + '</div>';
+        }
+        html += '    <div class="card-title">' + (isLoading ? '<i class="fas fa-spinner fa-spin" style="margin-right:6px;color:#a3001b;"></i>' : '') + escapeHtml(podcast.name) + '</div>';
+        html += '  </div>';
+        html += '  <div class="podcast-remove" data-feed="' + escapeHtml(podcast.feedUrl) + '"><i class="fas fa-times"></i></div>';
+        html += '</a>';
+    });
+    
+    $('#podcastGrid').html(html);
+}
+
+function performPodcastSearch() {
+    var query = $('#podcastSearchInput').val().trim().toLowerCase();
+    
+    if (!query) {
+        // If search is empty, show all podcasts
+        renderPodcastList();
+        return;
+    }
+    
+    // Filter podcasts by name
+    var filtered = podcastSubscriptions.filter(function (p) {
+        return p.name.toLowerCase().indexOf(query) !== -1;
+    });
+    
+    if (filtered.length === 0) {
+        $('#podcastGrid').html('<div class="podcast-empty"><i class="fas fa-search"></i><h3>No Results</h3><p>No podcasts matching "' + escapeHtml(query) + '"</p></div>');
+        $('#podcastGrid').show();
+        $('#podcastEmpty').hide();
+        return;
+    }
+    
+    // Render filtered list
+    var html = '';
+    filtered.forEach(function (podcast) {
+        var imgSrc = podcast.imageUrl || '../images/noimage.jpeg';
+        var isLoading = podcast.name === 'Loading...';
+        html += '<a href="../catalogues/podcastplay.html?feed=' + encodeURIComponent(podcast.feedUrl) + '" class="card-item' + (isLoading ? ' loading' : '') + '">';
+        html += '  <img class="card-image" src="' + imgSrc + '" alt="' + escapeHtml(podcast.name) + '" onerror="this.src=\'../images/noimage.jpeg\'">';
+        html += '  <div class="card-overlay"></div>';
+        html += '  <div class="card-play-icon"><i class="fas fa-play"></i></div>';
+        html += '  <div class="card-info">';
+        if (podcast.category) {
+            html += '    <div class="card-type">' + escapeHtml(podcast.category) + '</div>';
+        }
+        html += '    <div class="card-title">' + (isLoading ? '<i class="fas fa-spinner fa-spin" style="margin-right:6px;color:#a3001b;"></i>' : '') + escapeHtml(podcast.name) + '</div>';
+        html += '  </div>';
+        html += '  <div class="podcast-remove" data-feed="' + escapeHtml(podcast.feedUrl) + '"><i class="fas fa-times"></i></div>';
+        html += '</a>';
+    });
+    
+    $('#podcastGrid').html(html);
+}
+
+function exportOpml() {
+    if (podcastSubscriptions.length === 0) {
+        showToast('No podcasts to export.', 'warning');
+        return;
+    }
+    
+    var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<opml version="1.0">\n';
+    xml += '  <head>\n';
+    xml += '    <title>Podcast Subscriptions</title>\n';
+    xml += '  </head>\n';
+    xml += '  <body>\n';
+    
+    // Group by category
+    var categories = {};
+    podcastSubscriptions.forEach(function (podcast) {
+        var cat = podcast.category || 'Uncategorized';
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(podcast);
+    });
+    
+    Object.keys(categories).forEach(function (cat) {
+        xml += '    <outline text="' + escapeXml(cat) + '">\n';
+        categories[cat].forEach(function (podcast) {
+            xml += '      <outline type="rss" text="' + escapeXml(podcast.name) + '" xmlUrl="' + escapeXml(podcast.feedUrl) + '" />\n';
+        });
+        xml += '    </outline>\n';
+    });
+    
+    xml += '  </body>\n';
+    xml += '</opml>';
+    
+    var blob = new Blob([xml], { type: 'text/xml' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'podcast-subscriptions.opml';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+}
+
+function escapeXml(text) {
+    if (!text) return '';
+    var result = text.replace(/&/g, '\x26amp;');
+    result = result.replace(/</g, '\x26lt;');
+    result = result.replace(/>/g, '\x26gt;');
+    result = result.replace(/"/g, '\x26quot;');
+    result = result.replace(/'/g, '\x26apos;');
+    return result;
+}
+
+// ============ MUSIC FUNCTIONS ============
 
 function initPlayerControls() {
     // Play/Pause button
@@ -445,15 +1036,15 @@ function renderArtists(artistList) {
     
     artistList.forEach(function (artist) {
         var alias = artist.alias && artist.alias.length > 0 ? artist.alias[0] : '';
-        html += `
-            <a href="../catalogues/musicplay.html?web=${artist.id}" class="artist-card">
-                <img class="artist-image" src="${artist.picUrl || '../images/noimage.jpeg'}" alt="${artist.name}" onerror="this.src='../images/noimage.jpeg'">
-                <div class="artist-info">
-                    <div class="artist-name">${artist.name}</div>
-                    ${alias ? `<div class="artist-alias">${alias}</div>` : ''}
-                </div>
-            </a>
-        `;
+        html += '<a href="../catalogues/musicplay.html?web=' + artist.id + '" class="artist-card">';
+        html += '  <img class="artist-image" src="' + (artist.picUrl || '../images/noimage.jpeg') + '" alt="' + artist.name + '" onerror="this.src=\'../images/noimage.jpeg\'">';
+        html += '  <div class="artist-info">';
+        html += '    <div class="artist-name">' + artist.name + '</div>';
+        if (alias) {
+            html += '    <div class="artist-alias">' + alias + '</div>';
+        }
+        html += '  </div>';
+        html += '</a>';
     });
     
     $('#artistGrid').html(html);
@@ -464,15 +1055,15 @@ function appendArtists(artistList) {
     
     artistList.forEach(function (artist) {
         var alias = artist.alias && artist.alias.length > 0 ? artist.alias[0] : '';
-        html += `
-            <a href="../catalogues/musicplay.html?web=${artist.id}" class="artist-card">
-                <img class="artist-image" src="${artist.picUrl || '../images/noimage.jpeg'}" alt="${artist.name}" onerror="this.src='../images/noimage.jpeg'">
-                <div class="artist-info">
-                    <div class="artist-name">${artist.name}</div>
-                    ${alias ? `<div class="artist-alias">${alias}</div>` : ''}
-                </div>
-            </a>
-        `;
+        html += '<a href="../catalogues/musicplay.html?web=' + artist.id + '" class="artist-card">';
+        html += '  <img class="artist-image" src="' + (artist.picUrl || '../images/noimage.jpeg') + '" alt="' + artist.name + '" onerror="this.src=\'../images/noimage.jpeg\'">';
+        html += '  <div class="artist-info">';
+        html += '    <div class="artist-name">' + artist.name + '</div>';
+        if (alias) {
+            html += '    <div class="artist-alias">' + alias + '</div>';
+        }
+        html += '  </div>';
+        html += '</a>';
     });
     
     $('#artistGrid').append(html);
@@ -549,7 +1140,7 @@ function searchSongs(query) {
                 
                 // Show message that search results are limited
                 if (songs.length === 50) {
-                    $('#artistGrid').append('<div class="search-info" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: rgba(255,255,255,0.5); font-size: 12px;"><i class="fas fa-info-circle"></i> 显示前50条搜索结果，如需更多请使用更精确的关键词</div>');
+                    $('#artistGrid').append('<div class="search-info" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: rgba(255,255,255,0.5); font-size: 12px;"><i class="fas fa-info-circle"></i> Showing top 50 results. Use more specific keywords for better results.</div>');
                 }
             } else {
                 showNoResults();
@@ -598,7 +1189,7 @@ function searchSongs(query) {
                         
                         // Show message that search results are limited
                         if (songs.length === 50) {
-                            $('#artistGrid').append('<div class="search-info" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: rgba(255,255,255,0.5); font-size: 12px;"><i class="fas fa-info-circle"></i> 显示前50条搜索结果，如需更多请使用更精确的关键词</div>');
+                            $('#artistGrid').append('<div class="search-info" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: rgba(255,255,255,0.5); font-size: 12px;"><i class="fas fa-info-circle"></i> Showing top 50 results. Use more specific keywords for better results.</div>');
                         }
                     } else {
                         showNoResults();
@@ -629,18 +1220,16 @@ function renderSearchResults(songs) {
         }
         var albumPic = song.al && song.al.picUrl ? song.al.picUrl : '../images/noimage.jpeg';
         
-        html += `
-            <div class="artist-card song-card" data-index="${index}">
-                <img class="artist-image" src="${albumPic}" alt="${songName}" onerror="this.src='../images/noimage.jpeg'">
-                <div class="play-overlay">
-                    <i class="fas fa-play-circle"></i>
-                </div>
-                <div class="artist-info">
-                    <div class="artist-name">${songName}</div>
-                    ${artistNames ? `<div class="artist-alias">${artistNames}</div>` : ''}
-                </div>
-            </div>
-        `;
+        html += '<div class="artist-card song-card" data-index="' + index + '">';
+        html += '  <img class="artist-image" src="' + albumPic + '" alt="' + songName + '" onerror="this.src=\'../images/noimage.jpeg\'">';
+        html += '  <div class="play-overlay"><i class="fas fa-play-circle"></i></div>';
+        html += '  <div class="artist-info">';
+        html += '    <div class="artist-name">' + songName + '</div>';
+        if (artistNames) {
+            html += '    <div class="artist-alias">' + artistNames + '</div>';
+        }
+        html += '  </div>';
+        html += '</div>';
     });
     
     $('#artistGrid').html(html);
@@ -661,19 +1250,9 @@ function hideLoading() {
 }
 
 function showNoResults() {
-    $('#artistGrid').html(`
-        <div class="no-results" style="grid-column: 1 / -1;">
-            <i class="fas fa-music"></i>
-            <p>No artists found</p>
-        </div>
-    `);
+    $('#artistGrid').html('<div class="no-results" style="grid-column: 1 / -1;"><i class="fas fa-music"></i><p>No artists found</p></div>');
 }
 
 function showError(message) {
-    $('#artistGrid').html(`
-        <div class="no-results" style="grid-column: 1 / -1;">
-            <i class="fas fa-exclamation-circle"></i>
-            <p>${message}</p>
-        </div>
-    `);
+    $('#artistGrid').html('<div class="no-results" style="grid-column: 1 / -1;"><i class="fas fa-exclamation-circle"></i><p>' + message + '</p></div>');
 }

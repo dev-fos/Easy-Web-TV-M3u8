@@ -6,7 +6,7 @@
 [![Forks](https://img.shields.io/github/forks/zhangboheng/Easy-Web-TV-M3u8)](https://github.com/zhangboheng/Easy-Web-TV-M3u8/network/members)
 [![Stars](https://img.shields.io/github/stars/zhangboheng/Easy-Web-TV-M3u8)](https://github.com/zhangboheng/Easy-Web-TV-M3u8/stargazers)
 [![License](https://img.shields.io/github/license/zhangboheng/Easy-Web-TV-M3u8)](https://github.com/zhangboheng/Easy-Web-TV-M3u8/blob/main/LICENSE)
-[![Version](https://img.shields.io/badge/version-8.3.0-green)](https://github.com/zhangboheng/Easy-Web-TV-M3u8)
+[![Version](https://img.shields.io/badge/version-8.4.0-green)](https://github.com/zhangboheng/Easy-Web-TV-M3u8)
 
 An all-in-one web entertainment platform to watch TV, movies, series, anime, shows, listen to music and radio, read novels and manga, and play games - all in one place.
 
@@ -42,8 +42,11 @@ An all-in-one web entertainment platform to watch TV, movies, series, anime, sho
 
 ### 🎵 Music & Radio
 - Search and listen to music
+- Browse and play podcasts with cover art and titles
+- Podcast episode list with search and playback controls
 - Access 28000+ radio stations worldwide
 - Radio station search by name, country, language
+- Favorites system for music and podcast episodes
 
 ### 📖 Reading
 - Search and read novels/books
@@ -142,6 +145,9 @@ Easy-Web-TV-M3u8/
 │   ├── index.js           # Main JavaScript
 │   ├── catalogues.js      # Catalogue functions
 │   ├── translator.js      # Translation handler
+│   ├── music.js           # Music player logic
+│   ├── podcast.js         # Podcast player with favorites
+│   ├── tomusic.js         # Music page navigation & podcast browsing
 │   └── ...                # Other modules
 ├── routes/
 │   ├── tv.html            # TV page

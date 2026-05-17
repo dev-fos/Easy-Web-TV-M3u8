@@ -776,6 +776,7 @@ $(document).ready(function() {
     //Append log history
     $('.scrollidbar').empty();
     $('.scrollidbar').append(`
+        <p>[2026-05-18] V8.4.0 release Improved podcast browsing and added podcast favorites</p>
         <p>[2026-05-17] V8.3.0 release add retro console game emulator</p>
         <p>[2026-05-17] V8.2.3 release add video autoplay next episode feature</p>
         <p>[2026-05-16] V8.2.2 release fixed some bugs</p>

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Podcast Player - Easy Web TV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="Zhang Boheng">
+    <meta name="keywords" content="iptv, podcast, online tv, web tv">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../css/main.css" rel="stylesheet" />
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Reset main.css conflicts */
+        .podcast-container,
+        .podcast-container * {
+            float: none !important;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-image: url("../images/bg.jpg");
+            background-size: cover;
+            background-attachment: fixed;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        /* Main Container */
+        .podcast-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+        
+        /* Sidebar - Episode List */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: rgba(0,0,0,0.85);
+            border-right: 2px solid rgba(163,0,27,0.5);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .sidebar.collapsed {
+            width: 0;
+            border-right: none;
+        }
+        
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .sidebar.collapsed .sidebar-content {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* Sidebar Header */
+        .sidebar-header {
+            padding: 15px 20px;
+            background: linear-gradient(90deg, rgba(163,0,27,0.3) 0%, rgba(163,0,27,0.1) 100%);
+            border-bottom: 1px solid rgba(163,0,27,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-header h3 i {
+            color: #a3001b;
+        }
+        
+        .sidebar-header .episode-count {
+            background: rgba(163,0,27,0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #a3001b;
+        }
+        
+        /* Sidebar Search */
+        .sidebar-search {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+        
+        .sidebar-search input {
+            width: 100%;
+            padding: 10px 15px 10px 35px;
+            border: 2px solid rgba(163,0,27,0.3);
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-search input:focus {
+            border-color: #a3001b;
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .sidebar-search input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .sidebar-search i {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+        
+        /* Episode List */
+        .episode-list {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+        
+        .episode-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .episode-list::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .episode-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #a3001b 0%, #8a0016 100%);
+            border-radius: 3px;
+        }
+        
+        .episode-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .episode-item:hover {
+            background: rgba(163,0,27,0.15);
+            border-bottom-color: rgba(163,0,27,0.3);
+        }
+        
+        .episode-item.active {
+            background: linear-gradient(90deg, rgba(163,0,27,0.3) 0%, rgba(163,0,27,0.1) 100%);
+            border-bottom-color: #a3001b;
+        }
+        
+        .episode-item .ep-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(163,0,27,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .episode-item .ep-icon i {
+            color: #a3001b;
+            font-size: 14px;
+        }
+        
+        .episode-item.active .ep-icon {
+            background: linear-gradient(135deg, #a3001b, #8a0016);
+        }
+        
+        .episode-item.active .ep-icon i {
+            color: #fff;
+        }
+        
+        .episode-item .ep-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .episode-item .ep-title {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .episode-item:hover .ep-title {
+            color: #a3001b;
+        }
+        
+        .episode-item .ep-meta {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            gap: 8px;
+            margin-top: 3px;
+        }
+        
+        .episode-item .ep-meta i {
+            color: rgba(163,0,27,0.6);
+            margin-right: 2px;
+            font-size: 10px;
+        }
+        
+        /* Loading State */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: rgba(255,255,255,0.5);
+            padding: 30px;
+        }
+        
+        .loading-state i {
+            font-size: 32px;
+            color: #a3001b;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* Top Toolbar */
+        .top-toolbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            z-index: 250;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        /* Top toolbar hidden state */
+        .top-toolbar.hidden {
+            display: none;
+        }
+        
+        /* When toolbar is hidden, podcast display fills the space */
+        .top-toolbar.hidden ~ .podcast-display {
+            padding-top: 40px;
+        }
+        
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .toolbar-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toolbar-btn:hover {
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-color: #a3001b;
+            transform: scale(1.05);
+        }
+        
+        .toolbar-btn i {
+            color: #a3001b;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        
+        .toolbar-btn:hover i {
+            color: #fff;
+        }
+        
+        .toolbar-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toolbar-title i {
+            color: #a3001b;
+        }
+        
+        /* Podcast Info Area */
+        .podcast-display {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px 40px;
+            position: relative;
+        }
+        
+        /* Podcast Cover */
+        .podcast-cover-area {
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid rgba(163,0,27,0.5);
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
+        }
+        
+        .podcast-cover-area:hover {
+            transform: scale(1.05);
+        }
+        
+        .podcast-cover-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .podcast-cover-area .cover-play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .podcast-cover-area:hover .cover-play-overlay {
+            opacity: 1;
+        }
+        
+        .cover-play-overlay i {
+            font-size: 48px;
+            color: #fff;
+        }
+        
+        /* Podcast Info Text */
+        .podcast-info-text {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+        
+        .podcast-info-text .podcast-name {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .podcast-info-text .podcast-desc {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 80px;
+            overflow: hidden;
+        }
+        
+        /* Episode Info (current playing) */
+        .current-episode-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .current-episode-info .ep-title-display {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .current-episode-info .ep-podcast-name {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .current-episode-info .ep-podcast-name i {
+            color: #a3001b;
+        }
+        
+        /* Sound Wave Visualizer */
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 30px;
+            height: 80px;
+        }
+        
+        .sound-wave .wave-bar {
+            width: 6px;
+            background: linear-gradient(180deg, #a3001b 0%, #8a0016 100%);
+            border-radius: 3px;
+            animation: waveAnim 1.2s ease-in-out infinite;
+        }
+        
+        .sound-wave .wave-bar:nth-child(1) { height: 15px; animation-delay: 0s; }
+        .sound-wave .wave-bar:nth-child(2) { height: 30px; animation-delay: 0.1s; }
+        .sound-wave .wave-bar:nth-child(3) { height: 50px; animation-delay: 0.2s; }
+        .sound-wave .wave-bar:nth-child(4) { height: 70px; animation-delay: 0.3s; }
+        .sound-wave .wave-bar:nth-child(5) { height: 80px; animation-delay: 0.4s; }
+        .sound-wave .wave-bar:nth-child(6) { height: 70px; animation-delay: 0.5s; }
+        .sound-wave .wave-bar:nth-child(7) { height: 50px; animation-delay: 0.6s; }
+        .sound-wave .wave-bar:nth-child(8) { height: 30px; animation-delay: 0.7s; }
+        .sound-wave .wave-bar:nth-child(9) { height: 15px; animation-delay: 0.8s; }
+        
+        @keyframes waveAnim {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.4); }
+        }
+        
+        .sound-wave.paused .wave-bar {
+            animation-play-state: paused;
+        }
+        
+        /* Player Controls Bar (centered) */
+        .player-controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .ctrl-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .ctrl-btn:hover {
+            background: rgba(163,0,27,0.3);
+        }
+        
+        .ctrl-btn i {
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .ctrl-btn.main-play {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #a3001b, #8a0016);
+        }
+        
+        .ctrl-btn.main-play:hover {
+            transform: scale(1.1);
+        }
+        
+        .ctrl-btn.main-play i {
+            font-size: 18px;
+        }
+        
+        .ctrl-btn.speed-btn {
+            width: auto;
+            padding: 0 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .p-time {
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            min-width: 45px;
+        }
+        
+        .progress-track {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a3001b, #ff3355);
+            border-radius: 2px;
+            width: 0%;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .progress-track:hover .progress-fill::after {
+            opacity: 1;
+        }
+        
+        /* Toggle Sidebar Button */
+        .toggle-sidebar {
+            position: absolute;
+            left: 280px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 60px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+        
+        .toggle-sidebar:hover {
+            background: rgba(163,0,27,0.3);
+        }
+        
+        .toggle-sidebar i {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar.collapsed .toggle-sidebar {
+            left: 0;
+        }
+        
+        .sidebar.collapsed .toggle-sidebar i {
+            transform: rotate(180deg);
+        }
+
+                    .sidebar.collapsed .sidebar-content,
+            .sidebar.show-mobile .sidebar-content {
+                opacity: 1;
+                visibility: visible;
+            }
+        
+        /* Right Side Action Buttons */
+        .action-buttons {
+            position: absolute;
+            right: 20px;
+            top: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 50;
+        }
+        
+        .action-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: linear-gradient(135deg, #a3001b 0%, #8a0016 100%);
+            border-color: #a3001b;
+            transform: scale(1.1);
+        }
+        
+        .action-btn i {
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        
+        .action-btn:hover i {
+            color: #fff;
+        }
+        
+        /* Favorite Panel */
+        .favorite-panel {
+            position: absolute;
+            right: 80px;
+            top: 80px;
+            width: 250px;
+            max-height: 400px;
+            background: rgba(0,0,0,0.9);
+            border: 2px solid rgba(163,0,27,0.5);
+            border-radius: 15px;
+            display: none;
+            z-index: 60;
+            overflow: hidden;
+        }
+        
+        .favorite-panel.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .favorite-panel-header {
+            padding: 15px;
+            background: linear-gradient(90deg, rgba(163,0,27,0.3) 0%, rgba(163,0,27,0.1) 100%);
+            border-bottom: 1px solid rgba(163,0,27,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .favorite-panel-header h4 {
+            color: #fff;
+            font-size: 14px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .favorite-panel-header h4 i {
+            color: #a3001b;
+        }
+        
+        .favorite-panel-content {
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .favorite-panel-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .favorite-panel-content::-webkit-scrollbar-thumb {
+            background: #a3001b;
+            border-radius: 2px;
+        }
+        
+        .favorite-item {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .favorite-item:hover {
+            background: rgba(163,0,27,0.2);
+        }
+        
+        .favorite-item i.fa-heart {
+            color: #a3001b;
+            font-size: 14px;
+        }
+        
+        .favorite-item span {
+            color: #fff;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        
+        .favorite-item .delete-btn {
+            opacity: 0;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            transition: opacity 0.2s ease, color 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .favorite-item:hover .delete-btn {
+            opacity: 1;
+        }
+        
+        .favorite-item .delete-btn:hover {
+            color: #ff4444;
+        }
+        
+        /* Episode favorite button in sidebar */
+        .episode-item .favorite-btn {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+        
+        .episode-item:hover .favorite-btn {
+            opacity: 1;
+        }
+        
+        .episode-item .favorite-btn.active {
+            opacity: 1;
+            color: #a3001b;
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        
+        .loading-overlay.hidden {
+            display: none;
+        }
+        
+        .loading-overlay i {
+            font-size: 48px;
+            color: #a3001b;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-overlay p {
+            color: rgba(255,255,255,0.6);
+            margin-top: 15px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: rgba(255,255,255,0.5);
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            color: rgba(163,0,27,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+        }
+        
+        /* Responsive Design */
+        @media screen and (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .toggle-sidebar {
+                left: 220px;
+            }
+            
+            .podcast-cover-area {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .sound-wave {
+                height: 60px;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                border-right: none;
+            }
+            
+            .sidebar.show-mobile {
+                width: 250px;
+                border-right: 2px solid rgba(163,0,27,0.5);
+                position: absolute;
+                z-index: 200;
+            }
+            
+            .sidebar.show-mobile .sidebar-content {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .toggle-sidebar {
+                left: 0;
+            }
+            
+            .sidebar.show-mobile .toggle-sidebar {
+                left: 250px;
+            }
+            
+            .toolbar-title {
+                font-size: 14px;
+            }
+            
+            .action-buttons {
+                right: 10px;
+                top: 70px;
+            }
+            
+            .action-btn {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .action-btn i {
+                font-size: 14px;
+            }
+            
+            .podcast-display {
+                padding: 70px 20px 20px;
+            }
+            
+            .podcast-cover-area {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .sound-wave {
+                height: 50px;
+                margin-bottom: 20px;
+            }
+            
+            .sound-wave .wave-bar {
+                width: 4px;
+            }
+            
+            .podcast-info-text .podcast-name {
+                font-size: 18px;
+            }
+            
+            .current-episode-info .ep-title-display {
+                font-size: 16px;
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .toolbar-btn {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .toolbar-btn i {
+                font-size: 14px;
+            }
+            
+            .podcast-cover-area {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .sound-wave {
+                height: 40px;
+            }
+            
+            .sound-wave .wave-bar {
+                width: 3px;
+            }
+        }
+        
+        /* Hide old elements */
+        #left, #right, #div1, #control, #menuicon, #player, #prev, .toggle, .itemContainer, .ready-player-1, audio {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="podcast-container">
+        <!-- Sidebar - Episode List -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <!-- Sidebar Header -->
+                <div class="sidebar-header">
+                    <h3>
+                        <i class="fas fa-podcast"></i>
+                        <span id="sidebarTitle">Episodes</span>
+                        <span class="episode-count" id="episodeCount">0</span>
+                    </h3>
+                </div>
+                
+                <!-- Sidebar Search -->
+                <div class="sidebar-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="episodeSearch" placeholder="Search episodes...">
+                </div>
+                
+                <!-- Episode List -->
+                <div class="episode-list" id="episodeList">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner"></i>
+                        <span>Loading episodes...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Toggle Button -->
+            <div class="toggle-sidebar" id="toggleSidebar">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Toolbar -->
+            <div class="top-toolbar" id="top-toolbar">
+                <div class="toolbar-left">
+                    <div class="toolbar-btn" id="backBtn" title="Back">
+                        <i class="fas fa-arrow-left"></i>
+                    </div>
+                    <div class="toolbar-title">
+                        <i class="fas fa-podcast"></i>
+                        <span id="headerTitle">Podcast</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Podcast Display Area -->
+            <div class="podcast-display">
+                <!-- Podcast Cover -->
+                <div class="podcast-cover-area" id="coverArea">
+                    <img id="podcastCover" src="../images/noimage.jpeg" alt="Cover" onerror="this.src='../images/noimage.jpeg'">
+                    <div class="cover-play-overlay" id="coverPlayBtn">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                </div>
+                
+                <!-- Podcast Info -->
+                <div class="podcast-info-text" id="podcastInfoText">
+                    <div class="podcast-name" id="podcastName">Loading...</div>
+                    <div class="podcast-desc" id="podcastDesc"></div>
+                </div>
+                
+                <!-- Current Episode Info -->
+                <div class="current-episode-info" id="currentEpInfo" style="display: none;">
+                    <div class="ep-title-display" id="epTitleDisplay">No episode playing</div>
+                    <div class="ep-podcast-name">
+                        <i class="fas fa-podcast"></i>
+                        <span id="epPodcastDisplay">-</span>
+                    </div>
+                </div>
+                
+                <!-- Sound Wave Visualizer -->
+                <div class="sound-wave paused" id="soundWave">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+                
+                <!-- Player Controls -->
+                <div class="player-controls-bar" id="playerControlsBar" style="display: none;">
+                    <button class="ctrl-btn" id="pBackward" title="Rewind 15s"><i class="fas fa-backward"></i></button>
+                    <button class="ctrl-btn main-play" id="pPlayPause" title="Play/Pause"><i class="fas fa-play" id="pPlayIcon"></i></button>
+                    <button class="ctrl-btn" id="pForward" title="Forward 15s"><i class="fas fa-forward"></i></button>
+                    <button class="ctrl-btn speed-btn" id="pSpeed" title="Playback speed">1x</button>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress-container" id="progressContainer" style="display: none;">
+                    <span class="p-time" id="pCurrentTime">0:00</span>
+                    <div class="progress-track" id="pProgressBar">
+                        <div class="progress-fill" id="pProgressFill"></div>
+                    </div>
+                    <span class="p-time" id="pTotalTime">0:00</span>
+                </div>
+            </div>
+            
+            <!-- Right Side Action Buttons -->
+            <div class="action-buttons">
+                <div class="action-btn" id="shuffleBtn" title="Random Episode">
+                    <i class="fas fa-random"></i>
+                </div>
+                <div class="action-btn" id="favoriteBtn" title="Favorites">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="action-btn" id="githubBtn" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </div>
+            </div>
+            
+            <!-- Favorite Panel -->
+            <div class="favorite-panel" id="favoritePanel">
+                <div class="favorite-panel-header">
+                    <h4>
+                        <i class="fas fa-heart"></i>
+                        Favorites
+                    </h4>
+                    <span style="color: rgba(255,255,255,0.5); font-size: 12px;" id="favCount">0</span>
+                </div>
+                <div class="favorite-panel-content" id="favoriteContent">
+                    <div class="empty-state" style="padding: 20px;">
+                        <i class="fas fa-heart-broken" style="font-size: 24px;"></i>
+                        <span style="font-size: 12px;">No favorites yet</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Hidden Audio Element -->
+    <audio id="podcastAudio" style="display: none;"></audio>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <i class="fas fa-spinner"></i>
+        <p>Loading podcast...</p>
+    </div>
+    
+    <script src="../js/podcast.js"></script>
+</body>
+
+</html>
