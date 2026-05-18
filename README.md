@@ -67,6 +67,10 @@ An all-in-one web entertainment platform to watch TV, movies, series, anime, sho
 - Gamepad support
 - Save/Load game states
 - Fullscreen mode
+- 🎮 **How to play with a gamepad on TV:**
+  1. Access the app through the browser on your TV
+  2. Select an emulator to enter
+  3. Plug in the gamepad before the game starts
 
 ### 🔧 Other Features
 - 🌐 Multi-language support
@@ -84,11 +88,31 @@ An all-in-one web entertainment platform to watch TV, movies, series, anime, sho
 
 ### TV
 
-![TV](images/tvchannels.jpg)
+![TV](images/tvscreen.jpg)
+
+### Movie
+
+![Movie](images/moviescreen.jpg)
+
+### Radio
+
+![Radio](images/radioscreen.jpg)
 
 ### Novel
 
-![Novel](images/novelchannels.jpg)
+![Novel](images/novelscreen.jpg)
+
+### Manga
+
+![Manga](images/mangascreen.jpg)
+
+### Music & Podcast
+
+![Music & Podcast](images/musicscreen.jpg)
+
+### Game
+
+![Game](images/gamescreen.jpg)
 
 ## 🛠️ Tech Stack
 

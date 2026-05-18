@@ -191,6 +191,7 @@
             top: 70px;
             bottom: 0;
             z-index: 50;
+            overflow: hidden;
         }
         
         .sidebar.collapsed {
@@ -318,6 +319,12 @@
             height: 100%;
             padding: 20px;
             overflow-y: auto;
+            margin-left: 250px;
+        }
+        
+        .sidebar.collapsed + .content-area,
+        .sidebar.collapsed ~ .content-area {
+            margin-left: 0;
         }
         
         .content-grid {
@@ -510,6 +517,10 @@
                 left: 200px;
             }
             
+            .content-area {
+                margin-left: 200px;
+            }
+            
             .search-input {
                 width: 200px;
             }
@@ -532,6 +543,10 @@
             .sidebar.show-mobile {
                 width: 250px;
                 border-right: 2px solid rgba(163,0,27,0.5);
+            }
+            
+            .content-area {
+                margin-left: 0;
             }
             
             .toggle-sidebar {
