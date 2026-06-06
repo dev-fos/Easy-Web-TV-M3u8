@@ -76,7 +76,7 @@
                             </svg>
                         </span>
                         <span class="nav-title" data-i18n="settings_basic">Basic Settings</span>
-                        <span class="nav-badge">2</span>
+                        <span class="nav-badge">1</span>
                         <span class="nav-arrow">›</span>
                     </div>
                     <div class="settings-nav-item" data-target="advanced">
@@ -135,18 +135,6 @@
                     <h2 data-i18n="settings_basic">Basic Settings</h2>
                 </header>
                 <div class="settings-content">
-                    <div class="settings-item">
-                        <div>
-                            <div class="item-label" data-i18n="settings_sensitive_label">Sensitive Content</div>
-                            <div class="item-description" data-i18n="settings_sensitive_desc">Toggle adult content visibility</div>
-                        </div>
-                        <div class="item-control">
-                            <label class="switch">
-                                <input type="checkbox" id="adultban" aria-label="Toggle sensitive content">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                    </div>
                     <div class="settings-item">
                         <div>
                             <div class="item-label" data-i18n="settings_language_label">Language</div>
@@ -223,45 +211,18 @@
                     <div class="source-control-section">
                         <h4 class="source-section-title" data-i18n="settings_source_title">Select Content Type</h4>
                         <div class="source-type-selector">
-                            <button class="source-type-btn active" data-source-type="movie">🎬 Movie</button>
                             <button class="source-type-btn" data-source-type="novel">📖 Novel</button>
-                            <button class="source-type-btn" data-source-type="manga">📚 Manga</button>
                             <button class="source-type-btn" data-source-type="music">🎵 Music</button>
-                            <button class="source-type-btn" data-source-type="porn">🔞 Porn</button>
                         </div>
                         <div class="source-options-container">
-                            <!-- Movie Sources -->
-                            <div class="source-options" data-source-type="movie">
-                                <label class="source-checkbox"><input type="checkbox" name="settings-movie" value="hyzy" checked> 虎牙资源</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-movie" value="xlzy" checked> 新浪资源</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-movie" value="gszy" checked> 光速资源</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-movie" value="hnzy" checked> 红牛资源</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-movie" value="tky" checked> 茅台资源</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-movie" value="bjy" checked> 如意资源</label>
-                            </div>
+
                             <!-- Novel Sources -->
                             <div class="source-options hidden" data-source-type="novel">
                                 <label class="source-checkbox"><input type="checkbox" name="settings-novel" value="royalroad" checked> Royal Road</label>
                             </div>
-                            <!-- Manga Sources -->
-                            <div class="source-options hidden" data-source-type="manga">
-                                <label class="source-checkbox"><input type="checkbox" name="settings-manga" value="mangadex" checked> MangaDex</label>
-                            </div>
                             <!-- Music Sources -->
                             <div class="source-options hidden" data-source-type="music">
                                 <label class="source-checkbox"><input type="checkbox" name="settings-music" value="wymusic" checked> 网易云音乐</label>
-                            </div>
-                            <!-- Porn Sources -->
-                            <div class="source-options hidden" data-source-type="porn">
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="msnii" checked> 美少女资源站</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="xrbsp" checked> 淫水机资源站</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="slapibf" checked> 森林资源站</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="lbapi9" checked> 乐播资源站</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="dadiapi" checked> 大地资源网</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="155api" checked> 155资源站</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="apilsbzy2" checked> 老色逼</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="thzy1" checked> 桃花资源</label>
-                                <label class="source-checkbox"><input type="checkbox" name="settings-porn" value="xiangjiaozyw" checked> 香蕉资源网</label>
                             </div>
                         </div>
                         <button class="settings-btn source-save-btn" id="save-source-btn" data-i18n="settings_source_save">Save Sources</button>
@@ -390,16 +351,12 @@
             <a href="#" class="close-source-modal" aria-label="Close dialog">×</a>
             <h2 id="sourcebox-title">Select</h2>
             <div id="selectform" role="radiogroup" aria-label="Select source type">
-                <input type="radio" name="sourceName" value="1" id="source-movie" checked/> 
-                <label for="source-movie">Movie</label> <br />
+
                 <input type="radio" name="sourceName" value="2" id="source-novel" /> 
                 <label for="source-novel">Novel</label> <br />
-                <input type="radio" name="sourceName" value="3" id="source-manga" /> 
-                <label for="source-manga">Manga</label> <br />
+
                 <input type="radio" name="sourceName" value="4" id="source-music" /> 
                 <label for="source-music">Music</label> <br />
-                <input type="radio" name="sourceName" value="5" id="source-porn" /> 
-                <label for="source-porn">Porn</label> <br />
             </div>
             <button class="stylebtn" onclick="goToSource()" aria-label="Next step"><img src="./images/nextselect.svg" style="width:30px;" alt="Next"></button>
         </div>
@@ -478,7 +435,6 @@
                             </dd>
                             <p>Reading More Than 100000+ Books...</p>
                         </li>
-
                         <li class="fade-in" tabindex="0">
                             <img src="images/music.svg" alt="Music" loading="lazy" />
                             <dd>
@@ -486,6 +442,7 @@
                             </dd>
                             <p>Listen to The World Music...</p>
                         </li>
+
                     </ul>
                 </div>
             </div>
